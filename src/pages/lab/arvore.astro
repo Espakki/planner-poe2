@@ -214,7 +214,12 @@ const config = { treeUrl: url(`tree/${treeVersion}.json`), ascendancy: pob.ascen
     border-radius: var(--radius);
     overflow: hidden;
   }
+  .lab > * {
+    min-width: 0;
+  }
   canvas {
+    position: absolute;
+    inset: 0;
     display: block;
     touch-action: none;
   }

@@ -275,6 +275,8 @@ const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as st
     background: #0a0907;
   }
   canvas {
+    position: absolute;
+    inset: 0;
     display: block;
     touch-action: none;
     cursor: grab;
