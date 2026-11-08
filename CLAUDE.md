@@ -4,6 +4,9 @@ Site estático (Astro + TypeScript) em **PT-BR** pra seguir builds de PoE2 fase 
 Dono: Espakki (joga com o cliente em inglês; lê melhor em português). Repositório público: github.com/Espakki/planner-poe2.
 **Sem deploy público** — roda local (`npm run dev`) e no homelab via Docker (`docker compose up -d --build`, porta 8080).
 Não criar workflow de deploy/GitHub Pages sem o dono pedir.
+No homelab (notebook Ubuntu com Dockge) a stack fica em `~/homelab/planner-poe2` (pasta de stacks do Dockge), porta **8090**
+via `.env` (`PLANNER_PORT=8090` — 8080/8081/8089 já são de outros serviços). Atualizar lá: `git pull && docker compose up -d --build`
+(ou "Deploy" no Dockge).
 
 ## Regras de conteúdo (importantes)
 
