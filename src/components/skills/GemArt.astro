@@ -1,0 +1,52 @@
+---
+/**
+ * Arte de gema/habilidade sem moldura (quem usa desenha o encaixe/moldura em volta).
+ * Sem arte baixada vira a inicial do nome na cor do atributo.
+ */
+interface Props {
+  src?: string;
+  name: string;
+  size: number;
+  /** cor do placeholder: str | dex | int | none */
+  tone?: string;
+}
+const { src, name, size, tone = 'none' } = Astro.props;
+const initial = name.replace(/^The /, '').charAt(0).toUpperCase();
+---
+
+<span class:list={['ga', `t-${tone}`]} style={`--s:${size}px`} aria-hidden="true">
+  {src ? <img src={src} alt="" width={size} height={size} loading="lazy" decoding="async" /> : <span class="ph">{initial}</span>}
+</span>
+
+<style>
+  .ga {
+    --c: var(--none);
+    display: grid;
+    place-items: center;
+    width: var(--s);
+    height: var(--s);
+    flex: none;
+  }
+  .ga img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .ph {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--s) * 0.5);
+    line-height: 1;
+    color: var(--c);
+  }
+  .t-str {
+    --c: var(--str);
+  }
+  .t-dex {
+    --c: var(--dex);
+  }
+  .t-int {
+    --c: var(--int);
+  }
+</style>

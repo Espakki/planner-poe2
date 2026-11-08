@@ -1,0 +1,207 @@
+---
+/**
+ * Parte do detalhe que só depende da gema: arte, tipo, nome EN/PT, o que faz, texto do jogo, onde conseguir, links.
+ * Renderizada UMA vez por página dentro de <template data-gem-tpl="id"> (ver SkillsPanel) e clonada no painel
+ * (GemDetail) quando ele abre — assim a mesma gema em 7 fases não repete o texto 7 vezes no HTML.
+ */
+import GemArt from './GemArt.astro';
+import { gemWhere, KIND_PT } from '../../lib/site.ts';
+import type { Entity } from '../../lib/site.ts';
+import type { GemData } from '../../lib/schemas.ts';
+
+interface Props {
+  gem: Entity<GemData>;
+}
+const { gem } = Astro.props;
+// gema de ascendência usa o mesmo ícone (o da passiva) como arte e como habilidade: mostra uma vez só
+const showGemArt = !gem.skillIcon || gem.kind !== 'ascendancy';
+const tags = gem.tags.filter((t) => t !== 'support');
+---
+
+<div class:list={['gi', `a-${gem.attribute}`]}>
+  <header class="gi-head">
+    <span class:list={['gi-art', { 'has-skill': gem.skillIcon }]}>
+      {gem.skillIcon && <img class="gi-skill" src={gem.skillIcon} alt="" width="60" height="60" loading="lazy" decoding="async" />}
+      {
+        showGemArt && (
+          <span class="gi-gem">
+            <GemArt src={gem.icon} name={gem.nameEn} tone={gem.attribute} size={gem.skillIcon ? 30 : 56} />
+          </span>
+        )
+      }
+    </span>
+    <div class="gi-titles">
+      <p class="gi-kind">{KIND_PT[gem.kind]}</p>
+      <p class:list={['gi-name', 'game-name', `c-${gem.attribute}`]} lang="en">{gem.nameEn}</p>
+      {gem.namePtBr && <p class="pt">{gem.namePtBr}</p>}
+    </div>
+  </header>
+
+  <dl class="gi-list">
+    <div>
+      <dt>O que faz</dt>
+      <dd>{gem.summaryPt}</dd>
+    </div>
+    {
+      gem.descriptionEn && (
+        <div>
+          <dt>Texto do jogo</dt>
+          <dd class="gi-en" lang="en">
+            {gem.descriptionEn}
+            {tags.length > 0 && <span class="gi-tags">{tags.join(' · ')}</span>}
+          </dd>
+        </div>
+      )
+    }
+    <div>
+      <dt>Onde conseguir</dt>
+      <dd>{gemWhere(gem)}</dd>
+    </div>
+    {
+      gem.verify && (
+        <div class="gi-verify">
+          <dt>A verificar</dt>
+          <dd>{gem.verify}</dd>
+        </div>
+      )
+    }
+  </dl>
+  {/* o script move os links pro fim do painel (depois do "Nesta fase") */}
+  <p class="gi-links" data-gem-links>
+    <a href={gem.wikiUrl} target="_blank" rel="noopener">poe2wiki ↗</a>
+    {
+      gem.poe2dbUrl && (
+        <a href={gem.poe2dbUrl} target="_blank" rel="noopener">
+          poe2db ↗
+        </a>
+      )
+    }
+  </p>
+</div>
+
+<style>
+  .gi {
+    --ac: var(--none);
+  }
+  .a-str {
+    --ac: var(--str);
+  }
+  .a-dex {
+    --ac: var(--dex);
+  }
+  .a-int {
+    --ac: var(--int);
+  }
+
+  .gi-head {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    /* espaço pro × do painel (GemDetail) */
+    padding-right: 48px;
+  }
+  .gi-art {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border: 1px solid color-mix(in srgb, var(--ac) 45%, var(--border-2));
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--ac) 20%, #000), #070605 72%);
+  }
+  .gi-art.has-skill {
+    border-radius: 8px;
+    border-color: var(--border-2);
+    background: var(--bg);
+  }
+  .gi-skill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+  }
+  .has-skill .gi-gem {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    filter: drop-shadow(0 1px 2px #000);
+  }
+  .gi-titles {
+    min-width: 0;
+  }
+  .gi-kind {
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .gi-name {
+    font-size: 1.22rem;
+    line-height: 1.2;
+  }
+  .gi-titles .pt {
+    font-size: 0.9rem;
+  }
+
+  .gi-list {
+    display: grid;
+    gap: 10px;
+    margin: 14px 0 0;
+  }
+  .gi-list > div {
+    display: grid;
+    gap: 1px 14px;
+  }
+  dt {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+    color: var(--bronze);
+  }
+  dd {
+    margin: 0;
+    color: var(--text);
+    max-width: 75ch;
+  }
+  .gi-en {
+    font-style: italic;
+    color: var(--text-2);
+  }
+  .gi-tags {
+    display: block;
+    margin-top: 2px;
+    font-style: normal;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .gi-verify dt,
+  .gi-verify dd {
+    color: var(--warn);
+  }
+  .gi-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 18px;
+    margin: 4px 0 -6px;
+  }
+  .gi-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    font-size: 0.92rem;
+  }
+
+  /* mesma grade de rótulos do GemDetail */
+  @container gg (min-width: 560px) {
+    .gi-list > div {
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+    }
+    dt {
+      padding-top: 2px;
+    }
+  }
+</style>

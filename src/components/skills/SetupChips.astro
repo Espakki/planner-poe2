@@ -1,0 +1,49 @@
+---
+/** Chips curtos de um grupo de gemas: papel · weapon set · nível · opcional · a verificar. */
+import { ROLE_PT } from '../../lib/site.ts';
+import type { SkillSetup } from '../../lib/schemas.ts';
+
+interface Props {
+  setup: SkillSetup;
+  /** "1" | "2" quando o slotPt cita o weapon set. */
+  ws?: string;
+  compact?: boolean;
+}
+const { setup, ws, compact = false } = Astro.props;
+---
+
+<span class:list={['chips', { compact }]}>
+  {setup.role && <span class:list={['chip', { 'role-main': setup.role === 'main' }]}>{ROLE_PT[setup.role]}</span>}
+  {setup.slotPt && <span class:list={['chip', { ws2: ws === '2', ws1: ws === '1' }]}>{setup.slotPt}</span>}
+  {!compact && setup.level && <span class="chip">nível {setup.level}</span>}
+  {setup.optional && <span class="chip opt">opcional</span>}
+  {
+    setup.verify && (
+      <span class="chip verify" title={setup.verify}>
+        a verificar
+      </span>
+    )
+  }
+</span>
+
+<style>
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .chips:empty {
+    display: none;
+  }
+  .compact {
+    margin-top: 3px;
+  }
+  .chip.role-main {
+    border-color: color-mix(in srgb, var(--acc-skills) 55%, transparent);
+    color: var(--acc-skills);
+  }
+  .chip.ws1 {
+    border-color: color-mix(in srgb, var(--ws1) 55%, transparent);
+    color: var(--ws1);
+  }
+</style>

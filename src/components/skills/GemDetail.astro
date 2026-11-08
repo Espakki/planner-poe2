@@ -1,0 +1,147 @@
+---
+/**
+ * Painel de detalhe de UM grupo da caixa Skills (um por grupo, começa escondido).
+ * Todos os botões de gema do grupo apontam pra ele (aria-controls); ao tocar numa gema o script
+ * (src/scripts/skills.ts) clona o <template data-gem-tpl> dela (GemInfo: arte, o que faz, texto do jogo,
+ * onde conseguir, links) em [data-gem-slot]. Aqui fica só o que é do grupo/fase — "Nesta fase" e
+ * "A verificar" aparecem só quando a gema aberta é a principal ([data-main-only]).
+ */
+import type { Entity } from '../../lib/site.ts';
+import type { GemData, SkillSetup } from '../../lib/schemas.ts';
+
+interface Props {
+  id: string;
+  /** Gema principal do grupo. */
+  gem: Entity<GemData>;
+  setup: SkillSetup;
+}
+const { id, gem, setup } = Astro.props;
+// O que o guia diz sobre o grupo (no modo jogando o nível não aparece nos chips, então vem aqui).
+const phaseNotes = [
+  setup.level ? `Nível sugerido da gema: ${setup.level}.` : undefined,
+  setup.slotPt ? `Fica no ${setup.slotPt}.` : undefined,
+  setup.replacesPt,
+  setup.notePt,
+].filter((t): t is string => Boolean(t));
+---
+
+<section id={id} class="gd" hidden role="region" aria-label={`Detalhe: ${gem.nameEn}`} data-gem-detail>
+  <button type="button" class="gd-close" aria-label="Fechar detalhe" data-gem-close>
+    <span aria-hidden="true">×</span>
+  </button>
+  <div data-gem-slot></div>
+  {
+    (phaseNotes.length > 0 || setup.verify) && (
+      <dl class="gd-list" data-main-only>
+        {phaseNotes.length > 0 && (
+          <div>
+            <dt>Nesta fase</dt>
+            <dd>
+              {phaseNotes.length === 1 ? (
+                phaseNotes[0]
+              ) : (
+                <ul class="gd-notes">
+                  {phaseNotes.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              )}
+            </dd>
+          </div>
+        )}
+        {setup.verify && (
+          <div class="gd-verify">
+            <dt>A verificar</dt>
+            <dd>{setup.verify}</dd>
+          </div>
+        )}
+      </dl>
+    )
+  }
+</section>
+
+<style>
+  .gd {
+    position: relative;
+    margin: 0 0 12px;
+    padding: 12px 14px 10px;
+    border: 1px solid color-mix(in srgb, var(--acc-skills) 40%, var(--border));
+    border-radius: var(--radius);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--acc-skills) 7%, transparent), transparent 90px),
+      var(--inset);
+  }
+  .gd-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius);
+    background: var(--inset);
+    color: var(--text-2);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .gd-close:hover {
+    border-color: var(--bronze);
+    color: var(--bronze-hi);
+  }
+
+  .gd-list {
+    display: grid;
+    gap: 10px;
+    margin: 10px 0 0;
+  }
+  .gd-list > div {
+    display: grid;
+    gap: 1px 14px;
+  }
+  dt {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+    color: var(--bronze);
+  }
+  dd {
+    margin: 0;
+    color: var(--text);
+    max-width: 75ch;
+  }
+  .gd-notes {
+    display: grid;
+    gap: 2px;
+  }
+  .gd-verify dt,
+  .gd-verify dd {
+    color: var(--warn);
+  }
+  .gd-list[hidden] {
+    display: none;
+  }
+  @container gg (max-width: 459px) {
+    .gd {
+      margin-bottom: 6px;
+      padding: 10px 10px 8px;
+    }
+    .gd-close {
+      top: 6px;
+      right: 6px;
+    }
+  }
+
+  /* mesma grade de rótulos do GemInfo */
+  @container gg (min-width: 560px) {
+    .gd-list > div {
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+    }
+    dt {
+      padding-top: 2px;
+    }
+  }
+</style>

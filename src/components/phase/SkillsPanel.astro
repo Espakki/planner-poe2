@@ -1,9 +1,12 @@
 ---
 /**
- * Conteúdo da caixa "Skills" de uma fase.
- * DONO: item UI-02 do backlog (skills estilo jogo). Hoje renderiza os GemGroup atuais.
+ * Conteúdo da caixa "Skills" de uma fase: grupos de gemas estilo painel do jogo (GemGroup),
+ * separados em Skills e Spirit / auras. Tocar numa gema abre o detalhe (src/scripts/skills.ts).
+ * DONO: item UI-02 do backlog.
  */
 import GemGroup from '../GemGroup.astro';
+import GemInfo from '../skills/GemInfo.astro';
+import { getEntities } from '../../lib/site.ts';
 import type { PhaseData } from '../../lib/schemas.ts';
 
 interface Props {
@@ -11,34 +14,80 @@ interface Props {
   compact?: boolean;
 }
 const { phase, compact = false } = Astro.props;
+const { gems } = await getEntities();
+
+// Texto de cada gema vai UMA vez por página num <template> (o detalhe clona ao abrir). Astro.locals vive
+// só durante a renderização desta página; marcar e checar sem await no meio = sem corrida entre fases.
+const locals = Astro.locals as { skillsGemTemplates?: Set<string> };
+const rendered = (locals.skillsGemTemplates ??= new Set<string>());
+const templateGems = [...new Set([...phase.skills, ...phase.spirit].flatMap((s) => [s.gem, ...s.supports]))]
+  .filter((id) => !rendered.has(id))
+  .map((id) => (rendered.add(id), gems.get(id)))
+  .filter((g) => g !== undefined);
 ---
 
-<div class="skills-panel">
-  <div class="stack">
-    {phase.skills.map((s) => <GemGroup setup={s} compact={compact} />)}
-  </div>
+<div class:list={['skills-panel', { compact }]}>
+  {!compact && <p class="hint">Toque numa gema pra ver o que faz, onde conseguir e a nota da fase.</p>}
+  {
+    phase.skills.length > 0 && (
+      <div class="stack">
+        {phase.skills.map((s, i) => (
+          <GemGroup setup={s} uid={`${phase.id}-sk${i}`} compact={compact} />
+        ))}
+      </div>
+    )
+  }
   {
     phase.spirit.length > 0 && (
       <>
-        <div class="panel-title spirit-title">Spirit / auras</div>
+        <div class="panel-title spirit-title">
+          Spirit / auras <span class="sub">reservam Spirit — ficam ligadas</span>
+        </div>
         <div class="stack">
-          {phase.spirit.map((s) => (
-            <GemGroup setup={s} compact={compact} />
+          {phase.spirit.map((s, i) => (
+            <GemGroup setup={s} uid={`${phase.id}-sp${i}`} compact={compact} />
           ))}
         </div>
       </>
     )
   }
+  {
+    templateGems.map((g) => (
+      <template data-gem-tpl={g.id}>
+        <GemInfo gem={g} />
+      </template>
+    ))
+  }
 </div>
 
+<script>
+  import '../../scripts/skills.ts';
+</script>
+
 <style>
+  .hint {
+    margin: 0 0 10px;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
   .stack {
     display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
-    align-items: start;
+    gap: 8px;
   }
   .spirit-title {
-    margin-top: 16px;
+    margin-top: 18px;
+  }
+  .spirit-title .sub {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.8rem;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+  .compact .spirit-title {
+    margin-top: 14px;
+  }
+  .compact .stack {
+    gap: 6px;
   }
 </style>
