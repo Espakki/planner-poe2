@@ -1,6 +1,10 @@
 ---
-/** Modo jogando: uma tela compacta só com a fase atual (salva no navegador). */
+/**
+ * Modo jogando: uma tela compacta só com a fase atual (salva no navegador).
+ * No fim, a caixa "Árvore desta fase" com a árvore interativa (uma instância só) acompanhando o seletor de fase.
+ */
 import PhaseSection from './PhaseSection.astro';
+import TreeViewer from './TreeViewer.astro';
 import { getPhaseTrees, url, type BuildVersion } from '../lib/site.ts';
 
 interface Props {
@@ -13,6 +17,13 @@ const trees = await getPhaseTrees(b);
 const treeOf = new Map(trees.map((t) => [t.phaseId, t]));
 const stateKey = `${m.slug}@${m.patch}`;
 const fullUrl = url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}`);
+const firstPhase = b.phases[0]?.id;
+/** Resumo da árvore da fase no título da caixa (visível mesmo com ela fechada). */
+const treeMeta = (t: (typeof trees)[number], i: number) => {
+  if (t.error) return 'sem árvore';
+  if (i === 0) return `${t.mainPoints} pontos`;
+  return `+${t.added.length} novos${t.removed.length > 0 ? ` · respec −${t.removed.length}` : ''}`;
+};
 ---
 
 <div class="play wrap" data-play={stateKey}>
@@ -45,6 +56,36 @@ const fullUrl = url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}`)
       </div>
     ))
   }
+
+  {
+    /* Depois do conteúdo da fase: é o que se consulta menos durante o jogo, e o canvas prende o toque
+       (arrastar = mover a árvore) — no meio da página atrapalharia rolar no celular. */
+    trees.length > 0 && (
+      <details class="box box--tree play-tree" open data-box="tree-play">
+        <summary>
+          <span class="box-title">Árvore desta fase</span>
+          {trees.map((t, i) => (
+            <span class="box-meta" data-tree-meta={t.phaseId} hidden={t.phaseId !== firstPhase}>
+              {treeMeta(t, i)}
+            </span>
+          ))}
+        </summary>
+        <div class="box-body">
+          <TreeViewer
+            embedded
+            phaseButtons={false}
+            load="visible"
+            treeVersion={m.treeVersion}
+            ascendancy={m.ascendancy}
+            className={m.class}
+            phases={trees}
+            stateKey={stateKey}
+            initialPhase={firstPhase}
+          />
+        </div>
+      </details>
+    )
+  }
 </div>
 
 <script>
@@ -63,6 +104,7 @@ const fullUrl = url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}`)
       if (!ids.includes(id)) id = ids[0];
       select.value = id;
       for (const el of root.querySelectorAll<HTMLElement>('[data-play-phase]')) el.hidden = el.dataset.playPhase !== id;
+      for (const el of root.querySelectorAll<HTMLElement>('[data-tree-meta]')) el.hidden = el.dataset.treeMeta !== id;
       for (const b of root.querySelectorAll<HTMLButtonElement>('[data-set-phase]')) b.setAttribute('aria-pressed', String(b.dataset.setPhase === id));
       if (save) update(build, (s) => (s.phase = id));
     };
@@ -160,6 +202,9 @@ const fullUrl = url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}`)
   .ph :global(.phase) {
     border-top: 0;
     padding-top: 8px;
+  }
+  .play-tree {
+    margin-bottom: 24px;
   }
   @media (max-width: 560px) {
     .wake {
