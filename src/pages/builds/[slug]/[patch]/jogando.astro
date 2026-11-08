@@ -1,0 +1,17 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import PlayMode from '../../../../components/PlayMode.astro';
+import { getBuildVersions } from '../../../../lib/site.ts';
+
+export async function getStaticPaths() {
+  const bySlug = await getBuildVersions();
+  return [...bySlug.entries()].flatMap(([slug, versions]) =>
+    versions.map((version) => ({ params: { slug, patch: version.patch }, props: { version } })),
+  );
+}
+const { version } = Astro.props;
+---
+
+<Base title={`Jogando · ${version.data.meta.title} ${version.patch}`} compact>
+  <PlayMode version={version} />
+</Base>

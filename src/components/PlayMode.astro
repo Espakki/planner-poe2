@@ -1,0 +1,168 @@
+---
+/** Modo jogando: uma tela compacta só com a fase atual (salva no navegador). */
+import PhaseSection from './PhaseSection.astro';
+import { getPhaseTrees, url, type BuildVersion } from '../lib/site.ts';
+
+interface Props {
+  version: BuildVersion;
+}
+const { version } = Astro.props;
+const b = version.data;
+const m = b.meta;
+const trees = await getPhaseTrees(b);
+const treeOf = new Map(trees.map((t) => [t.phaseId, t]));
+const stateKey = `${m.slug}@${m.patch}`;
+const fullUrl = url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}`);
+---
+
+<div class="play wrap" data-play={stateKey}>
+  <div class="bar">
+    <a class="back small" href={fullUrl}>← guia completo</a>
+    <span class="small muted">{m.title} · {m.patch}</span>
+  </div>
+  <div class="picker">
+    <button type="button" class="btn ghost nav" data-step="-1" aria-label="Fase anterior">‹</button>
+    <label class="sel">
+      <span class="visually-hidden">Fase</span>
+      <select data-phase-select>
+        {
+          b.phases.map((p, i) => (
+            <option value={p.id}>
+              {i + 1} · {(p.stagePt ?? p.title).split(' · ')[0]} ({p.levels[0]}–{p.levels[1]})
+            </option>
+          ))
+        }
+      </select>
+    </label>
+    <button type="button" class="btn ghost nav" data-step="1" aria-label="Próxima fase">›</button>
+    <button type="button" class="btn ghost wake" data-wake aria-pressed="false" title="Impede a tela de apagar (celular)">☀ Tela ligada</button>
+  </div>
+
+  {
+    b.phases.map((p, i) => (
+      <div class="ph" data-play-phase={p.id} hidden={i !== 0}>
+        <PhaseSection phase={p} index={i} build={b} tree={treeOf.get(p.id)} compact />
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  import { bindChecklists, loadState, update } from '../scripts/state.ts';
+
+  const root = document.querySelector<HTMLElement>('[data-play]');
+  if (root) {
+    const build = root.dataset.play!;
+    const select = root.querySelector<HTMLSelectElement>('[data-phase-select]')!;
+    const ids = [...select.options].map((o) => o.value);
+    bindChecklists(build, root);
+
+    const show = (id: string, save = true) => {
+      if (!ids.includes(id)) id = ids[0];
+      select.value = id;
+      for (const el of root.querySelectorAll<HTMLElement>('[data-play-phase]')) el.hidden = el.dataset.playPhase !== id;
+      for (const b of root.querySelectorAll<HTMLButtonElement>('[data-set-phase]')) b.setAttribute('aria-pressed', String(b.dataset.setPhase === id));
+      if (save) update(build, (s) => (s.phase = id));
+    };
+    show(loadState(build).phase ?? ids[0], false);
+
+    select.addEventListener('change', () => show(select.value));
+    for (const b of root.querySelectorAll<HTMLButtonElement>('[data-step]')) {
+      b.addEventListener('click', () => {
+        const i = ids.indexOf(select.value) + Number(b.dataset.step);
+        if (i >= 0 && i < ids.length) {
+          show(ids[i]);
+          window.scrollTo({ top: 0 });
+        }
+      });
+    }
+    // "Estou aqui" dentro da fase só confirma a fase
+    root.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-set-phase]');
+      if (btn) show(btn.dataset.setPhase!);
+    });
+
+    // Wake Lock: mantém a tela acesa no celular enquanto joga
+    const wakeBtn = root.querySelector<HTMLButtonElement>('[data-wake]')!;
+    type Sentinel = { release(): Promise<void>; addEventListener(t: string, f: () => void): void };
+    const nav = navigator as Navigator & { wakeLock?: { request(t: 'screen'): Promise<Sentinel> } };
+    let sentinel: Sentinel | null = null;
+    if (!nav.wakeLock) wakeBtn.hidden = true;
+    const lock = async () => {
+      try {
+        sentinel = await nav.wakeLock!.request('screen');
+        wakeBtn.setAttribute('aria-pressed', 'true');
+        sentinel.addEventListener('release', () => wakeBtn.setAttribute('aria-pressed', 'false'));
+      } catch {
+        wakeBtn.setAttribute('aria-pressed', 'false');
+      }
+    };
+    wakeBtn.addEventListener('click', async () => {
+      if (sentinel) {
+        await sentinel.release();
+        sentinel = null;
+      } else await lock();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && wakeBtn.getAttribute('aria-pressed') === 'true') void lock();
+    });
+  }
+</script>
+
+<style>
+  .play {
+    padding-top: 10px;
+  }
+  .bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .picker {
+    position: sticky;
+    top: 52px;
+    z-index: 20;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 8px 0;
+    background: rgb(11 10 8 / 0.94);
+    backdrop-filter: blur(8px);
+  }
+  .sel {
+    flex: 1;
+    min-width: 0;
+  }
+  .sel select {
+    width: 100%;
+    min-height: 40px;
+    padding: 6px 10px;
+    border: 1px solid var(--bronze);
+    border-radius: var(--radius);
+    background: var(--panel-2);
+    color: var(--bronze-hi);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+  }
+  .nav {
+    width: 40px;
+    min-height: 40px;
+    padding: 0;
+    font-size: 1.4rem;
+    font-family: var(--font-body);
+  }
+  .wake[aria-pressed='true'] {
+    color: var(--new);
+  }
+  .ph :global(.phase) {
+    border-top: 0;
+    padding-top: 8px;
+  }
+  @media (max-width: 560px) {
+    .wake {
+      padding: 0 8px;
+      font-size: 0.72rem;
+    }
+  }
+</style>
