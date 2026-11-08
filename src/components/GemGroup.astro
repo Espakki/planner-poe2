@@ -1,83 +1,315 @@
 ---
-/** Uma gema principal com os suportes ligados visualmente (cor por atributo). */
-import GameIcon from './GameIcon.astro';
-import { gemWhere, getEntities, KIND_PT, ROLE_PT } from '../lib/site.ts';
+/**
+ * Um grupo de gemas como no painel de skills do PoE2:
+ *   ícone da habilidade (+ arte da gema no canto, "II" se for do Weapon Set 2) · nome EN/PT · chips
+ *   · suportes como gemas encaixadas em sequência (anel na cor do atributo) · troca · nota da fase.
+ * Cada gema é um botão que abre o detalhe (GemDetail) logo abaixo do grupo — JS em src/scripts/skills.ts.
+ * Layout por container query: lado a lado quando o grupo é largo, empilhado no celular.
+ */
+import GemArt from './skills/GemArt.astro';
+import GemDetail from './skills/GemDetail.astro';
+import SetupChips from './skills/SetupChips.astro';
+import { getEntities } from '../lib/site.ts';
 import type { SkillSetup } from '../lib/schemas.ts';
 
 interface Props {
   setup: SkillSetup;
-  /** Modo compacto (jogando): esconde onde conseguir e resumo dos suportes. */
+  /** Único na página (fase + lista + índice): vira o id dos painéis de detalhe. */
+  uid: string;
+  /** Modo jogando: só ícones, nomes, chips essenciais e nota. */
   compact?: boolean;
 }
-const { setup, compact = false } = Astro.props;
+const { setup, uid, compact = false } = Astro.props;
 const { gems } = await getEntities();
 const gem = gems.get(setup.gem)!;
 const supports = setup.supports.map((id) => gems.get(id)!).filter(Boolean);
-const isWs2 = setup.slotPt?.includes('Weapon Set 2');
+const ws = setup.slotPt?.match(/weapon set\s*(\d)/i)?.[1];
+// arte da gema no canto do ícone; gema de ascendência usa o mesmo ícone da passiva nos dois → não repete
+const showGemBadge = Boolean(gem.skillIcon) && gem.kind !== 'ascendancy';
+// um painel de detalhe por grupo; o conteúdo troca conforme a gema tocada (src/scripts/skills.ts)
+const panelId = `gd-${uid}`;
+const supTitle = (s: (typeof supports)[number]) =>
+  `${s.nameEn}${s.namePtBr ? ` (${s.namePtBr})` : ''} — ${s.summaryPt}`;
+const hasSide = supports.length > 0 || setup.replacesPt || setup.notePt;
 ---
 
-<article class:list={['gem-group', `a-${gem.attribute}`, { optional: setup.optional }]}>
-  <header class="main">
-    <GameIcon src={gem.icon} name={gem.nameEn} tone={gem.attribute} size={compact ? 40 : 48} />
-    <div class="info">
-      <div class="title">
-        <a class:list={['name', `c-${gem.attribute}`]} href={gem.wikiUrl} target="_blank" rel="noopener">{gem.nameEn}</a>
-        {gem.namePtBr && <span class="pt">{gem.namePtBr}</span>}
-      </div>
-      <div class="chips">
-        <span class="chip">{KIND_PT[gem.kind]}</span>
-        {setup.role && <span class="chip">{ROLE_PT[setup.role]}</span>}
-        {setup.level && <span class="chip">nível {setup.level}</span>}
-        {setup.slotPt && <span class:list={['chip', { ws2: isWs2 }]}>{setup.slotPt}</span>}
-        {setup.optional && <span class="chip opt">opcional</span>}
-        {setup.verify && <span class="chip verify" title={setup.verify}>a verificar</span>}
-      </div>
-      {!compact && <p class="summary">{gem.summaryPt}</p>}
-      {setup.replacesPt && <p class="swap">↻ {setup.replacesPt}</p>}
-      {setup.notePt && <p class="note">{setup.notePt}</p>}
-      {!compact && <p class="where"><span>Onde:</span> {gemWhere(gem)}</p>}
+<article class:list={['gg', { compact, optional: setup.optional, ws1: ws === '1', ws2: ws === '2' }]} data-gem-group>
+  <div class="gg-row">
+    <div class="gg-head">
+      <button
+        type="button"
+        class="gg-main"
+        aria-expanded="false"
+        aria-controls={panelId}
+        title={`${gem.nameEn}: ver detalhe`}
+        data-gem-btn={gem.id}
+        data-gem-main
+      >
+        <span class:list={['sk', `a-${gem.attribute}`, { 'no-skill': !gem.skillIcon }]}>
+          {
+            gem.skillIcon ? (
+              <img class="sk-img" src={gem.skillIcon} alt="" width="52" height="52" loading="lazy" decoding="async" />
+            ) : (
+              <GemArt src={gem.icon} name={gem.nameEn} tone={gem.attribute} size={compact ? 34 : 44} />
+            )
+          }
+          {
+            showGemBadge && (
+              <span class="sk-gem">
+                <GemArt src={gem.icon} name={gem.nameEn} tone={gem.attribute} size={compact ? 20 : 24} />
+              </span>
+            )
+          }
+          {ws && <span class:list={['sk-ws', `ws-${ws}`]} aria-hidden="true">{ws === '2' ? 'II' : 'I'}</span>}
+        </span>
+        <span class="gg-names">
+          <span class:list={['game-name', 'gg-name', `c-${gem.attribute}`]} lang="en">{gem.nameEn}</span>
+          {!compact && gem.namePtBr && <span class="pt">{gem.namePtBr}</span>}
+          {compact && <SetupChips setup={setup} ws={ws} compact />}
+        </span>
+        <span class="gg-more" aria-hidden="true"></span>
+      </button>
+      {!compact && <SetupChips setup={setup} ws={ws} />}
     </div>
-  </header>
-  {
-    supports.length > 0 && (
-      <ol class="supports">
-        {supports.map((s) => (
-          <li class:list={['sup', `a-${s.attribute}`]}>
-            <GameIcon src={s.icon} name={s.nameEn} tone={s.attribute} size={compact ? 26 : 30} frame="round" />
-            <div class="sup-info">
-              <div class="title">
-                <a class:list={['name', `c-${s.attribute}`]} href={s.wikiUrl} target="_blank" rel="noopener">
-                  {s.nameEn}
-                </a>
-                {s.namePtBr && <span class="pt">{s.namePtBr}</span>}
-                {s.kind !== 'support' && <span class="chip">{KIND_PT[s.kind]}</span>}
-              </div>
-              {!compact && (
-                <p class="sup-sum">
-                  {s.summaryPt} <span class="where-inline">· {gemWhere(s)}</span>
-                </p>
-              )}
-            </div>
-          </li>
-        ))}
-      </ol>
-    )
-  }
+
+    {
+      hasSide && (
+        <div class="gg-side">
+          {supports.length > 0 && (
+            <ol class="socks" aria-label={`Suportes encaixados em ${gem.nameEn}`}>
+              {supports.map((s) => (
+                <li class:list={['sock-li', `a-${s.attribute}`]}>
+                  <button
+                    type="button"
+                    class:list={['sock', { skill: s.kind !== 'support' }]}
+                    aria-expanded="false"
+                    aria-controls={panelId}
+                    title={supTitle(s)}
+                    data-gem-btn={s.id}
+                  >
+                    <span class="sock-art">
+                      <GemArt
+                        src={s.kind !== 'support' ? (s.skillIcon ?? s.icon) : s.icon}
+                        name={s.nameEn}
+                        tone={s.attribute}
+                        size={compact ? 26 : 30}
+                      />
+                    </span>
+                    <span class="game-name sock-name" lang="en">
+                      {s.nameEn}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          )}
+          {setup.replacesPt && (
+            <p class="swap">
+              <span class="chip swap-chip">↻ troca</span> <span>{setup.replacesPt}</span>
+            </p>
+          )}
+          {setup.notePt && <p class="note">{setup.notePt}</p>}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="gg-details">
+    <GemDetail id={panelId} gem={gem} setup={setup} />
+  </div>
 </article>
 
 <style>
-  .gem-group {
-    --ac: var(--none);
+  .gg {
+    container: gg / inline-size;
     position: relative;
-    padding: 12px;
+    min-width: 0;
     border: 1px solid var(--border);
-    border-left: 3px solid var(--ac);
     border-radius: var(--radius-lg);
     background: linear-gradient(180deg, var(--panel-2), var(--panel));
   }
-  .gem-group.optional {
+  .gg.optional {
     border-style: dashed;
-    border-left-style: solid;
+  }
+  /* weapon set marcado na borda esquerda (além do "II" no ícone e do chip) */
+  .gg.ws2 {
+    border-left: 3px solid var(--ws2);
+  }
+  .gg.ws1 {
+    border-left: 3px solid var(--ws1);
+  }
+
+  .gg-row {
+    display: grid;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .gg-head {
+    min-width: 0;
+  }
+  .gg-side {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    align-content: start;
+  }
+
+  /* ---------- gema principal (botão) */
+  .gg-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 56px;
+    padding: 6px 8px 6px 6px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  .gg-main:hover {
+    border-color: var(--border);
+    background: rgb(255 255 255 / 0.03);
+  }
+  .gg-main[aria-expanded='true'] {
+    border-color: color-mix(in srgb, var(--acc-skills) 60%, transparent);
+    background: color-mix(in srgb, var(--acc-skills) 8%, transparent);
+  }
+
+  .sk {
+    --ac: var(--none);
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border: 1px solid var(--border-2);
+    border-radius: 7px;
+    background: var(--bg);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.6),
+      0 2px 6px rgb(0 0 0 / 0.5);
+  }
+  .sk.no-skill {
+    border-radius: 50%;
+    border: 2px solid var(--ac);
+    background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--ac) 22%, #000), #070605 72%);
+  }
+  .sk-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+  }
+  .sk-gem {
+    position: absolute;
+    right: -8px;
+    bottom: -8px;
+    filter: drop-shadow(0 1px 2px #000) drop-shadow(0 0 1px #000);
+  }
+  .sk-ws {
+    position: absolute;
+    left: -7px;
+    top: -7px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 4px;
+    border-radius: 10px;
+    font: 700 0.7rem/19px var(--font-body);
+    text-align: center;
+    color: #08121a;
+    background: var(--ws2);
+    box-shadow: 0 0 0 2px var(--panel-2);
+  }
+  .sk-ws.ws-1 {
+    background: var(--ws1);
+  }
+
+  .gg-names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+  .gg-name {
+    font-size: 1.12rem;
+    line-height: 1.2;
+  }
+  .gg-names .pt {
+    line-height: 1.3;
+  }
+  /* seta indicando que abre */
+  .gg-more {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+    border-right: 2px solid var(--faint);
+    border-bottom: 2px solid var(--faint);
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.15s ease;
+  }
+  .gg-main:hover .gg-more {
+    border-color: var(--muted);
+  }
+  .gg-main[aria-expanded='true'] .gg-more {
+    border-color: var(--acc-skills);
+    transform: rotate(-135deg) translateY(-2px);
+  }
+
+  .gg-head {
+    display: grid;
+    gap: 4px;
+  }
+  .gg-head > :global(.chips) {
+    padding-left: 6px;
+  }
+
+  /* ---------- suportes encaixados (sockets ligados) */
+  /* cada item = ligação (traço à esquerda) + encaixe; ao quebrar a linha o traço continua no começo dela */
+  .socks {
+    --link: color-mix(in srgb, var(--bronze) 65%, transparent);
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 0;
+  }
+  /* "espinha" à esquerda ligando as linhas quando os suportes ficam embaixo da skill (└─ Rage I ─ Brink I) */
+  .socks::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -6px;
+    bottom: 21px;
+    width: 2px;
+    background: var(--link);
+  }
+  .compact .socks::before {
+    bottom: 20px;
+  }
+  .sock-li {
+    --ac: var(--none);
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+    padding-left: 16px;
+  }
+  .sock-li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 16px;
+    height: 2px;
+    margin-top: -1px;
+    background: var(--link);
   }
   .a-str {
     --ac: var(--str);
@@ -88,106 +320,153 @@ const isWs2 = setup.slotPt?.includes('Weapon Set 2');
   .a-int {
     --ac: var(--int);
   }
-  .a-none {
-    --ac: var(--none);
+
+  .sock {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    max-width: 100%;
+    padding: 3px 14px 3px 3px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.28);
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
   }
-  .main {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
+  .sock:hover {
+    border-color: color-mix(in srgb, var(--ac) 60%, var(--border));
+    background: rgb(255 255 255 / 0.04);
   }
-  .info {
-    min-width: 0;
-    flex: 1;
+  .sock[aria-expanded='true'] {
+    border-color: var(--acc-skills);
+    background: color-mix(in srgb, var(--acc-skills) 10%, transparent);
+    box-shadow: 0 0 0 1px var(--acc-skills) inset;
   }
-  .title {
+  .sock-art {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--ac);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--ac) 24%, #000), #070605 72%);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--ac) 30%, transparent);
+    overflow: hidden;
+  }
+  /* gema de skill encaixada (ex.: Whirling Assault dentro do Hollow Form) */
+  .sock.skill .sock-art {
+    border-radius: 7px;
+  }
+  .sock-name {
+    font-size: 0.93rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  .sock.skill .sock-name {
+    color: var(--ac);
+  }
+
+  .swap {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
     gap: 2px 8px;
-  }
-  .name {
-    font-weight: 650;
-    text-decoration: none;
-  }
-  .main .name {
-    font-size: 1.05rem;
-  }
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin: 4px 0 6px;
-  }
-  .summary {
-    color: var(--text-2);
     font-size: 0.9rem;
-  }
-  .note {
-    margin-top: 6px;
-    font-size: 0.9rem;
-    color: var(--text);
-    padding-left: 8px;
-    border-left: 2px solid var(--border-2);
-  }
-  .swap {
-    margin-top: 6px;
-    font-size: 0.86rem;
     color: var(--warn);
   }
-  .where {
-    margin-top: 6px;
-    font-size: 0.8rem;
-    color: var(--muted);
+  .swap-chip {
+    border-color: rgb(234 187 92 / 0.5);
+    color: var(--warn);
   }
-  .where span {
-    color: var(--bronze);
-  }
-  .supports {
-    list-style: none;
-    margin: 10px 0 0;
-    padding: 0 0 0 23px;
-    position: relative;
-  }
-  .supports::before {
-    content: '';
-    position: absolute;
-    left: 23px;
-    top: -10px;
-    bottom: 18px;
-    width: 2px;
-    background: linear-gradient(180deg, var(--ac), color-mix(in srgb, var(--ac) 30%, transparent));
-  }
-  .sup {
-    --ac: var(--none);
-    position: relative;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 6px 0 6px 18px;
-  }
-  .sup::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 20px;
-    width: 14px;
-    height: 2px;
-    background: var(--ac);
-  }
-  .sup-info {
-    min-width: 0;
-  }
-  .sup .name {
+  .note {
+    padding-left: 10px;
+    border-left: 2px solid var(--border-2);
     font-size: 0.93rem;
-  }
-  .sup-sum {
-    font-size: 0.82rem;
     color: var(--text-2);
-    margin-top: 1px;
+    max-width: 75ch;
   }
-  .where-inline {
-    color: var(--muted);
-    white-space: nowrap;
+
+  .gg-details {
+    padding: 0 12px;
+  }
+
+  /* ---------- compacto (modo jogando) */
+  .compact .gg-row {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  .compact .gg-main {
+    min-height: 48px;
+    gap: 12px;
+    padding: 4px 6px 4px 4px;
+  }
+  .compact .sk {
+    width: 42px;
+    height: 42px;
+  }
+  .compact .gg-name {
+    font-size: 1.04rem;
+  }
+  .compact .sock {
+    min-height: 40px;
+    gap: 7px;
+    padding-right: 12px;
+  }
+  .compact .sock-art {
+    width: 32px;
+    height: 32px;
+  }
+  .compact .sock-name {
+    font-size: 0.88rem;
+  }
+  .compact .note {
+    font-size: 0.9rem;
+  }
+
+  /* ---------- grupo largo: cabeça à esquerda, suportes + nota à direita */
+  @container gg (min-width: 760px) {
+    .socks::before {
+      display: none;
+    }
+    .gg-row {
+      grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+      column-gap: 18px;
+      align-items: start;
+    }
+    .gg-side {
+      padding-top: 6px;
+    }
+  }
+  /* ---------- grupo estreito (celular): sockets em coluna, ligados por linha vertical */
+  @container gg (max-width: 459px) {
+    .gg-details {
+      padding: 0 6px;
+    }
+    .gg:not(.compact) .socks {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding-left: 6px;
+    }
+    .gg:not(.compact) .sock-li {
+      padding-left: 0;
+    }
+    .gg:not(.compact) .socks::before {
+      display: none;
+    }
+    .gg:not(.compact) .sock-li::before {
+      display: none;
+    }
+    .gg:not(.compact) .sock-li + .sock-li::before {
+      display: block;
+      left: 21px;
+      top: -6px;
+      width: 2px;
+      height: 6px;
+      margin: 0;
+    }
   }
 </style>
