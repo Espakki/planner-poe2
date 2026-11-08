@@ -1,0 +1,106 @@
+---
+/**
+ * Faixa "Pra conseguir / craftar": o que não é slot do personagem (currency, runas, uncut gems, joias).
+ * Cada item abre o mesmo detalhe dos slots.
+ */
+import GameIcon from '../GameIcon.astro';
+import { SLOT_PT } from '../../lib/site.ts';
+import { hintText, rarityOf, type Inventory } from './inventory.ts';
+
+interface Props {
+  inv: Inventory;
+  uid: string;
+}
+const { inv, uid } = Astro.props;
+---
+
+{
+  (inv.extras.length > 0 || inv.extraNotes.length > 0) && (
+    <div class="xs">
+      <p class="panel-title">Pra conseguir / craftar</p>
+      {inv.extras.length > 0 && (
+        <ul class="xs-list">
+          {inv.extras.map((x) => (
+            <li>
+              <button type="button" class="xs-item" data-gear-open={x.key} aria-controls={`${uid}-d-${x.key}`}>
+                <GameIcon src={x.item.icon} name={x.item.nameEn} tone={rarityOf(x.item) === 'currency' ? 'currency' : 'none'} size={40} />
+                <span class="xs-text">
+                  <span class={`game-name xs-name c-${rarityOf(x.item)}`}>
+                    {x.item.nameEn}
+                    {x.pi.required && (
+                      <b class="xs-req" title="obrigatório">
+                        ◆
+                      </b>
+                    )}
+                  </span>
+                  <span class="xs-why">{x.pi.whyPt}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {inv.extraNotes.map((n) => (
+        <p class="xs-note">
+          <strong>{SLOT_PT[n.slot]}:</strong> {hintText(n)}
+          {n.notePt && <span class="muted"> — {n.notePt}</span>}
+        </p>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .xs {
+    margin-top: 16px;
+  }
+  .xs-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  }
+  .xs-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgb(0 0 0 / 0.18);
+    text-align: left;
+    cursor: pointer;
+  }
+  .xs-item:hover {
+    border-color: var(--border-2);
+  }
+  .xs-item[aria-current='true'] {
+    border-color: color-mix(in srgb, var(--bronze-hi) 70%, transparent);
+  }
+  .xs-text {
+    display: grid;
+    min-width: 0;
+  }
+  .c-normal {
+    color: var(--text);
+  }
+  .xs-req {
+    margin-left: 4px;
+    color: var(--warn);
+    font-size: 0.7em;
+    vertical-align: 0.15em;
+  }
+  .xs-why {
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
+  .xs-note {
+    margin-top: 8px;
+    color: var(--text-2);
+    font-size: 0.9rem;
+  }
+</style>

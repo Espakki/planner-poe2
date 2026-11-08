@@ -1,10 +1,18 @@
 ---
 /**
  * Conteúdo da caixa "Equipamento" de uma fase.
- * DONO: item UI-03 do backlog (inventário estilo PoE + detalhe do item). Hoje: lista de ItemCard + notas por slot.
+ * DONO: item UI-03 do backlog — inventário estilo PoE2 + detalhe do item. Padrão em docs/design/ui-03-inventario.md.
+ *
+ *   painel largo (≥ 760px):  [boneco + resumo por slot] | [detalhe do slot escolhido]
+ *   painel estreito:          boneco → resumo; tocar num slot abre o detalhe num bottom sheet (<dialog>)
+ *   embaixo:                  "Pra conseguir / craftar" (currency, runas, uncut gems — não vão no boneco)
  */
-import ItemCard from '../ItemCard.astro';
-import { SLOT_PT } from '../../lib/site.ts';
+import Inventory from '../gear/Inventory.astro';
+import Overview from '../gear/Overview.astro';
+import GroupDetail from '../gear/GroupDetail.astro';
+import ExtraStrip from '../gear/ExtraStrip.astro';
+import { buildInventory } from '../gear/inventory.ts';
+import { getEntities } from '../../lib/site.ts';
 import type { PhaseData } from '../../lib/schemas.ts';
 
 interface Props {
@@ -12,84 +20,192 @@ interface Props {
   compact?: boolean;
 }
 const { phase, compact = false } = Astro.props;
+const { items } = await getEntities();
+const inv = buildInventory(phase, items);
+const uid = `gear-${phase.id}`;
 ---
 
-<div class="gear-panel">
-  {
-    phase.items.length > 0 && (
-      <div class="stack">
-        {phase.items.map((it) => (
-          <ItemCard {...it} compact={compact} />
-        ))}
+<div class:list={['gear-panel', { compact }]} data-gear>
+  <div class="gp-main">
+    <div class="gp-left">
+      <Inventory inv={inv} uid={uid} />
+      <Overview inv={inv} uid={uid} />
+    </div>
+    <div class="gp-col" data-gear-col aria-live="polite">
+      {
+        inv.groups.map((g) => (
+          <GroupDetail
+            id={`${uid}-d-${g.def.key}`}
+            detailKey={g.def.key}
+            title={g.def.label}
+            primaries={g.primaries}
+            alts={g.alts}
+            notes={g.notes}
+            hidden={g.def.key !== inv.defaultKey}
+          />
+        ))
+      }
+      {
+        inv.extras.map((x) => (
+          <GroupDetail
+            id={`${uid}-d-${x.key}`}
+            detailKey={x.key}
+            title="Pra conseguir / craftar"
+            primaries={[x]}
+            hidden={x.key !== inv.defaultKey}
+          />
+        ))
+      }
+    </div>
+  </div>
+
+  <ExtraStrip inv={inv} uid={uid} />
+
+  <dialog class="sheet" data-gear-sheet aria-labelledby={`${uid}-sheet-t`}>
+    <div class="sheet-in">
+      <div class="sheet-bar">
+        <span class="sheet-grip" aria-hidden="true"></span>
+        <p class="sheet-title" id={`${uid}-sheet-t`} data-gear-sheet-title>Equipamento</p>
+        <form method="dialog">
+          <button type="submit" class="btn ghost sheet-x" aria-label="Fechar detalhe">✕</button>
+        </form>
       </div>
-    )
-  }
-  {
-    phase.gear.length > 0 && (
-      <>
-        <div class="panel-title notes-title">O que procurar por slot</div>
-        <dl class="gear">
-          {phase.gear.map((g) => (
-            <div class="gear-row">
-              <dt>{SLOT_PT[g.slot]}</dt>
-              <dd>
-                {g.basesEn.length > 0 && <p class="bases">{g.basesEn.join(' · ')}</p>}
-                <p>{g.priorityPt.join(' › ')}</p>
-                {g.notePt && <p class="gnote">{g.notePt}</p>}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </>
-    )
-  }
+      <div class="sheet-body" data-gear-sheet-body></div>
+    </div>
+  </dialog>
 </div>
 
+<script>
+  import { bindGear } from '../../scripts/gear.ts';
+  bindGear();
+</script>
+
 <style>
-  .stack {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
-    align-items: start;
+  .gear-panel {
+    container: gear / inline-size;
+    --cell-max: 52px;
   }
-  .notes-title {
-    margin-top: 16px;
+  .gear-panel.compact {
+    --cell-max: 44px;
   }
-  .gear {
-    margin: 0;
+  .gp-main {
     display: grid;
+    gap: 16px;
+  }
+  .gp-left {
+    min-width: 0;
+  }
+  /* a coluna da esquerda tem a largura do boneco; o resumo se ajusta a ela (não alarga a coluna) */
+  .gp-left > :global(.ov) {
+    contain: inline-size;
+  }
+  /* detalhe: no celular mora no bottom sheet; sem JS fica embaixo do resumo */
+  .gp-col {
+    display: none;
+    container-type: inline-size;
+    min-width: 0;
+  }
+  .gear-panel:not([data-gear-ready]) .gp-col {
+    display: grid;
+    gap: 18px;
+  }
+  @container gear (min-width: 760px) {
+    .gp-main {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+    }
+    .gp-col,
+    .gear-panel:not([data-gear-ready]) .gp-col {
+      display: block;
+      position: sticky;
+      top: 64px;
+      max-height: calc(100dvh - 80px);
+      overflow-y: auto;
+      padding: 12px 14px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: rgb(0 0 0 / 0.16);
+      scrollbar-width: thin;
+    }
+    .compact .gp-col {
+      top: 116px;
+      max-height: calc(100dvh - 130px);
+    }
+  }
+
+  /* bottom sheet */
+  .sheet {
+    width: 100%;
+    max-width: 640px;
+    max-height: min(88dvh, 900px);
+    margin: auto auto 0;
+    padding: 0;
+    border: 1px solid var(--border-2);
+    border-bottom: 0;
+    border-top: 2px solid var(--acc-gear);
+    border-radius: 14px 14px 0 0;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel) 160px);
+    color: var(--text);
+    box-shadow: 0 -12px 40px rgb(0 0 0 / 0.6);
+  }
+  .sheet[open] {
+    display: flex;
+    animation: sheet-up 0.18s ease-out;
+  }
+  .sheet::backdrop {
+    background: rgb(0 0 0 / 0.62);
+  }
+  .sheet-in {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+  }
+  .sheet-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
     gap: 8px;
+    padding: 12px 10px 8px 16px;
+    border-bottom: 1px solid var(--border);
   }
-  .gear-row {
-    display: grid;
-    grid-template-columns: 90px 1fr;
-    gap: 10px;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: rgb(0 0 0 / 0.18);
+  .sheet-grip {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 2px;
+    background: var(--border-2);
   }
-  .gear dt {
-    font-weight: 700;
+  .sheet-title {
+    flex: 1;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
     color: var(--acc-gear);
+    letter-spacing: 0.04em;
   }
-  .gear dd {
-    margin: 0;
-    color: var(--text-2);
+  .sheet-x {
+    min-width: 44px;
+    min-height: 40px;
+    padding: 0;
+    font-family: var(--font-body);
   }
-  .bases {
-    color: var(--normal);
-    font-size: 0.88rem;
+  .sheet-body {
+    container-type: inline-size;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
   }
-  .gnote {
-    color: var(--muted);
-    font-size: 0.86rem;
-    margin-top: 2px;
+  /* o título do grupo já está na barra do sheet */
+  .sheet-body :global(.gd-head h3) {
+    display: none;
   }
-  @media (max-width: 560px) {
-    .gear-row {
-      grid-template-columns: 1fr;
-      gap: 2px;
+  @keyframes sheet-up {
+    from {
+      transform: translateY(24px);
+      opacity: 0.4;
     }
   }
 </style>
