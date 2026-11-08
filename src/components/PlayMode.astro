@@ -46,7 +46,22 @@ const treeMeta = (t: (typeof trees)[number], i: number) => {
       </select>
     </label>
     <button type="button" class="btn ghost nav" data-step="1" aria-label="Próxima fase">›</button>
-    <button type="button" class="btn ghost wake" data-wake aria-pressed="false" title="Impede a tela de apagar (celular)">☀ Tela ligada</button>
+    {
+      trees.length > 0 && (
+        <button type="button" class="btn tree-btn" data-goto-tree aria-label="Abrir a árvore desta fase" title="Árvore desta fase">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <circle cx="6" cy="6" r="2.4" fill="currentColor" />
+            <circle cx="18" cy="8" r="2.4" fill="currentColor" />
+            <circle cx="12" cy="18" r="2.4" fill="currentColor" />
+            <path d="M6 6 18 8M6 6l6 12M18 8l-6 10" stroke="currentColor" stroke-width="1.6" fill="none" />
+          </svg>
+          <span class="lbl">Árvore</span>
+        </button>
+      )
+    }
+    <button type="button" class="btn ghost wake" data-wake aria-pressed="false" aria-label="Manter a tela ligada" title="Impede a tela de apagar (celular)">
+      ☀<span class="lbl"> Tela ligada</span>
+    </button>
   </div>
 
   {
@@ -120,6 +135,19 @@ const treeMeta = (t: (typeof trees)[number], i: number) => {
         }
       });
     }
+    // Botão "Árvore" da barra: abre a caixa da árvore e vai até ela; no celular já entra em tela cheia
+    root.querySelector<HTMLButtonElement>('[data-goto-tree]')?.addEventListener('click', () => {
+      const box = root.querySelector<HTMLDetailsElement>('details[data-box="tree-play"]');
+      if (!box) return;
+      box.open = true;
+      if (window.matchMedia('(max-width: 640px)').matches) {
+        const full = box.querySelector<HTMLButtonElement>('[data-fullscreen]');
+        if (full && full.getAttribute('aria-pressed') !== 'true') full.click();
+      } else {
+        box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
     // "Estou aqui" dentro da fase só confirma a fase
     root.addEventListener('click', (e) => {
       const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-set-phase]');
@@ -199,6 +227,12 @@ const treeMeta = (t: (typeof trees)[number], i: number) => {
   .wake[aria-pressed='true'] {
     color: var(--new);
   }
+  .tree-btn {
+    min-height: 40px;
+    padding: 0 12px;
+    color: var(--acc-tree);
+    border-color: color-mix(in srgb, var(--acc-tree) 45%, var(--border-2));
+  }
   .ph :global(.phase) {
     border-top: 0;
     padding-top: 8px;
@@ -207,9 +241,29 @@ const treeMeta = (t: (typeof trees)[number], i: number) => {
     margin-bottom: 24px;
   }
   @media (max-width: 560px) {
+    .picker {
+      gap: 4px;
+    }
     .wake {
-      padding: 0 8px;
-      font-size: 0.72rem;
+      width: 40px;
+      min-height: 40px;
+      padding: 0;
+      font-family: var(--font-body);
+    }
+    .wake .lbl {
+      display: none;
+    }
+    .tree-btn {
+      padding: 0 10px;
+    }
+  }
+  @media (max-width: 380px) {
+    .tree-btn .lbl {
+      display: none;
+    }
+    .tree-btn {
+      width: 40px;
+      padding: 0;
     }
   }
 </style>
