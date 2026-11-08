@@ -1,0 +1,31 @@
+{
+  "name": "plan-poe",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Site pessoal para guardar e seguir builds de Path of Exile 2 (PT-BR).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "node scripts/check.ts",
+    "fetch-icons": "node scripts/fetch-icons.ts",
+    "fetch-names": "node scripts/fetch-names.ts",
+    "update-tree": "node scripts/update-tree.ts",
+    "sync-gems": "node scripts/sync-gems.ts",
+    "new-patch": "node scripts/new-patch.ts",
+    "validate": "npm run check && astro check && astro build"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/cinzel": "^5.3.0",
+    "astro": "^7.4.7",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^26.6.6",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3"
+  }
+}

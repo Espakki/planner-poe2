@@ -1,0 +1,9 @@
+{
+  "repo": "PathOfBuildingCommunity/PathOfBuilding-PoE2",
+  "path": "src/TreeData/0_5/tree.json",
+  "commit": "d1dc9154d811a1f7b5468ea7faa6c850934d7aee",
+  "commitDate": "2026-09-29T08:59:43Z",
+  "fetchedAt": "2026-11-08T02:46:54.384Z",
+  "nodes": 4531,
+  "edges": 5147
+}

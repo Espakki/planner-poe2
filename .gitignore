@@ -1,0 +1,20 @@
+# build
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# caches dos scripts (ícones e nomes ficam versionados em public/ e nas entities)
+.cache/
+
+# logs
+npm-debug.log*
+*.log
+!data/logs/*.log
+
+# sistema
+.DS_Store
+Thumbs.db
+.env
+.env.*
