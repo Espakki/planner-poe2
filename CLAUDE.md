@@ -8,6 +8,30 @@ No homelab (notebook Ubuntu com Dockge) a stack fica em `~/homelab/planner-poe2`
 via `.env` (`PLANNER_PORT=8090` — 8080/8081/8089 já são de outros serviços). Atualizar lá: `git pull && docker compose up -d --build`
 (ou "Deploy" no Dockge).
 
+## Organização (leia primeiro)
+
+| arquivo | pra quê |
+|---|---|
+| `docs/backlog.md` | o que fazer agora/depois, com ID, critério de aceite e **arquivos que cada item possui** |
+| `docs/design-system.md` | tokens, fontes, cores por seção, componentes base, estrutura da fase |
+| `docs/decisions.md` | por que as coisas são como são (registro de decisões) |
+| `.claude/agents/` | subagentes do projeto (abaixo) |
+
+**Subagentes** (`.claude/agents/`):
+- `pesquisador-poe` — confere dado de jogo com fonte (PoB, wiki, poe2db, guias). Não edita.
+- `editor-de-build` — edita YAML/entities seguindo os schemas; roda `check`.
+- `dev-frontend` — componentes/CSS/árvore seguindo o design system; testa desktop e 375px.
+- `qa-site` — testa e relata (validate, páginas, árvore, jogando, mobile). Não corrige.
+- `ops-homelab` — atualiza/diagnostica o site no notebook via SSH; não mexe em outros serviços sem ok.
+
+**Fluxo de trabalho**
+1. Pegar um item do `docs/backlog.md`. Item grande e independente → **sessão própria** num branch `<id>-<nome>` (worktree),
+   marcado `[~]` no backlog com o nome da sessão. Duas sessões nunca editam os mesmos arquivos.
+2. Na sessão: implementar, `npm run validate`, conferir no navegador, commit(s) no branch. Sem push e sem homelab.
+3. Sessão principal: revisar o branch, juntar na `main` **só com ok do dono**, marcar `[x]`, push.
+4. Homelab: `ops-homelab` (git pull + compose) — ver seção abaixo.
+5. Decisão nova → `docs/decisions.md`. Padrão visual novo → `docs/design-system.md`.
+
 ## Regras de conteúdo (importantes)
 
 - **Nomes de jogo sempre em inglês** (`nameEn`) — itens, gemas, passivas, quests. O nome PT-BR (`namePtBr`) é opcional e
@@ -32,8 +56,11 @@ src/lib/pob.ts               decodifica código PoB (base64url → zlib → XML)
 src/lib/tree-build.ts        tree.json do PoB → formato compacto (posições, arcos, ascendência no centro)
 src/scripts/tree-viewer.ts   árvore interativa (canvas 2D): zoom/pan/pinça, tooltip, busca, diff, weapon sets
 src/scripts/state.ts         fase atual + checklist no localStorage (sempre com try/catch)
+src/scripts/boxes.ts         lembra quais caixas das fases ficaram abertas/fechadas
 src/components/              BuildPage, PhaseSection, GemGroup, ItemCard, TreeViewer, PlayMode...
-src/pages/                   / · /builds/<slug>/ · /builds/<slug>/<patch>/ · .../jogando/ · /lab/arvore/
+src/components/phase/        conteúdo das caixas da fase: SkillsPanel, GearPanel, TreePanel (cada um com dono no backlog)
+src/pages/                   / · /builds/<slug>/ · /builds/<slug>/<patch>/ · .../jogando/ · /lab/arvore/ · /lab/tipografia/
+docs/                        backlog, design system, decisões
 public/tree/<versão>.json    árvore compacta (gerada) · public/icons/ ícones webp (gerados)
 data/tree/<versão>/          node-index.json (nome, stringId, ícone da wiki) + meta.json (commit de origem)
 data/pob/gems.json           base de gemas do PoB (gerada) · data/logs/ logs dos scripts
@@ -48,7 +75,7 @@ data/pob/gems.json           base de gemas do PoB (gerada) · data/logs/ logs do
 | `npm run update-tree [-- --version 0_6]` | baixa tree.json do PathOfBuilding-PoE2 (branch dev) e gera public/tree + data/tree |
 | `npm run sync-gems` | cria entities/gems pra toda gema referenciada nas builds (dados do PoB: atributo/cor, tier, tags, descrição) |
 | `npm run sync-gems -- --refresh` | atualiza campos automáticos das gemas existentes (mantém summaryPt/namePtBr) |
-| `npm run fetch-icons [-- --force]` | baixa ícones da poe2wiki → public/icons/*.webp (só o que falta; log em data/logs) |
+| `npm run fetch-icons [-- --force]` | baixa ícones da poe2wiki → public/icons/*.webp (itens no tamanho nativo + `sizes.json`; ícones de habilidade em `icons/skills/`; log em data/logs) |
 | `npm run fetch-names [-- --force]` | preenche namePtBr via poe2db.tw/pt (não toca nos `manual`) |
 | `npm run new-patch -- --build <slug> --from 0.5.5 --to 0.6 [--tree 0_6]` | cria a versão nova da build e marca a antiga como outdated |
 | `npm run validate` | check + astro check + build |

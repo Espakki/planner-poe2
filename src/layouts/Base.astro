@@ -1,7 +1,19 @@
 ---
-import '@fontsource/cinzel/600.css';
-import '@fontsource/cinzel/700.css';
-import '@fontsource-variable/inter';
+// Fontes de todos os temas: só o @font-face entra no CSS; o navegador baixa apenas as que o tema ativo usa.
+import '@fontsource/alegreya-sc/500.css';
+import '@fontsource/alegreya-sc/700.css';
+import '@fontsource/alegreya-sans/400.css';
+import '@fontsource/alegreya-sans/400-italic.css';
+import '@fontsource/alegreya-sans/500.css';
+import '@fontsource/alegreya-sans/700.css';
+import '@fontsource/im-fell-english-sc/400.css';
+import '@fontsource/source-sans-3/400.css';
+import '@fontsource/source-sans-3/600.css';
+import '@fontsource/cormorant-sc/600.css';
+import '@fontsource/cormorant-sc/700.css';
+import '@fontsource/spectral/400.css';
+import '@fontsource/spectral/600.css';
+import '@fontsource/grenze-gotisch/700.css';
 import '../styles/global.css';
 import { url } from '../lib/site.ts';
 
@@ -23,6 +35,13 @@ const { title, description = 'Builds de Path of Exile 2 em PT-BR, fase a fase.',
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
     <title>{title}</title>
+    <script is:inline>
+      // tema de fonte escolhido em /lab/tipografia (antes do primeiro paint)
+      try {
+        var f = localStorage.getItem('plan-poe:fonts');
+        if (f) document.documentElement.dataset.fonts = f;
+      } catch (e) {}
+    </script>
   </head>
   <body class={compact ? 'is-compact' : ''}>
     <header class="site-header">
@@ -77,8 +96,9 @@ const { title, description = 'Builds de Path of Exile 2 em PT-BR, fase a fase.',
     color: var(--bronze-hi);
     text-decoration: none;
     font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-weight: var(--display-weight);
+    font-size: 1.15rem;
+    letter-spacing: 0.04em;
     white-space: nowrap;
   }
   main {

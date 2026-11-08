@@ -6,14 +6,20 @@ interface Props {
   group: string;
   items: string[];
   title?: string;
+  /** Sem título/contador (quando o contador já está no cabeçalho da caixa). */
+  bare?: boolean;
 }
-const { group, items, title = 'Checklist' } = Astro.props;
+const { group, items, title = 'Checklist', bare = false } = Astro.props;
 ---
 
 <div class="checklist">
-  <div class="panel-title">
-    {title} <span class="count" data-check-count={group}>0/{items.length}</span>
-  </div>
+  {
+    !bare && (
+      <div class="panel-title">
+        {title} <span class="count" data-check-count={group}>0/{items.length}</span>
+      </div>
+    )
+  }
   <ul>
     {
       items.map((text) => {

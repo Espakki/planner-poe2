@@ -1,0 +1,44 @@
+---
+/**
+ * Conteúdo da caixa "Skills" de uma fase.
+ * DONO: item UI-02 do backlog (skills estilo jogo). Hoje renderiza os GemGroup atuais.
+ */
+import GemGroup from '../GemGroup.astro';
+import type { PhaseData } from '../../lib/schemas.ts';
+
+interface Props {
+  phase: PhaseData;
+  compact?: boolean;
+}
+const { phase, compact = false } = Astro.props;
+---
+
+<div class="skills-panel">
+  <div class="stack">
+    {phase.skills.map((s) => <GemGroup setup={s} compact={compact} />)}
+  </div>
+  {
+    phase.spirit.length > 0 && (
+      <>
+        <div class="panel-title spirit-title">Spirit / auras</div>
+        <div class="stack">
+          {phase.spirit.map((s) => (
+            <GemGroup setup={s} compact={compact} />
+          ))}
+        </div>
+      </>
+    )
+  }
+</div>
+
+<style>
+  .stack {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    align-items: start;
+  }
+  .spirit-title {
+    margin-top: 16px;
+  }
+</style>

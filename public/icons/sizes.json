@@ -1,0 +1,110 @@
+{
+  "items/amor-mandragora": {
+    "w": 212,
+    "h": 212,
+    "cw": 2,
+    "ch": 2
+  },
+  "items/bramblejack": {
+    "w": 212,
+    "h": 316,
+    "cw": 2,
+    "ch": 3
+  },
+  "items/duality": {
+    "w": 108,
+    "h": 420,
+    "cw": 1,
+    "ch": 4
+  },
+  "items/farruls-rune-of-the-hunt": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/goldrim": {
+    "w": 212,
+    "h": 212,
+    "cw": 2,
+    "ch": 2
+  },
+  "items/greater-iron-rune": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/hyssegs-claw": {
+    "w": 212,
+    "h": 212,
+    "cw": 2,
+    "ch": 2
+  },
+  "items/lesser-jewellers-orb": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/lochtonial-caress": {
+    "w": 212,
+    "h": 212,
+    "cw": 2,
+    "ch": 2
+  },
+  "items/nazirs-judgement": {
+    "w": 108,
+    "h": 420,
+    "cw": 1,
+    "ch": 4
+  },
+  "items/northpaw": {
+    "w": 212,
+    "h": 212,
+    "cw": 2,
+    "ch": 2
+  },
+  "items/sapphire-charm": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/topaz-charm": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/transcendent-mana-flask": {
+    "w": 105,
+    "h": 212,
+    "cw": 1,
+    "ch": 2
+  },
+  "items/uncut-skill-gem": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/uncut-spirit-gem": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/uncut-support-gem": {
+    "w": 108,
+    "h": 108,
+    "cw": 1,
+    "ch": 1
+  },
+  "items/wanderlust": {
+    "w": 212,
+    "h": 212,
+    "cw": 2,
+    "ch": 2
+  }
+}

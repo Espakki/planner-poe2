@@ -49,6 +49,7 @@ const fullUrl = url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}`)
 
 <script>
   import { bindChecklists, loadState, update } from '../scripts/state.ts';
+  import { bindBoxes } from '../scripts/boxes.ts';
 
   const root = document.querySelector<HTMLElement>('[data-play]');
   if (root) {
@@ -56,6 +57,7 @@ const fullUrl = url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}`)
     const select = root.querySelector<HTMLSelectElement>('[data-phase-select]')!;
     const ids = [...select.options].map((o) => o.value);
     bindChecklists(build, root);
+    bindBoxes(root);
 
     const show = (id: string, save = true) => {
       if (!ids.includes(id)) id = ids[0];

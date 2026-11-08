@@ -17,23 +17,46 @@ export function url(p = ''): string {
   return `${base}/${clean}`;
 }
 
-export type Entity<T> = T & { id: string; icon?: string };
+export type Entity<T> = T & { id: string; icon?: string; skillIcon?: string; art?: ItemArtSize };
+
+export interface ItemArtSize {
+  /** px da arte (nativa do inventário do jogo, ~106px por célula) */
+  w: number;
+  h: number;
+  /** células do inventário (ex.: luva 2×2, cajado 1×4) */
+  cw: number;
+  ch: number;
+}
 
 let iconIndex: Record<string, string> | null = null;
 let nodeIconIndex: Record<string, string> | null = null;
+let sizeIndex: Record<string, ItemArtSize> | null = null;
+function readJsonIfExists<T>(file: string, fallback: T): T {
+  return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as T) : fallback;
+}
 function icons() {
   if (!iconIndex) {
-    const f = path.join(ROOT, 'public', 'icons', 'index.json');
-    iconIndex = existsSync(f) ? (JSON.parse(readFileSync(f, 'utf8')) as Record<string, string>) : {};
-    const n = path.join(ROOT, 'public', 'icons', 'nodes.json');
-    nodeIconIndex = existsSync(n) ? (JSON.parse(readFileSync(n, 'utf8')) as Record<string, string>) : {};
+    const dir = path.join(ROOT, 'public', 'icons');
+    iconIndex = readJsonIfExists(path.join(dir, 'index.json'), {});
+    nodeIconIndex = readJsonIfExists(path.join(dir, 'nodes.json'), {});
+    sizeIndex = readJsonIfExists(path.join(dir, 'sizes.json'), {});
   }
-  return { iconIndex: iconIndex!, nodeIconIndex: nodeIconIndex! };
+  return { iconIndex: iconIndex!, nodeIconIndex: nodeIconIndex!, sizeIndex: sizeIndex! };
 }
 
 export function iconFor(key: string): string | undefined {
   const rel = icons().iconIndex[key];
   return rel ? url(rel) : undefined;
+}
+
+/** Ícone da HABILIDADE de uma gema (o da barra de skills), quando existe. */
+export function skillIconFor(gemId: string): string | undefined {
+  return iconFor(`skills/${gemId}`);
+}
+
+/** Tamanho da arte e células de inventário de um item (de public/icons/sizes.json). */
+export function itemArtSize(itemId: string): ItemArtSize | undefined {
+  return icons().sizeIndex[`items/${itemId}`];
 }
 
 export function nodeIcon(nodeId: number): string | undefined {
@@ -54,8 +77,8 @@ export async function getEntities(): Promise<Entities> {
   if (entitiesCache) return entitiesCache;
   const [items, gems, passives] = await Promise.all([getCollection('items'), getCollection('gems'), getCollection('passives')]);
   entitiesCache = {
-    items: new Map(items.map((e) => [e.id, { ...e.data, id: e.id, icon: iconFor(`items/${e.id}`) }])),
-    gems: new Map(gems.map((e) => [e.id, { ...e.data, id: e.id, icon: iconFor(`gems/${e.id}`) }])),
+    items: new Map(items.map((e) => [e.id, { ...e.data, id: e.id, icon: iconFor(`items/${e.id}`), art: itemArtSize(e.id) }])),
+    gems: new Map(gems.map((e) => [e.id, { ...e.data, id: e.id, icon: iconFor(`gems/${e.id}`), skillIcon: skillIconFor(e.id) }])),
     passives: new Map(passives.map((e) => [e.id, { ...e.data, id: e.id, icon: iconFor(`passives/${e.id}`) }])),
   };
   return entitiesCache;

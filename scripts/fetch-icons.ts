@@ -30,7 +30,12 @@ interface Target {
   key: string; // "items/lochtonial-caress" ou "nodes/Harrier"
   out: string; // caminho relativo a public/
   candidates: string[]; // nomes de arquivo na wiki, em ordem
+  /** Itens ficam no tamanho nativo do inventário do jogo (≈106px por célula); o resto vai pra 128px. */
+  native?: boolean;
 }
+
+/** Tamanho de uma célula do inventário na arte da wiki (2×2 = 212px). */
+const CELL_PX = 106;
 
 const norm = (f: string) => f.replace(/^File:/i, '').replace(/_/g, ' ').trim();
 
@@ -91,9 +96,15 @@ async function main() {
           cands.push(`${name} skill icon.png`);
           const g = grantIcon.get(e.data.nameEn);
           if (g) cands.push(g);
+          // ícone da HABILIDADE (o que aparece na barra de skills quando a gema está equipada)
+          if (e.data.kind !== 'support') {
+            const sk = [`${name} skill icon.png`];
+            if (g) sk.push(g);
+            targets.push({ key: `skills/${e.id}`, out: `icons/skills/${e.id}.webp`, candidates: sk });
+          }
         }
       }
-      targets.push({ key: `${type}/${e.id}`, out: `icons/${type}/${e.id}.webp`, candidates: cands });
+      targets.push({ key: `${type}/${e.id}`, out: `icons/${type}/${e.id}.webp`, candidates: cands, native: type === 'items' });
     }
   }
 
@@ -134,7 +145,14 @@ async function main() {
     nodeIconIndex[String(id)] = `nodes/${slug}`;
   }
 
-  const todo = targets.filter((t) => force || !existsSync(path.join(ROOT, 'public', t.out)));
+  // tamanho dos itens (px e células do inventário) — usado no inventário do personagem
+  const sizesFile = path.join(P.icons, 'sizes.json');
+  const sizes: Record<string, { w: number; h: number; cw: number; ch: number }> = existsSync(sizesFile)
+    ? await readJson(sizesFile)
+    : {};
+  // item sem tamanho registrado (baixado pela versão antiga do script, em 128px) → baixa de novo
+  const needsNative = (t: Target) => t.native && !sizes[t.key];
+  const todo = targets.filter((t) => force || needsNative(t) || !existsSync(path.join(ROOT, 'public', t.out)));
   console.log(c.bold(`${targets.length} ícones conhecidos, ${todo.length} pra baixar`));
 
   const urls = todo.length ? await resolveUrls(todo.flatMap((t) => t.candidates)) : new Map<string, string>();
@@ -155,7 +173,19 @@ async function main() {
     const buf = Buffer.from(await res.arrayBuffer());
     const file = path.join(ROOT, 'public', t.out);
     await mkdir(path.dirname(file), { recursive: true });
-    await sharp(buf).resize(128, 128, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 88 }).toFile(file);
+    const img = sharp(buf);
+    const resized = t.native
+      ? img.resize({ height: 424, withoutEnlargement: true })
+      : img.resize(128, 128, { fit: 'inside', withoutEnlargement: true });
+    const info = await resized.webp({ quality: 90 }).toFile(file);
+    if (t.native) {
+      sizes[t.key] = {
+        w: info.width,
+        h: info.height,
+        cw: Math.max(1, Math.round(info.width / CELL_PX)),
+        ch: Math.max(1, Math.round(info.height / CELL_PX)),
+      };
+    }
     index[t.key] = t.out;
     ok++;
     process.stdout.write(c.green('.'));
@@ -166,6 +196,7 @@ async function main() {
 
   await writeJson(indexFile, Object.fromEntries(Object.entries(index).sort()));
   await writeJson(path.join(P.icons, 'nodes.json'), nodeIconIndex);
+  await writeJson(sizesFile, Object.fromEntries(Object.entries(sizes).sort()));
   await mkdir(P.logs, { recursive: true });
   await writeFile(
     path.join(P.logs, 'fetch-icons.log'),

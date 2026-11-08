@@ -1,0 +1,44 @@
+---
+/** Conteúdo da caixa "Árvore & Ascendência": passo de ascendência + resumo da árvore da fase. */
+import AscendancyStep from '../AscendancyStep.astro';
+import TreeSummary from '../TreeSummary.astro';
+import type { PhaseData } from '../../lib/schemas.ts';
+import type { ResolvedPhaseTree } from '../../lib/build-tree.ts';
+
+interface Props {
+  phase: PhaseData;
+  tree?: ResolvedPhaseTree;
+  compact?: boolean;
+  /** Mostra o botão que leva pra árvore interativa da página (#arvore). */
+  showTreeLink?: boolean;
+}
+const { phase, tree, compact = false, showTreeLink = true } = Astro.props;
+---
+
+<div class="tree-panel">
+  {phase.ascendancy && <AscendancyStep step={phase.ascendancy} compact={compact} />}
+  {
+    tree && (
+      <div class="sum">
+        <TreeSummary tree={tree} notesPt={phase.treeNotesPt} compact={compact} />
+        {showTreeLink && (
+          <a class="btn ghost" href="#arvore" data-show-tree={phase.id}>
+            Ver na árvore interativa
+          </a>
+        )}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .tree-panel {
+    display: grid;
+    gap: 14px;
+  }
+  .sum {
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+  }
+</style>

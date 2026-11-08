@@ -299,11 +299,13 @@ const pobEntries = Object.entries(m.pob);
 
 <script>
   import { bindChecklists, loadState, update } from '../scripts/state.ts';
+  import { bindBoxes } from '../scripts/boxes.ts';
 
   const root = document.querySelector<HTMLElement>('[data-build]');
   if (root) {
     const build = root.dataset.build!;
     bindChecklists(build, root);
+    bindBoxes(root);
 
     const paint = () => {
       const { phase } = loadState(build);

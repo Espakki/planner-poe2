@@ -1,0 +1,185 @@
+---
+import Base from '../../layouts/Base.astro';
+import { url } from '../../lib/site.ts';
+
+const themes = [
+  {
+    id: 'grimorio',
+    name: 'Grimório',
+    desc: 'Alegreya SC + Alegreya Sans. Versaletes caligráficos (a mais próxima do Fontin do jogo) com um corpo humanista bem legível.',
+    display: "'Alegreya SC'",
+    body: "'Alegreya Sans'",
+    weight: 700,
+  },
+  {
+    id: 'gravura',
+    name: 'Gravura',
+    desc: 'IM Fell English SC + Source Sans 3. Títulos de livro antigo impresso (pegada do PoE 1), corpo neutro e firme.',
+    display: "'IM Fell English SC'",
+    body: "'Source Sans 3'",
+    weight: 400,
+  },
+  {
+    id: 'pergaminho',
+    name: 'Pergaminho',
+    desc: 'Cormorant SC + Spectral. Mais elegante, tudo serifado — bonito, mas o corpo cansa mais em tela pequena.',
+    display: "'Cormorant SC'",
+    body: "'Spectral'",
+    weight: 700,
+  },
+  {
+    id: 'gotico',
+    name: 'Gótico',
+    desc: 'Grenze Gotisch nos títulos + Alegreya Sans no corpo. Mais "dark", títulos fortes; nomes de item em Alegreya SC.',
+    display: "'Grenze Gotisch'",
+    body: "'Alegreya Sans'",
+    weight: 700,
+  },
+];
+---
+
+<Base title="Laboratório · tipografia">
+  <div class="wrap lab">
+    <h1>Tipografia</h1>
+    <p class="muted">
+      Escolha uma combinação — ela passa a valer no site inteiro neste navegador (fica salva). O padrão é <strong>Grimório</strong>.
+      Abra a <a href={url('builds/monk-hollow-form/')}>página da build</a> depois pra ver no contexto.
+    </p>
+
+    <div class="grid">
+      {
+        themes.map((t) => (
+          <article class="panel opt" style={`--d:${t.display};--b:${t.body};--w:${t.weight}`} data-theme={t.id}>
+            <header>
+              <h2 class="d">{t.name}</h2>
+              <button type="button" class="btn" data-use={t.id} aria-pressed="false">
+                Usar esta
+              </button>
+            </header>
+            <p class="desc">{t.desc}</p>
+            <div class="sample">
+              <p class="kicker">Ato 4 · Nível 38–45</p>
+              <h3 class="d big">Troca pro Hollow Form + Whirling Assault</h3>
+              <p class="b">
+                No 41 libera o Whirling Assault. Ele entra dentro do Hollow Form e os clones giram por você — com Lochtonial
+                Caress, os clones devolvem Power Charges.
+              </p>
+              <p class="items">
+                <span class="i unique">Lochtonial Caress</span> <span class="pt b">Carícia Lochtonial</span>
+              </p>
+              <p class="items">
+                <span class="i gem">Whirling Assault</span> <span class="pt b">Ataque Giratório</span> ·{' '}
+                <span class="i sup">Heightened Charges</span>
+              </p>
+              <p class="b small muted">0123456789 · +25% to all Elemental Resistances · Nível 41</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</Base>
+
+<script>
+  const apply = (id: string | null) => {
+    if (id && id !== 'grimorio') document.documentElement.dataset.fonts = id;
+    else delete document.documentElement.dataset.fonts;
+    try {
+      if (id && id !== 'grimorio') localStorage.setItem('plan-poe:fonts', id);
+      else localStorage.removeItem('plan-poe:fonts');
+    } catch {
+      /* sem storage */
+    }
+    for (const b of document.querySelectorAll<HTMLButtonElement>('[data-use]')) {
+      b.setAttribute('aria-pressed', String(b.dataset.use === (id ?? 'grimorio')));
+    }
+  };
+  let current: string | null = null;
+  try {
+    current = localStorage.getItem('plan-poe:fonts');
+  } catch {
+    /* */
+  }
+  apply(current ?? 'grimorio');
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-use]')) {
+    b.addEventListener('click', () => apply(b.dataset.use!));
+  }
+</script>
+
+<style>
+  .lab {
+    padding-top: 24px;
+    display: grid;
+    gap: 14px;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
+    gap: 16px;
+  }
+  .opt {
+    padding: 16px;
+    display: grid;
+    gap: 10px;
+  }
+  .opt header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .d {
+    font-family: var(--d), serif;
+    font-weight: var(--w);
+  }
+  .b {
+    font-family: var(--b), sans-serif;
+  }
+  .opt h2 {
+    font-size: 1.6rem;
+  }
+  .desc {
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+  .sample {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--inset);
+    display: grid;
+    gap: 8px;
+  }
+  .kicker {
+    font-family: var(--b), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.82rem;
+    color: var(--bronze);
+  }
+  .big {
+    font-size: 1.6rem;
+    color: var(--bronze-hi);
+  }
+  .sample .b {
+    font-size: 1.05rem;
+  }
+  .items .i {
+    font-family: var(--d), serif;
+    font-weight: var(--w);
+    font-size: 1.15rem;
+  }
+  .unique {
+    color: var(--unique);
+  }
+  .gem {
+    color: var(--dex);
+  }
+  .sup {
+    color: var(--dex);
+    font-size: 1rem !important;
+  }
+</style>

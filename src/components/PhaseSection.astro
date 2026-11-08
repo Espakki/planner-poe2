@@ -1,10 +1,14 @@
 ---
-import GemGroup from './GemGroup.astro';
-import ItemCard from './ItemCard.astro';
-import AscendancyStep from './AscendancyStep.astro';
-import TreeSummary from './TreeSummary.astro';
+/**
+ * Uma fase da build. Layout:
+ *   cabeçalho (nº, níveis, ato, título, ações) → resumo + objetivos →
+ *   caixas que abrem/fecham: Skills · Equipamento · Árvore & Ascendência · Como jogar · Checklist
+ * O conteúdo de cada caixa mora em components/phase/* (cada um com dono no backlog).
+ */
+import SkillsPanel from './phase/SkillsPanel.astro';
+import GearPanel from './phase/GearPanel.astro';
+import TreePanel from './phase/TreePanel.astro';
 import Checklist from './Checklist.astro';
-import { SLOT_PT } from '../lib/site.ts';
 import type { BuildData, PhaseData } from '../lib/schemas.ts';
 import type { ResolvedPhaseTree } from '../lib/build-tree.ts';
 
@@ -19,191 +23,206 @@ interface Props {
 const { phase, index, build, tree, compact = false } = Astro.props;
 const source = build.meta.sources.find((s) => s.id === phase.source);
 const filter = build.filter.find((f) => f.id === phase.filter);
+const skillCount = phase.skills.length;
+const spiritCount = phase.spirit.length;
+const reqItems = phase.items.filter((i) => i.required).length;
+const hasPlay = phase.howToPlayPt.length > 0 || phase.bossingPt.length > 0;
 ---
 
 <section class:list={['phase', { compact }]} id={`fase-${phase.id}`} data-phase-section={phase.id}>
   <header class="ph-head">
-    <div class="ph-badge">
+    <div class="ph-badge" aria-hidden="true">
       <span class="num">{index + 1}</span>
-      <span class="lv">Lv {phase.levels[0]}–{phase.levels[1]}</span>
     </div>
     <div class="ph-titles">
-      {phase.stagePt && <p class="stage">{phase.stagePt}</p>}
+      <p class="stage">
+        {phase.stagePt && <span>{phase.stagePt}</span>}
+        <span class="lv">Nível {phase.levels[0]}–{phase.levels[1]}</span>
+      </p>
       <h2>{phase.title}</h2>
-      {
-        source && !compact && (
-          <p class="src small muted">
-            Fonte: <a href={source.url} target="_blank" rel="noopener">{source.author ?? source.label}</a>
-          </p>
-        )
-      }
     </div>
     <div class="ph-actions">
       <button type="button" class="btn ghost here" data-set-phase={phase.id} aria-pressed="false">
         <span class="on-label">● Fase atual</span><span class="off-label">Estou aqui</span>
       </button>
-      {tree && !compact && <a class="btn ghost" href="#arvore" data-show-tree={phase.id}>Ver na árvore</a>}
     </div>
   </header>
 
-  <p class="summary">{phase.summaryPt}</p>
-
-  {
-    phase.goalsPt.length > 0 && (
-      <ul class="goals">
-        {phase.goalsPt.map((g) => (
-          <li>{g}</li>
-        ))}
-      </ul>
-    )
-  }
-
-  <div class="grid">
-    <div class="col-main">
-      <div class="block">
-        <div class="panel-title">Gemas</div>
-        <div class="stack">
-          {phase.skills.map((s) => <GemGroup setup={s} compact={compact} />)}
-        </div>
-      </div>
+  <div class:list={['intro', { 'no-goals': phase.goalsPt.length === 0 }]}>
+    <div class="summary">
+      <p>{phase.summaryPt}</p>
       {
-        phase.spirit.length > 0 && (
-          <div class="block">
-            <div class="panel-title">Spirit / auras</div>
-            <div class="stack">
-              {phase.spirit.map((s) => (
-                <GemGroup setup={s} compact={compact} />
-              ))}
-            </div>
-          </div>
+        !compact && (source || filter) && (
+          <p class="meta small">
+            {source && (
+              <>
+                Fonte:{' '}
+                <a href={source.url} target="_blank" rel="noopener">
+                  {source.author ?? source.label}
+                </a>
+              </>
+            )}
+            {source && filter && ' · '}
+            {filter && (
+              <>
+                Filtro: <strong>NeverSink {filter.strictness}</strong>
+              </>
+            )}
+          </p>
         )
       }
+    </div>
+    {
+      phase.goalsPt.length > 0 && (
+        <div class="goals">
+          <p class="goals-title">Objetivos</p>
+          <ul>
+            {phase.goalsPt.map((g) => (
+              <li>{g}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="boxes">
+    <details class="box box--skills b-wide" open data-box="skills">
+      <summary>
+        <span class="box-title">Skills</span>
+        <span class="box-meta">{skillCount} skill{skillCount === 1 ? '' : 's'}{spiritCount > 0 && ` · ${spiritCount} aura${spiritCount === 1 ? '' : 's'}`}</span>
+      </summary>
+      <div class="box-body"><SkillsPanel phase={phase} compact={compact} /></div>
+    </details>
+
+    {
+      (phase.items.length > 0 || phase.gear.length > 0) && (
+        <details class="box box--gear b-wide" open data-box="gear">
+          <summary>
+            <span class="box-title">Equipamento</span>
+            <span class="box-meta">
+              {phase.items.length} ite{phase.items.length === 1 ? 'm' : 'ns'}
+              {reqItems > 0 && ` · ${reqItems} obrigatório${reqItems === 1 ? '' : 's'}`}
+            </span>
+          </summary>
+          <div class="box-body">
+            <GearPanel phase={phase} compact={compact} />
+          </div>
+        </details>
+      )
+    }
+
+    {
+      (tree || phase.ascendancy) && (
+        <details class="box box--tree" open data-box="tree">
+          <summary>
+            <span class="box-title">Árvore & Ascendência</span>
+            {tree && (
+              <span class="box-meta">
+                +{tree.added.length} nodes{tree.removed.length > 0 && ` · respec −${tree.removed.length}`}
+                {phase.ascendancy && ' · ascensão'}
+              </span>
+            )}
+          </summary>
+          <div class="box-body">
+            <TreePanel phase={phase} tree={tree} compact={compact} showTreeLink={!compact} />
+          </div>
+        </details>
+      )
+    }
+
+    <div class="side-stack">
       {
-        (phase.howToPlayPt.length > 0 || phase.bossingPt.length > 0) && (
-          <div class="block play">
-            {phase.howToPlayPt.length > 0 && (
-              <>
-                <div class="panel-title">Como jogar</div>
+        hasPlay && (
+          <details class="box box--play" open data-box="play">
+            <summary>
+              <span class="box-title">Como jogar</span>
+              {phase.bossingPt.length > 0 && <span class="box-meta">+ chefes</span>}
+            </summary>
+            <div class="box-body play">
+              {phase.howToPlayPt.length > 0 && (
                 <ul>
                   {phase.howToPlayPt.map((t) => (
                     <li>{t}</li>
                   ))}
                 </ul>
-              </>
-            )}
-            {phase.bossingPt.length > 0 && (
-              <>
-                <div class="panel-title boss">Chefes</div>
-                <ol>
-                  {phase.bossingPt.map((t) => (
-                    <li>{t}</li>
-                  ))}
-                </ol>
-              </>
-            )}
-          </div>
-        )
-      }
-    </div>
-
-    <div class="col-side">
-      {phase.ascendancy && <AscendancyStep step={phase.ascendancy} compact={compact} />}
-
-      {
-        phase.items.length > 0 && (
-          <div class="block">
-            <div class="panel-title">Itens</div>
-            <div class="stack">
-              {phase.items.map((it) => (
-                <ItemCard {...it} compact={compact} />
-              ))}
+              )}
+              {phase.bossingPt.length > 0 && (
+                <>
+                  <p class="sub">Chefes</p>
+                  <ol>
+                    {phase.bossingPt.map((t) => (
+                      <li>{t}</li>
+                    ))}
+                  </ol>
+                </>
+              )}
             </div>
-          </div>
+          </details>
         )
       }
-
       {
-        phase.gear.length > 0 && (
-          <div class="block">
-            <div class="panel-title">Equipamento — o que procurar</div>
-            <dl class="gear">
-              {phase.gear.map((g) => (
-                <div class="gear-row">
-                  <dt>{SLOT_PT[g.slot]}</dt>
-                  <dd>
-                    {g.basesEn.length > 0 && <p class="bases">{g.basesEn.join(' · ')}</p>}
-                    <p>{g.priorityPt.join(' › ')}</p>
-                    {g.notePt && <p class="gnote">{g.notePt}</p>}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+        phase.checklist.length > 0 && (
+          <details class="box box--check" open data-box="check">
+            <summary>
+              <span class="box-title">Checklist</span>
+              <span class="box-meta" data-check-count={phase.id}>
+                0/{phase.checklist.length}
+              </span>
+            </summary>
+            <div class="box-body">
+              <Checklist group={phase.id} items={phase.checklist} title="" bare />
+            </div>
+          </details>
         )
       }
-
-      {
-        tree && (
-          <div class="block">
-            <div class="panel-title">Árvore desta fase</div>
-            <TreeSummary tree={tree} notesPt={phase.treeNotesPt} compact={compact} />
-          </div>
-        )
-      }
-
-      {
-        filter && (
-          <p class="filter">
-            Filtro: <strong>NeverSink {filter.strictness}</strong> <span class="muted">({filter.stagePt})</span>
-          </p>
-        )
-      }
-
-      {phase.checklist.length > 0 && <Checklist group={phase.id} items={phase.checklist} title="Checklist da fase" />}
     </div>
   </div>
 </section>
 
 <style>
   .phase {
-    padding: 22px 0 30px;
+    padding: 26px 0 34px;
     border-top: 1px solid var(--border);
   }
   .ph-head {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: 12px;
+    gap: 14px;
     align-items: center;
   }
   .ph-badge {
     display: grid;
     place-items: center;
-    width: 64px;
-    height: 64px;
+    width: 54px;
+    height: 54px;
     border: 1px solid var(--bronze);
     border-radius: 50%;
-    background: radial-gradient(circle at 50% 30%, #2c2318, #120f0b);
-    text-align: center;
+    background: radial-gradient(circle at 50% 30%, #30261a, #120f0b);
+    box-shadow: 0 0 0 3px rgb(176 141 85 / 0.12);
   }
   .ph-badge .num {
     font-family: var(--font-display);
-    font-size: 1.3rem;
+    font-weight: var(--display-weight);
+    font-size: 1.5rem;
     color: var(--bronze-hi);
     line-height: 1;
   }
-  .ph-badge .lv {
-    font-size: 0.62rem;
-    color: var(--muted);
-    white-space: nowrap;
-  }
   .stage {
-    font-size: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 12px;
+    font-size: 0.84rem;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     color: var(--bronze);
   }
+  .stage .lv {
+    color: var(--muted);
+  }
   .ph-titles h2 {
-    font-size: clamp(1.15rem, 3.2vw, 1.6rem);
+    font-size: clamp(1.35rem, 3.4vw, 1.9rem);
+    margin-top: 2px;
   }
   .ph-actions {
     display: flex;
@@ -224,88 +243,82 @@ const filter = build.filter.find((f) => f.id === phase.filter);
   .here[aria-pressed='true'] {
     border-color: color-mix(in srgb, var(--new) 50%, var(--border-2));
   }
-  .summary {
-    margin-top: 14px;
-    font-size: 1rem;
+
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .intro.no-goals {
+    grid-template-columns: 1fr;
+  }
+  .summary > p:first-child {
+    font-size: 1.06rem;
     color: var(--text);
-    max-width: 85ch;
+    max-width: 75ch;
+  }
+  .meta {
+    margin-top: 8px;
+    color: var(--muted);
   }
   .goals {
-    margin-top: 10px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--bronze);
+    background: rgb(176 141 85 / 0.06);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .goals-title {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    color: var(--bronze-hi);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .goals ul {
     display: grid;
     gap: 3px;
     color: var(--text-2);
-    max-width: 85ch;
   }
   .goals li::marker {
     color: var(--bronze);
   }
-  .grid {
+
+  .boxes {
     display: grid;
     grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-    gap: 20px;
+    gap: 14px;
     margin-top: 18px;
     align-items: start;
   }
-  .col-main,
-  .col-side {
-    display: grid;
-    gap: 18px;
-    min-width: 0;
+  .b-wide {
+    grid-column: 1 / -1;
   }
-  .stack {
+  .side-stack {
     display: grid;
-    gap: 10px;
+    gap: 14px;
+    min-width: 0;
   }
   .play ul,
   .play ol {
     display: grid;
-    gap: 4px;
-    color: var(--text-2);
-    margin-bottom: 12px;
-  }
-  .panel-title.boss {
-    margin-top: 6px;
-  }
-  .gear {
-    margin: 0;
-    display: grid;
-    gap: 8px;
-  }
-  .gear-row {
-    display: grid;
-    grid-template-columns: 82px 1fr;
-    gap: 10px;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: rgb(0 0 0 / 0.18);
-  }
-  .gear dt {
-    font-weight: 600;
-    color: var(--bronze-hi);
-    font-size: 0.88rem;
-  }
-  .gear dd {
-    margin: 0;
-    font-size: 0.88rem;
+    gap: 5px;
     color: var(--text-2);
   }
-  .bases {
-    color: var(--normal);
-    font-size: 0.82rem;
+  .play .sub {
+    margin: 12px 0 4px;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    color: var(--acc-play);
   }
-  .gnote {
-    color: var(--muted);
-    font-size: 0.8rem;
-    margin-top: 2px;
+
+  .compact .intro {
+    grid-template-columns: 1fr;
   }
-  .filter {
-    font-size: 0.9rem;
-    color: var(--text-2);
-  }
+
   @media (max-width: 900px) {
-    .grid {
+    .boxes,
+    .intro {
       grid-template-columns: 1fr;
     }
   }
@@ -318,12 +331,8 @@ const filter = build.filter.find((f) => f.id === phase.filter);
       justify-content: flex-start;
     }
     .ph-badge {
-      width: 54px;
-      height: 54px;
-    }
-    .gear-row {
-      grid-template-columns: 1fr;
-      gap: 2px;
+      width: 46px;
+      height: 46px;
     }
   }
 </style>
