@@ -1,0 +1,23 @@
+{
+  "nameEn": "Rend",
+  "kind": "shapeshift",
+  "attribute": "none",
+  "tags": [
+    "attack",
+    "shapeshift",
+    "wyvern",
+    "area",
+    "melee",
+    "strike",
+    "duration"
+  ],
+  "tier": 0,
+  "gameId": "Metadata/Items/Gems/SkillGemRend",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Rend",
+  "poe2dbUrl": "https://poe2db.tw/us/Rend",
+  "descriptionEn": "Shapeshift into a Wyvern and perform a wide slash with your wingtip claws. Consumes a Power Charge if possible to grant you a Buff that gives you extra Lightning damage. While you have the Buff, Rend covers a much larger area but is slower.",
+  "summaryPt": "Vira Wyvern e dá um corte largo. Consome 1 Power Charge pra ganhar um buff de dano extra de raio; com o buff, o Rend cobre área maior.",
+  "wherePt": "Liberada ao equipar um talismã (forma de Wyvern) — a partir do nível 6 no guia.",
+  "namePtBr": "Rasgar",
+  "namePtBrSource": "poe2db"
+}

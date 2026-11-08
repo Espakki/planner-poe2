@@ -1,0 +1,17 @@
+{
+  "nameEn": "Magnified Area II",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "area"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gems/SupportGemMagnifiedEffectTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Magnified_Area_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Magnified_Area_II",
+  "descriptionEn": "Supports any skill with an area of effect, making it larger.",
+  "summaryPt": "Aumenta mais a área da skill (no Hollow Form: área dos clones).",
+  "namePtBr": "Área Amplificada II",
+  "namePtBrSource": "poe2db"
+}

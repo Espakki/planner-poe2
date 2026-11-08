@@ -1,0 +1,22 @@
+{
+  "nameEn": "Falling Thunder",
+  "kind": "active",
+  "attribute": "dex",
+  "tags": [
+    "attack",
+    "area",
+    "melee",
+    "slam",
+    "projectile",
+    "lightning"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SkillGemFallingThunder",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Falling_Thunder",
+  "poe2dbUrl": "https://poe2db.tw/us/Falling_Thunder",
+  "descriptionEn": "Suffuse your Quarterstaff with electrical energy, then Slam the ground to deal damage in a large cone in front of you. Consumes your Power Charges to fire Lightning Projectiles forwards from the impact.",
+  "summaryPt": "Golpe no chão com o cajado em cone. Consome Power Charges pra disparar projéteis de raio — muito mais dano com cargas.",
+  "wherePt": "Gema inicial do Monk / Uncut Skill Gem (nível 1+).",
+  "namePtBr": "Pancada Trovejante",
+  "namePtBrSource": "poe2db"
+}

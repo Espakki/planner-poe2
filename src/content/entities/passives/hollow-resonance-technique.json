@@ -1,0 +1,15 @@
+{
+  "nameEn": "Hollow Resonance Technique",
+  "kind": "ascendancy",
+  "nodeId": 17356,
+  "ascendancy": "Martial Artist",
+  "iconFile": "MartialArtistCarrySoectralBell_(MartialArtist)_passive_skill_icon.png",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Hollow_Resonance_Technique",
+  "poe2dbUrl": "https://poe2db.tw/us/Hollow_Resonance_Technique",
+  "summaryPt": "Concede a skill Hollow Resonance.",
+  "statsEn": [
+    "Grants Skill: Hollow Resonance"
+  ],
+  "namePtBr": "Técnica da Ressonância Oca",
+  "namePtBrSource": "poe2db"
+}

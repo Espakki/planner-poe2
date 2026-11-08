@@ -1,0 +1,18 @@
+{
+  "nameEn": "Duality",
+  "kind": "unique",
+  "slot": "weapon",
+  "baseType": "Warding Quarterstaff",
+  "summaryPt": "Cajado com 200–300% de dano físico aumentado, velocidade de ataque e dano crítico, além de Runic Ward. Upgrade perto do T12.",
+  "keyModsEn": [
+    "(200-300)% increased Physical Damage",
+    "+(20-30)% to Critical Damage Bonus",
+    "(12-22)% increased Attack Speed"
+  ],
+  "wherePt": "Drop de endgame / trade (liga Runes of Aldur).",
+  "verify": "Confirmar se ainda é obtível na Forbidden Rites (o PoB marca como da liga Runes of Aldur).",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Duality",
+  "poe2dbUrl": "https://poe2db.tw/us/Duality",
+  "namePtBr": "Dualidade",
+  "namePtBrSource": "poe2db"
+}

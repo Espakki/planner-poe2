@@ -1,0 +1,16 @@
+{
+  "nameEn": "Branching Fissures I",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gem/SupportGemBranchingFissures",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Branching_Fissures_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Branching_Fissures_I",
+  "descriptionEn": "Supports Skills which create Fissures in the ground, causing them to create additional secondary Fissures which branch off from the primary fissure, with lowered area of effect and Damage.",
+  "summaryPt": "Skills de fissura (Storm Wave) soltam fissuras secundárias que se ramificam, com área e dano menores.",
+  "namePtBr": "Fendas Ramificadas I",
+  "namePtBrSource": "poe2db"
+}

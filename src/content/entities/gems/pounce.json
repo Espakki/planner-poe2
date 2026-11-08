@@ -1,0 +1,28 @@
+{
+  "nameEn": "Pounce",
+  "kind": "shapeshift",
+  "attribute": "str",
+  "tags": [
+    "attack",
+    "minion",
+    "shapeshift",
+    "wolf",
+    "area",
+    "melee",
+    "slam",
+    "trigger",
+    "mark",
+    "duration",
+    "travel",
+    "meta"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gems/SkillGemWolfPounce",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Pounce",
+  "poe2dbUrl": "https://poe2db.tw/us/Pounce",
+  "descriptionEn": "Shapeshift into a Werewolf and leap to a target location, damaging enemies in an area around where you land. Predator's Mark will be Triggered targeting the highest Rarity enemy Hit, or if a Mark gem is socketed into this Skill, that Mark will be Triggered instead. Using this Skill allows any Wolf Minions you have to leap immediately.",
+  "summaryPt": "Vira lobisomem e salta até o local, causando dano na queda. Aplica a marca encaixada (Mark for Death) no inimigo mais raro atingido.",
+  "wherePt": "Uncut Skill Gem (nível 3+). Precisa de talismã (forma de lobo).",
+  "namePtBr": "Bote",
+  "namePtBrSource": "poe2db"
+}

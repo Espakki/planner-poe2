@@ -1,0 +1,18 @@
+{
+  "nameEn": "Brink I",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "attack",
+    "melee"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gem/SupportGemBrink",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Brink_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Brink_I",
+  "descriptionEn": "Supports Melee Attack Skills. Supported Skills build up Heavy Stun more quickly, but cannot themselves Heavy Stun.",
+  "summaryPt": "Acumula Heavy Stun bem mais rápido, mas a skill em si não aplica o Heavy Stun — deixa o chefe \"pronto\" pro Wing Blast.",
+  "namePtBr": "Limiar I",
+  "namePtBrSource": "poe2db"
+}

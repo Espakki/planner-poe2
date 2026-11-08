@@ -1,0 +1,17 @@
+{
+  "nameEn": "Rapid Attacks II",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support",
+    "attack"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gems/SupportGemMartialTempoTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Rapid_Attacks_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Rapid_Attacks_II",
+  "descriptionEn": "Supports Attacks, causing them to Attack faster.",
+  "summaryPt": "Versão mais forte do Rapid Attacks I.",
+  "namePtBr": "Ataques Rápidos II",
+  "namePtBrSource": "poe2db"
+}

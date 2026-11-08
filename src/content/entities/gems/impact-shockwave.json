@@ -1,0 +1,20 @@
+{
+  "nameEn": "Impact Shockwave",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "attack",
+    "area",
+    "melee",
+    "strike"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemImpactShockwave",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Impact_Shockwave",
+  "poe2dbUrl": "https://poe2db.tw/us/Impact_Shockwave",
+  "descriptionEn": "Supports Melee Strike Skills and Wind Attack Skills, causing them to create an Aftershock that damages enemies around the target when they Heavy Stun an enemy.",
+  "summaryPt": "Strikes e ataques de vento criam um tremor em volta do alvo quando dão Heavy Stun.",
+  "namePtBr": "Onda de Choque de Impacto",
+  "namePtBrSource": "poe2db"
+}

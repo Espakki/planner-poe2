@@ -1,0 +1,13 @@
+{
+  "nameEn": "Greater Iron Rune",
+  "kind": "rune",
+  "slot": "socketable",
+  "summaryPt": "Runa de arma: aumenta o dano físico. O Scorpius usa duas no Nazir's Judgement.",
+  "wherePt": "Drop / vendedor de runas / trade.",
+  "verify": "Conferir o valor exato do mod na 0.5.5.",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Greater_Iron_Rune",
+  "poe2dbUrl": "https://poe2db.tw/us/Greater_Iron_Rune",
+  "keyModsEn": [],
+  "namePtBr": "Runa de Ferro Maior",
+  "namePtBrSource": "poe2db"
+}

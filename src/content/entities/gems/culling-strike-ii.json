@@ -1,0 +1,17 @@
+{
+  "nameEn": "Culling Strike II",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support",
+    "attack"
+  ],
+  "tier": 5,
+  "gameId": "Metadata/Items/Gem/SupportGemCullingStrikeTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Culling_Strike_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Culling_Strike_II",
+  "descriptionEn": "Supports Attack Skills, causing them to Cull Rare and Unique Enemies on Hit, and increasing the threshold at which they will Cull Enemies.",
+  "summaryPt": "Ataques executam (Cull) raros e únicos com vida baixa e aumentam o limite de execução.",
+  "namePtBr": "Golpe Aniquilador II",
+  "namePtBrSource": "poe2db"
+}

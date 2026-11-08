@@ -1,0 +1,16 @@
+{
+  "nameEn": "Wanderlust",
+  "kind": "unique",
+  "slot": "boots",
+  "baseType": "Wrapped Sandals",
+  "summaryPt": "Botas de leveling com 20% de velocidade de movimento e imunidade a lentidão.",
+  "keyModsEn": [
+    "20% increased Movement Speed",
+    "+(10-20) to maximum Energy Shield",
+    "Your speed is unaffected by Slows"
+  ],
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Wanderlust",
+  "poe2dbUrl": "https://poe2db.tw/us/Wanderlust",
+  "namePtBr": "Sede de Viajar",
+  "namePtBrSource": "poe2db"
+}

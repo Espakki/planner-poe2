@@ -1,0 +1,21 @@
+{
+  "nameEn": "Hollow Focus",
+  "kind": "ascendancy",
+  "attribute": "none",
+  "tags": [
+    "attack",
+    "buff",
+    "persistent",
+    "area",
+    "duration"
+  ],
+  "tier": 0,
+  "gameId": "Metadata/Items/Gem/SkillGemAscendancyHollowFocus",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Hollow_Focus",
+  "poe2dbUrl": "https://poe2db.tw/us/Hollow_Focus",
+  "descriptionEn": "While active, ethereal bells periodically appear near you. Your Hits immediately destroy the bells, creating a shockwave that damages nearby enemies and causes a Heavy Stun on enemies that are Primed for Stun. The bells are themselves always Primed for Stun, they can be Culled, and Hits against them are always Critical Hits.",
+  "summaryPt": "Sinos etéreos aparecem perto de você; acertá-los cria uma onda de choque e Heavy Stun. Os sinos sempre levam crítico e podem ser executados (cargas com Killing Palm/Devour).",
+  "wherePt": "Concedida pela ascendência Hollow Focus Technique.",
+  "namePtBr": "Concentração Oca",
+  "namePtBrSource": "poe2db"
+}

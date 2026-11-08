@@ -1,0 +1,18 @@
+{
+  "nameEn": "Nazir's Judgement",
+  "kind": "unique",
+  "slot": "weapon",
+  "baseType": "Steelpoint Quarterstaff",
+  "summaryPt": "Cajado com muito dano físico adicionado, Daze ao acertar e mais dano contra inimigos em Heavy Stun. Arma de entrada do endgame do Scorpius.",
+  "keyModsEn": [
+    "Adds (30-36) to (75-81) Physical Damage",
+    "+(50-100) to Accuracy Rating",
+    "Dazes on Hit",
+    "(35-50)% increased Melee Damage against Heavy Stunned enemies"
+  ],
+  "wherePt": "Drop / trade (barato).",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Nazir's_Judgement",
+  "poe2dbUrl": "https://poe2db.tw/us/Nazir's_Judgement",
+  "namePtBr": "Julgamento de Nazir",
+  "namePtBrSource": "poe2db"
+}

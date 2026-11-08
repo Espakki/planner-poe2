@@ -1,0 +1,17 @@
+{
+  "nameEn": "Elemental Armament I",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "attack"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemPrimalArmament",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Elemental_Armament_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Elemental_Armament_I",
+  "descriptionEn": "Supports Attacks, causing them to deal more Elemental damage.",
+  "summaryPt": "Ataques causam MAIS dano elemental.",
+  "namePtBr": "Armamento Elemental I",
+  "namePtBrSource": "poe2db"
+}

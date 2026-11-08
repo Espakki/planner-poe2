@@ -1,0 +1,23 @@
+{
+  "nameEn": "Wind Dancer",
+  "kind": "spirit",
+  "attribute": "dex",
+  "tags": [
+    "buff",
+    "attack",
+    "persistent",
+    "area",
+    "melee",
+    "trigger",
+    "stages"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gem/SkillGemWindDancer",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Wind_Dancer",
+  "poe2dbUrl": "https://poe2db.tw/us/Wind_Dancer",
+  "descriptionEn": "While active, periodically grants stages of a buff that gives you more Evasion per stage. Being Hit by an Enemy while you have this buff consumes all stages to damage and Knock Back enemies around you.",
+  "summaryPt": "Aura que acumula estágios de buff de Evasão; ao ser atingido, gasta os estágios pra causar dano e empurrar quem está em volta.",
+  "wherePt": "Uncut Spirit Gem (nível 4+).",
+  "namePtBr": "Dançarino dos Ventos",
+  "namePtBrSource": "poe2db"
+}

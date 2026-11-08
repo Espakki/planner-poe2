@@ -1,0 +1,19 @@
+{
+  "nameEn": "Thrill of the Kill II",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "attack",
+    "lightning",
+    "duration"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gems/SupportGemThrillOfTheKillTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Thrill_of_the_Kill_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Thrill_of_the_Kill_II",
+  "descriptionEn": "Supports Skills you use yourself which Hit enemies. Culling a Shocked enemy with Supported Skills infuses all of your Attacks with Lightning damage and grants an increased chance to Shock for a short time.",
+  "summaryPt": "Como o Thrill of the Kill, e ainda aumenta a chance de Shock durante o efeito.",
+  "namePtBr": "Emoção da Matança II",
+  "namePtBrSource": "poe2db"
+}

@@ -1,0 +1,22 @@
+{
+  "nameEn": "Wing Blast",
+  "kind": "shapeshift",
+  "attribute": "str",
+  "tags": [
+    "attack",
+    "shapeshift",
+    "wyvern",
+    "area",
+    "melee",
+    "wind"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gem/SkillGemWingBlast",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Wing_Blast",
+  "poe2dbUrl": "https://poe2db.tw/us/Wing_Blast",
+  "descriptionEn": "Shapeshift into a Wyvern and launch yourself backwards with a powerful wingbeat that Knocks Back enemies. Enemies Primed for Heavy Stun will be stunned, release a shockwave, and have a chance to grant you a Power Charge. This skill can be used while using other skills to interrupt them.",
+  "summaryPt": "Vira Wyvern e se lança pra trás com uma batida de asas que empurra inimigos. Quem estiver Primed for Heavy Stun leva stun e pode te dar Power Charge.",
+  "wherePt": "Uncut Skill Gem (nível 3+). Precisa de talismã (forma de Wyvern).",
+  "namePtBr": "Lufada de Asas",
+  "namePtBrSource": "poe2db"
+}

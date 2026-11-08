@@ -1,0 +1,22 @@
+{
+  "nameEn": "Devour",
+  "kind": "shapeshift",
+  "attribute": "str",
+  "tags": [
+    "attack",
+    "shapeshift",
+    "wyvern",
+    "area",
+    "melee",
+    "slam"
+  ],
+  "tier": 5,
+  "gameId": "Metadata/Items/Gem/SkillGemWyvernDevour",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Devour",
+  "poe2dbUrl": "https://poe2db.tw/us/Devour",
+  "descriptionEn": "Shapeshift into a Wyvern and devour a Corpse or Cullable enemy, and additional nearby Corpses. For each enemy or corpse devoured, you regenerate life and gain a Power Charge. If the target is far enough away, you will leap to them and damage nearby enemies where you land. Targeting nearby enemies or corpses will not perform a leap or a Slam.",
+  "summaryPt": "Vira Wyvern e devora cadáveres (ou inimigo executável) — cada um dá vida e 1 Power Charge. Se o alvo estiver longe, salta até ele.",
+  "wherePt": "Uncut Skill Gem (nível 5+). Precisa de talismã (forma de Wyvern).",
+  "namePtBr": "Devorar",
+  "namePtBrSource": "poe2db"
+}

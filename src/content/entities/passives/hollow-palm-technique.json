@@ -1,0 +1,18 @@
+{
+  "nameEn": "Hollow Palm Technique",
+  "kind": "keystone",
+  "nodeId": 64601,
+  "iconFile": "HollowPalmTechniqueKeystone_passive_skill_icon.png",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Hollow_Palm_Technique",
+  "poe2dbUrl": "https://poe2db.tw/us/Hollow_Palm_Technique",
+  "summaryPt": "Ataca como se usasse cajado com as duas mãos vazias; o dano base escala com o nível da skill. +velocidade de ataque por Evasão e +crítico por ES nos itens. Usado do Ato 2 até os mapas.",
+  "statsEn": [
+    "Can Attack as though using a Quarterstaff while both of your hand slots are empty",
+    "Unarmed Attacks that would use an Equipped Quarterstaff's damage have:",
+    "Base Unarmed Physical damage replaced with damage based on their Skill Level",
+    "1% more Attack Speed per 75 Item Evasion on Equipped Armour Items",
+    "+0.1% to Critical Hit Chance per 10 Item Energy Shield on Equipped Armour Items"
+  ],
+  "namePtBr": "Técnica da Palma Côncava",
+  "namePtBrSource": "poe2db"
+}

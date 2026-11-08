@@ -1,0 +1,19 @@
+{
+  "nameEn": "Heavy Swing",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "attack",
+    "melee",
+    "physical"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gems/SupportGemHeavySwing",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Heavy_Swing",
+  "poe2dbUrl": "https://poe2db.tw/us/Heavy_Swing",
+  "descriptionEn": "Supports Melee Attacks, boosting their Physical damage at the cost of Attack Speed.",
+  "summaryPt": "Mais dano físico em ataques melee, ao custo de velocidade de ataque.",
+  "namePtBr": "Heavy Swing",
+  "namePtBrSource": "poe2db"
+}

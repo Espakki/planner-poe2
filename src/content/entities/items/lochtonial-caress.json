@@ -1,0 +1,19 @@
+{
+  "nameEn": "Lochtonial Caress",
+  "kind": "unique",
+  "slot": "gloves",
+  "baseType": "Tempered Mitts",
+  "summaryPt": "Compartilha suas cargas com aliados na sua Presença. Com Way of the Stonefist vira \"Fists of Stone\" e ganha chance de dar Power/Frenzy/Endurance Charge aos aliados ao acertar — os clones do Hollow Form contam como aliados e te devolvem cargas.",
+  "keyModsEn": [
+    "(10-15)% increased Skill Speed",
+    "+(40-60) to maximum Life",
+    "(10-15)% reduced maximum Mana",
+    "Share Charges with Allies in your Presence"
+  ],
+  "notesPt": "A chance por carga só aparece com a ascendência ativa — mire em ~9–10%.",
+  "wherePt": "Drop comum de nível baixo; barata no trade.",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Lochtonial_Caress",
+  "poe2dbUrl": "https://poe2db.tw/us/Lochtonial_Caress",
+  "namePtBr": "Carícia Lochtonial",
+  "namePtBrSource": "poe2db"
+}

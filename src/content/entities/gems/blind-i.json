@@ -1,0 +1,16 @@
+{
+  "nameEn": "Blind I",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 2,
+  "gameId": "Metadata/Items/Gems/SupportGemBlind",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Blind_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Blind_I",
+  "descriptionEn": "Supports any skill that Hits enemies, causing them to Blind on Hit.",
+  "summaryPt": "Acertos cegam o inimigo (Blind) — ele erra mais ataques em você.",
+  "namePtBr": "Cegueira I",
+  "namePtBrSource": "poe2db"
+}

@@ -1,0 +1,16 @@
+{
+  "nameEn": "Glacier",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support"
+  ],
+  "tier": 2,
+  "gameId": "Metadata/Items/Gem/SupportGemGlacier",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Glacier",
+  "poe2dbUrl": "https://poe2db.tw/us/Glacier",
+  "descriptionEn": "Supports any Skill which creates Ice Crystals, causing them to be created with higher Life.",
+  "summaryPt": "Cristais de gelo criados pela skill nascem com mais vida.",
+  "namePtBr": "Geleira",
+  "namePtBrSource": "poe2db"
+}

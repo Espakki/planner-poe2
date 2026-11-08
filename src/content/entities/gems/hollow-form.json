@@ -1,0 +1,21 @@
+{
+  "nameEn": "Hollow Form",
+  "kind": "ascendancy",
+  "attribute": "none",
+  "tags": [
+    "attack",
+    "melee",
+    "sustained",
+    "channelling",
+    "meta"
+  ],
+  "tier": 0,
+  "gameId": "Metadata/Items/Gem/SkillGemAscendancyHollowForm",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Hollow_Form",
+  "poe2dbUrl": "https://poe2db.tw/us/Hollow_Form",
+  "descriptionEn": "Channel to create fleeting images of your astral self near the target location. The images perform a Socketed Melee Attack once then vanish, targeting the closest enemy if possible. The images cannot perform Channelled Skills or Conditional Skills. Consuming a Power Charge creates additional images.",
+  "summaryPt": "Canalize pra criar imagens astrais suas que usam a skill melee encaixada (Whirling Assault) uma vez. Consumir Power Charge cria imagens extras.",
+  "wherePt": "Concedida pela ascendência Hollow Form Technique.",
+  "namePtBr": "Forma Oca",
+  "namePtBrSource": "poe2db"
+}

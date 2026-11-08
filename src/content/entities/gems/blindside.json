@@ -1,0 +1,16 @@
+{
+  "nameEn": "Blindside",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gem/SupportGemBlindside",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Blindside",
+  "poe2dbUrl": "https://poe2db.tw/us/Blindside",
+  "descriptionEn": "Supports Skills which can cause Damaging Hits. Supported Skills are more likely to Critically Hit Blinded Enemies, and deal more Damage with Critical Hits against Blinded Enemies, but cannot themselves inflict Blind.",
+  "summaryPt": "Mais chance de crítico e mais dano crítico contra inimigos cegos — mas a própria skill não cega. O Blind vem de outra (Hollow Focus).",
+  "namePtBr": "Ataque Surpresa",
+  "namePtBrSource": "poe2db"
+}

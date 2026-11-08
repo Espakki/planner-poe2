@@ -1,0 +1,17 @@
+{
+  "nameEn": "Shock",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support",
+    "lightning"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemConduction",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Shock",
+  "poe2dbUrl": "https://poe2db.tw/us/Shock",
+  "descriptionEn": "Supports any skill that Hits enemies, making it more likely to Shock.",
+  "summaryPt": "Skills que acertam ficam mais propensas a chocar (Shock).",
+  "namePtBr": "Eletrificar",
+  "namePtBrSource": "poe2db"
+}

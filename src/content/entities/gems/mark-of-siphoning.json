@@ -1,0 +1,17 @@
+{
+  "nameEn": "Mark of Siphoning",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "mark"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemMarkOfSiphoning",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Mark_of_Siphoning",
+  "poe2dbUrl": "https://poe2db.tw/us/Mark_of_Siphoning",
+  "descriptionEn": "Supports Mark Skills, causing enemies they Mark to Leech Mana to you when you Hit them with Attacks.",
+  "summaryPt": "Inimigo marcado te dá leech de mana quando você o acerta com ataques.",
+  "namePtBr": "Marca do Sifão",
+  "namePtBrSource": "poe2db"
+}

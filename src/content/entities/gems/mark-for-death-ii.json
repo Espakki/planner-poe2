@@ -1,0 +1,18 @@
+{
+  "nameEn": "Mark for Death II",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "mark",
+    "physical"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gem/SupportGemSingleOutTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Mark_for_Death_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Mark_for_Death_II",
+  "descriptionEn": "Supports Mark Skills. Enemies affected by Supported Marks will have their Armour Broken by Physical Damage they take.",
+  "summaryPt": "Versão mais forte do Mark for Death: inimigo marcado tem a Armour quebrada pelo dano físico.",
+  "namePtBr": "Marcar para Morrer II",
+  "namePtBrSource": "poe2db"
+}

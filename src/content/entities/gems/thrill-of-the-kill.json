@@ -1,0 +1,19 @@
+{
+  "nameEn": "Thrill of the Kill",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "attack",
+    "lightning",
+    "duration"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemThrillOfTheKill",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Thrill_of_the_Kill",
+  "poe2dbUrl": "https://poe2db.tw/us/Thrill_of_the_Kill",
+  "descriptionEn": "Supports Skills you use yourself which Hit enemies. Culling a Shocked enemy with Supported Skills infuses all of your Attacks with Lightning damage for a short time.",
+  "summaryPt": "Executar (Cull) um inimigo chocado infunde todos os seus ataques com dano de raio por um tempo.",
+  "namePtBr": "Emoção da Matança",
+  "namePtBrSource": "poe2db"
+}

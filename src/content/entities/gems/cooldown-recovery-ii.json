@@ -1,0 +1,16 @@
+{
+  "nameEn": "Cooldown Recovery II",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gems/SupportGemIngenuityTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Cooldown_Recovery_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Cooldown_Recovery_II",
+  "descriptionEn": "Supports skills with Cooldowns, increasing the rate at which those Cooldowns Recover. Cannot modify the skills of minions.",
+  "summaryPt": "Versão mais forte do Cooldown Recovery I.",
+  "namePtBr": "Velocidade de Recarga II",
+  "namePtBrSource": "poe2db"
+}

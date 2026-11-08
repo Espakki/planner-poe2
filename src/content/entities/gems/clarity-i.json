@@ -1,0 +1,18 @@
+{
+  "nameEn": "Clarity I",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "buff",
+    "persistent"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemClarity",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Clarity_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Clarity_I",
+  "descriptionEn": "Supports Persistent Buff Skills, causing you to gain increased Mana Regeneration while the Skill is active.",
+  "summaryPt": "Suporte de aura: enquanto a skill estiver ativa você ganha mais regeneração de mana.",
+  "namePtBr": "Clareza I",
+  "namePtBrSource": "poe2db"
+}

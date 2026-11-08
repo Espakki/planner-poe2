@@ -1,0 +1,340 @@
+{
+ "ascendancy": "Monk1",
+ "inventory_slots": [
+  {
+   "additional_text": "Gothic Quarterstaff\n1. Adds 1 to 7 Lightning Damage",
+   "inventory_id": "Weapon1",
+   "level_interval": [
+    11,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Changeling Talisman",
+   "inventory_id": "Weapon2",
+   "level_interval": [
+    1,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Soldier Greathelm\n1. +6% to Cold Resistance",
+   "inventory_id": "Helm1",
+   "level_interval": [
+    12,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Iron Cuirass\n1. 27% increased Armour",
+   "inventory_id": "BodyArmour1",
+   "level_interval": [
+    11,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Stocky Mitts\n1. Adds 1 to 4 Lightning damage to Attacks\n2. +1 to Level of all Melee Skills",
+   "inventory_id": "Gloves1",
+   "level_interval": [
+    1,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Iron Greaves\n1. +6% to Cold Resistance\n2. 10% increased Movement Speed",
+   "inventory_id": "Boots1",
+   "level_interval": [
+    11,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Jade Amulet\n1. +5 to Strength",
+   "inventory_id": "Amulet1",
+   "level_interval": [
+    8,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Rawhide Belt\n1. +20 to maximum Life",
+   "inventory_id": "Belt1",
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Iron Ring\n1. Adds 1 to 4 Lightning damage to Attacks",
+   "inventory_id": "Ring1",
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Sapphire Ring\n1. Adds 1 to 4 Lightning damage to Attacks",
+   "inventory_id": "Ring2",
+   "level_interval": [
+    12,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Greater Life Flask\n1. 17% reduced Charges per use\n2. 41% increased Amount Recovered",
+   "inventory_id": "Flask1",
+   "level_interval": [
+    10,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Greater Mana Flask\n1. 17% reduced Charges per use\n2. 41% increased Amount Recovered",
+   "inventory_id": "Flask1",
+   "level_interval": [
+    10,
+    100
+   ],
+   "slot_x": 1,
+   "slot_y": 0
+  },
+  {
+   "additional_text": "Sapphire Charm",
+   "inventory_id": "Charm1",
+   "level_interval": [
+    5,
+    100
+   ],
+   "slot_x": 0,
+   "slot_y": 0
+  }
+ ],
+ "name": "Act 1 - Whirling Assault Martial Artist ",
+ "passives": [
+  {
+   "id": "attack_speed25"
+  },
+  {
+   "id": "attack_speed27"
+  },
+  {
+   "id": "intelligence3"
+  },
+  {
+   "id": "attack_damage1"
+  },
+  {
+   "id": "attack_damage3"
+  },
+  {
+   "id": "shadow_monk_notable1"
+  },
+  {
+   "id": "lightning42"
+  },
+  {
+   "id": "lightning41"
+  },
+  {
+   "id": "lightning43"
+  },
+  {
+   "id": "intelligence10"
+  },
+  {
+   "id": "dexterity6"
+  },
+  {
+   "id": "attack41__"
+  },
+  {
+   "id": "attack42"
+  },
+  {
+   "id": "attack43"
+  },
+  {
+   "id": "attack45"
+  },
+  {
+   "id": "attributes28"
+  },
+  {
+   "id": "intelligence7"
+  },
+  {
+   "id": "jewel_slot1961"
+  },
+  {
+   "id": "dexterity44"
+  },
+  {
+   "id": "dexterity43"
+  },
+  {
+   "id": "intelligence3"
+  },
+  {
+   "id": "intelligence10"
+  },
+  {
+   "id": "dexterity6"
+  },
+  {
+   "id": "attributes28"
+  },
+  {
+   "id": "intelligence7"
+  },
+  {
+   "id": "dexterity44"
+  },
+  {
+   "id": "dexterity43"
+  }
+ ],
+ "skills": [
+  {
+   "id": "Metadata/Items/Gem/SkillGemPlayerDefaultQuarterstaff",
+   "level_interval": [
+    1,
+    100
+   ],
+   "support_skills": [
+    {
+     "id": "Metadata/Items/Gems/SupportGemRage",
+     "level_interval": [
+      1,
+      100
+     ]
+    },
+    {
+     "id": "Metadata/Items/Gem/SupportGemBrink",
+     "level_interval": [
+      1,
+      100
+     ]
+    }
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gems/SkillGemFallingThunder",
+   "level_interval": [
+    1,
+    100
+   ],
+   "support_skills": [
+    {
+     "id": "Metadata/Items/Gems/SupportGemPrimalArmament",
+     "level_interval": [
+      1,
+      100
+     ]
+    },
+    {
+     "id": "Metadata/Items/Gems/SupportGemPerpetualCharge",
+     "level_interval": [
+      1,
+      100
+     ]
+    }
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gem/SkillGemEntangle",
+   "level_interval": [
+    1,
+    100
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gems/SkillGemKillingPalm",
+   "level_interval": [
+    1,
+    100
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gems/SkillGemFrostBomb",
+   "level_interval": [
+    1,
+    100
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gem/SkillGemWingBlast",
+   "level_interval": [
+    6,
+    100
+   ],
+   "support_skills": [
+    {
+     "id": "Metadata/Items/Gems/SupportGemImpactShockwave",
+     "level_interval": [
+      1,
+      100
+     ]
+    },
+    {
+     "id": "Metadata/Items/Gems/SupportGemMagnifiedEffect",
+     "level_interval": [
+      1,
+      100
+     ]
+    }
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gems/SkillGemRend",
+   "level_interval": [
+    1,
+    100
+   ],
+   "support_skills": [
+    {
+     "id": "Metadata/Items/Gems/SupportGemPerpetualCharge",
+     "level_interval": [
+      1,
+      100
+     ]
+    }
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gems/SkillGemWindBlast",
+   "level_interval": [
+    6,
+    100
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gems/SkillGemWolfPounce",
+   "level_interval": [
+    6,
+    100
+   ]
+  },
+  {
+   "id": "Metadata/Items/Gems/SkillGemHeraldOfThunder",
+   "level_interval": [
+    10,
+    100
+   ]
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+  "nameEn": "Charge Profusion II",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 5,
+  "gameId": "Metadata/Items/Gems/SupportGemProfusionTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Charge_Profusion_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Charge_Profusion_II",
+  "descriptionEn": "Supports skills that can generate Charges, giving them a chance to generate an additional Charge when they do so, as well as a chance to generate an additional Charge of a random type.",
+  "summaryPt": "Chance de carga extra e ainda chance de uma carga de tipo aleatório.",
+  "namePtBr": "Profusão de Cargas II",
+  "namePtBrSource": "poe2db"
+}

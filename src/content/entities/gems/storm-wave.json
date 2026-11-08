@@ -1,0 +1,20 @@
+{
+  "nameEn": "Storm Wave",
+  "kind": "active",
+  "attribute": "dex",
+  "tags": [
+    "attack",
+    "area",
+    "melee",
+    "lightning"
+  ],
+  "tier": 7,
+  "gameId": "Metadata/Items/Gem/SkillGemStormWave",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Storm_Wave",
+  "poe2dbUrl": "https://poe2db.tw/us/Storm_Wave",
+  "descriptionEn": "Sweep your Quarterstaff, projecting a bolt of Lightning through the ground in a long fissure ahead of you.",
+  "summaryPt": "Varre com o cajado e projeta um raio pelo chão numa fissura longa à frente. Alta chance de Shock.",
+  "wherePt": "Uncut Skill Gem (nível 7+).",
+  "namePtBr": "Onda Tempestuosa",
+  "namePtBrSource": "poe2db"
+}

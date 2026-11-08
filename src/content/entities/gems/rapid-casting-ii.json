@@ -1,0 +1,17 @@
+{
+  "nameEn": "Rapid Casting II",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "spell"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gems/SupportGemArcaneTempoTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Rapid_Casting_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Rapid_Casting_II",
+  "descriptionEn": "Supports Spells, causing them to cast faster.",
+  "summaryPt": "Feitiços são lançados mais rápido.",
+  "namePtBr": "Conjuração Rápida II",
+  "namePtBrSource": "poe2db"
+}

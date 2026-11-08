@@ -1,0 +1,17 @@
+{
+  "nameEn": "Magnified Area I",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "area"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemMagnifiedEffect",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Magnified_Area_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Magnified_Area_I",
+  "descriptionEn": "Supports any skill with an area of effect, making it larger.",
+  "summaryPt": "Aumenta a área da skill.",
+  "namePtBr": "Área Amplificada I",
+  "namePtBrSource": "poe2db"
+}

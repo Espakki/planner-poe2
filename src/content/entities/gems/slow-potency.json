@@ -1,0 +1,17 @@
+{
+  "nameEn": "Slow Potency",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support",
+    "spell"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemEncumbrance",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Slow_Potency",
+  "poe2dbUrl": "https://poe2db.tw/us/Slow_Potency",
+  "descriptionEn": "Supports any skill, causing inflicted Slows to be more powerful.",
+  "summaryPt": "Lentidões que você aplica ficam mais fortes (reforça o Temporal Chains).",
+  "namePtBr": "Potência Lenta",
+  "namePtBrSource": "poe2db"
+}

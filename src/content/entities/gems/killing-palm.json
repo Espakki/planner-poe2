@@ -1,0 +1,20 @@
+{
+  "nameEn": "Killing Palm",
+  "kind": "active",
+  "attribute": "dex",
+  "tags": [
+    "attack",
+    "area",
+    "melee",
+    "strike",
+    "physical"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SkillGemKillingPalm",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Killing_Palm",
+  "poe2dbUrl": "https://poe2db.tw/us/Killing_Palm",
+  "descriptionEn": "Dash to an enemy and Strike them, Culling enemies if their life is low enough and performing additional dashing Strikes to other Cullable targets in range if your target was Culled. Each enemy killed by this strike grants a Power Charge, with higher Rarity monsters granting additional Charges. Enemies around you that can be Culled will be highlighted.",
+  "summaryPt": "Dash até o inimigo e golpe que executa (Cull) quem estiver com vida baixa, encadeando em outros executáveis. Cada morte dá Power Charge.",
+  "namePtBr": "Palma Mortal",
+  "namePtBrSource": "poe2db"
+}

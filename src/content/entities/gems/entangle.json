@@ -1,0 +1,21 @@
+{
+  "nameEn": "Entangle",
+  "kind": "active",
+  "attribute": "str",
+  "tags": [
+    "spell",
+    "area",
+    "sustained",
+    "physical",
+    "duration",
+    "plant"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gem/SkillGemEntangle",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Entangle",
+  "poe2dbUrl": "https://poe2db.tw/us/Entangle",
+  "descriptionEn": "Conjures a rootbound fissure that crawls forward, damaging enemies in its path. While the fissure persists, vines lash out from it and attach to nearby enemies, damaging and Slowing them.",
+  "summaryPt": "Abre uma fissura de raízes que avança causando dano; as vinhas prendem e deixam lentos os inimigos por perto.",
+  "namePtBr": "Emaranhar",
+  "namePtBrSource": "poe2db"
+}

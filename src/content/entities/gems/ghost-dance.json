@@ -1,0 +1,18 @@
+{
+  "nameEn": "Ghost Dance",
+  "kind": "spirit",
+  "attribute": "dex",
+  "tags": [
+    "buff",
+    "persistent"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gems/SkillGemGhostDance",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Ghost_Dance",
+  "poe2dbUrl": "https://poe2db.tw/us/Ghost_Dance",
+  "descriptionEn": "While active, causes you to periodically gain Ghost Shrouds. If you are Hit while you have a Ghost Shroud, it is immediately consumed to recover Energy Shield based on your Evasion.",
+  "summaryPt": "Aura que te dá Ghost Shrouds periodicamente; ao ser atingido com um shroud, recupera Energy Shield com base na sua Evasão.",
+  "wherePt": "Uncut Spirit Gem (nível 4+).",
+  "namePtBr": "Dança Fantasma",
+  "namePtBrSource": "poe2db"
+}

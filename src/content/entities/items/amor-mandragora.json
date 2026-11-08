@@ -1,0 +1,18 @@
+{
+  "nameEn": "Amor Mandragora",
+  "kind": "unique",
+  "slot": "weapon",
+  "baseType": "Changeling Talisman",
+  "summaryPt": "Talismã com dano físico adicionado, duração de skill e Hinder em inimigos na sua Presença. Fica no Weapon Set 2 pras formas (Rend, Devour, Pounce).",
+  "keyModsEn": [
+    "Adds (16-20) to (23-27) Physical Damage",
+    "(10-15)% increased Skill Effect Duration",
+    "Enemies in your Presence are Hindered",
+    "Gain 1 Druidic Prowess for every 20 total Rage spent"
+  ],
+  "wherePt": "Drop comum de nível baixo.",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Amor_Mandragora",
+  "poe2dbUrl": "https://poe2db.tw/us/Amor_Mandragora",
+  "namePtBr": "Mandrágora Amor",
+  "namePtBrSource": "poe2db"
+}

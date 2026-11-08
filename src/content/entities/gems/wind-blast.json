@@ -1,0 +1,20 @@
+{
+  "nameEn": "Wind Blast",
+  "kind": "active",
+  "attribute": "dex",
+  "tags": [
+    "attack",
+    "area",
+    "melee",
+    "wind"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gems/SkillGemWindBlast",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Wind_Blast",
+  "poe2dbUrl": "https://poe2db.tw/us/Wind_Blast",
+  "descriptionEn": "Batter enemies at range by generating a gust of wind as you swing. Enemies will be Dazed and Knocked Back based on how close they are to you.",
+  "summaryPt": "Rajada de vento à distância a cada golpe; inimigos perto levam Daze e são empurrados.",
+  "wherePt": "Uncut Skill Gem (nível 3+).",
+  "namePtBr": "Rajada de Vento",
+  "namePtBrSource": "poe2db"
+}

@@ -1,0 +1,18 @@
+{
+  "nameEn": "Ritualistic Curse",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "area",
+    "curse"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gem/SupportGemRitualisticCurse",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Ritualistic_Curse",
+  "poe2dbUrl": "https://poe2db.tw/us/Ritualistic_Curse",
+  "descriptionEn": "Supports Curse skills, causing them to cover a larger area but take longer to Curse enemies.",
+  "summaryPt": "Maldição cobre área maior, mas demora mais pra pegar.",
+  "namePtBr": "Maldição Ritualística",
+  "namePtBrSource": "poe2db"
+}

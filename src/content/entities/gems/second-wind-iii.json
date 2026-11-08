@@ -1,0 +1,16 @@
+{
+  "nameEn": "Second Wind III",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 5,
+  "gameId": "Metadata/Items/Gems/SupportGemSecondWindThree",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Second_Wind_III",
+  "poe2dbUrl": "https://poe2db.tw/us/Second_Wind_III",
+  "descriptionEn": "Supports Skills which have a cooldown, giving them extra uses of that cooldown and causing them to recover your Life when a Skill is used and goes on cooldown. Cannot support Meta, instant, or Triggered Skills, and cannot modify the Skills of Minions.",
+  "summaryPt": "Skills com cooldown ganham usos extras e recuperam vida quando entram em cooldown.",
+  "namePtBr": "Fôlego Renovado III",
+  "namePtBrSource": "poe2db"
+}

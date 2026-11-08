@@ -1,0 +1,20 @@
+{
+  "nameEn": "Runic Meridians",
+  "kind": "ascendancy",
+  "nodeId": 39552,
+  "ascendancy": "Martial Artist",
+  "iconFile": "MartialArtistExtraRunes_(MartialArtist)_passive_skill_icon.png",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Runic_Meridians",
+  "poe2dbUrl": "https://poe2db.tw/us/Runic_Meridians",
+  "summaryPt": "Tatuagens de runa: 5 sockets extras só pra runas (1 elmo, 2 peitoral, 1 luva, 1 bota). Bom pra fechar resistências e atributos.",
+  "statsEn": [
+    "Can tattoo Runes onto your body, gaining",
+    "additional Rune-only sockets:",
+    "1 Helmet socket",
+    "2 Body Armour sockets",
+    "1 Gloves socket",
+    "1 Boots socket"
+  ],
+  "namePtBr": "Meridianos Rúnicos",
+  "namePtBrSource": "poe2db"
+}

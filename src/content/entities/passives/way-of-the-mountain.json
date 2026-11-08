@@ -1,0 +1,16 @@
+{
+  "nameEn": "Way of the Mountain",
+  "kind": "ascendancy",
+  "nodeId": 51546,
+  "ascendancy": "Martial Artist",
+  "iconFile": "MartialArtistCoveredinStone_(MartialArtist)_passive_skill_icon.png",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Way_of_the_Mountain",
+  "poe2dbUrl": "https://poe2db.tw/us/Way_of_the_Mountain",
+  "summaryPt": "Ao imobilizar inimigos ganha Mountain's Teachings (até 30); perde um ao ser atingido ou ao usar um ataque que se beneficia delas.",
+  "statsEn": [
+    "100% Surpassing chance per enemy Power to gain Mountain's Teachings on Immobilising an enemy, up to a maximum of 30",
+    "Lose a Mountain's Teaching when you are Hit, or when you use or Sustain an Attack that benefits from Mountain's Teachings"
+  ],
+  "namePtBr": "Preceito da Montanha",
+  "namePtBrSource": "poe2db"
+}

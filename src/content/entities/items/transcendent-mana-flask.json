@@ -1,0 +1,14 @@
+{
+  "nameEn": "Transcendent Mana Flask",
+  "kind": "flask",
+  "slot": "flask",
+  "levelReq": 50,
+  "summaryPt": "Maior frasco de mana. Procure o mod que recupera cargas por segundo — resolve a mana do Hollow Form.",
+  "wherePt": "Drop a partir do nível 50.",
+  "verify": "Nome exato do mod de \"charges per second\".",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Transcendent_Mana_Flask",
+  "poe2dbUrl": "https://poe2db.tw/us/Transcendent_Mana_Flask",
+  "keyModsEn": [],
+  "namePtBr": "Frasco de Mana Transcendental",
+  "namePtBrSource": "poe2db"
+}

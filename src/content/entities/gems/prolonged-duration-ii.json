@@ -1,0 +1,17 @@
+{
+  "nameEn": "Prolonged Duration II",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "duration"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gems/SupportGemPersistenceTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Prolonged_Duration_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Prolonged_Duration_II",
+  "descriptionEn": "Supports any skill that has a duration, making that duration longer.",
+  "summaryPt": "Versão mais forte do Prolonged Duration I.",
+  "namePtBr": "Duração Prolongada II",
+  "namePtBrSource": "poe2db"
+}

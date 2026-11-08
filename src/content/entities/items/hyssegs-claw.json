@@ -1,0 +1,16 @@
+{
+  "nameEn": "Hysseg's Claw",
+  "kind": "unique",
+  "slot": "weapon",
+  "baseType": "Familial Talisman",
+  "summaryPt": "Talismã de minions (concede Cackling Companions). Pra esta build só serve como \"talismã qualquer\" no Weapon Set 2.",
+  "keyModsEn": [
+    "Grants Skill: Level (1-20) Cackling Companions",
+    "(70-100)% increased Physical Damage",
+    "5% increased Movement Speed"
+  ],
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Hysseg's_Claw",
+  "poe2dbUrl": "https://poe2db.tw/us/Hysseg's_Claw",
+  "namePtBr": "Garra de Hysseg",
+  "namePtBrSource": "poe2db"
+}

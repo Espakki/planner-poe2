@@ -1,0 +1,16 @@
+{
+  "nameEn": "Cooldown Recovery I",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 3,
+  "gameId": "Metadata/Items/Gems/SupportGemIngenuity",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Cooldown_Recovery_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Cooldown_Recovery_I",
+  "descriptionEn": "Supports skills with Cooldowns, increasing the rate at which those Cooldowns Recover. Cannot modify the skills of minions.",
+  "summaryPt": "Cooldown da skill volta mais rápido (mais sinos do Hollow Focus, mais Pounce).",
+  "namePtBr": "Velocidade de Recarga I",
+  "namePtBrSource": "poe2db"
+}

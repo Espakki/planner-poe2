@@ -1,0 +1,20 @@
+{
+  "nameEn": "Convalescence",
+  "kind": "spirit",
+  "attribute": "int",
+  "tags": [
+    "spell",
+    "buff",
+    "persistent",
+    "duration"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gem/SkillGemConvalescence",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Convalescence",
+  "poe2dbUrl": "https://poe2db.tw/us/Convalescence",
+  "descriptionEn": "While active, grants a skill that you can use to instantly begin Recharging Energy Shield and gain a Buff for a duration that prevents that Recharge being interrupted. The Buff is removed at maximum Energy Shield and the skill cannot be used while Energy Shield is full.",
+  "summaryPt": "Aura que dá uma skill pra começar a recarregar Energy Shield na hora, com um buff que impede a recarga de ser interrompida. Some quando o ES enche.",
+  "wherePt": "Uncut Spirit Gem (nível 4+).",
+  "namePtBr": "Convalescença",
+  "namePtBrSource": "poe2db"
+}

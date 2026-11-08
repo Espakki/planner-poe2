@@ -1,0 +1,16 @@
+{
+  "nameEn": "Efficiency II",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gems/SupportGemInspirationTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Efficiency_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Efficiency_II",
+  "descriptionEn": "Supports any skill, making it cost less to use. Cannot support skills which reserve Spirit.",
+  "summaryPt": "A skill custa menos mana. Não funciona em gemas que reservam Spirit.",
+  "namePtBr": "Eficiência II",
+  "namePtBrSource": "poe2db"
+}

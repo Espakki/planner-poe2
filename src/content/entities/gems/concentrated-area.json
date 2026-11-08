@@ -1,0 +1,17 @@
+{
+  "nameEn": "Concentrated Area",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "area"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemConcentratedEffect",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Concentrated_Area",
+  "poe2dbUrl": "https://poe2db.tw/us/Concentrated_Area",
+  "descriptionEn": "Supports any skill with an area of effect, causing that area to be smaller but any area damage it deals to be higher.",
+  "summaryPt": "Área menor, mas o dano em área fica bem maior.",
+  "namePtBr": "Área Concentrada",
+  "namePtBrSource": "poe2db"
+}

@@ -1,0 +1,20 @@
+{
+  "nameEn": "Frost Wall",
+  "kind": "active",
+  "attribute": "int",
+  "tags": [
+    "spell",
+    "area",
+    "cold",
+    "duration"
+  ],
+  "tier": 9,
+  "gameId": "Metadata/Items/Gems/SkillGemFrostWall",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Frost_Wall",
+  "poe2dbUrl": "https://poe2db.tw/us/Frost_Wall",
+  "descriptionEn": "Create a wall of Ice Crystals which holds back enemies. The Crystals explode if sufficiently damaged, or if pushed hard enough, damaging nearby enemies. Consumes a Lightning Infusion if possible to add another Lightning explosion if destroyed.",
+  "summaryPt": "Parede de cristais de gelo. Os cristais explodem quando quebrados — os clones do Hollow Form quebram e causam dano no chefe.",
+  "wherePt": "Uncut Skill Gem (nível 9+).",
+  "namePtBr": "Parede de Gelo",
+  "namePtBrSource": "poe2db"
+}

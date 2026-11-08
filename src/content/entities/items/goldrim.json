@@ -1,0 +1,16 @@
+{
+  "nameEn": "Goldrim",
+  "kind": "unique",
+  "slot": "helmet",
+  "baseType": "Felt Cap",
+  "summaryPt": "Elmo de leveling com +25–35% em todas as resistências elementais e raridade. Ótimo se cair cedo.",
+  "keyModsEn": [
+    "+(30-50) to Evasion Rating",
+    "10% increased Rarity of Items found",
+    "+(25-35)% to all Elemental Resistances"
+  ],
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Goldrim",
+  "poe2dbUrl": "https://poe2db.tw/us/Goldrim",
+  "namePtBr": "Aro de Ouro",
+  "namePtBrSource": "poe2db"
+}

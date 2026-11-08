@@ -1,0 +1,16 @@
+{
+  "nameEn": "Perpetual Charge",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemPerpetualCharge",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Perpetual_Charge",
+  "poe2dbUrl": "https://poe2db.tw/us/Perpetual_Charge",
+  "descriptionEn": "Supports skills that consume Power, Frenzy or Endurance Charges on use, giving them a chance not to remove each Charge while still gaining the benefits of consuming them.",
+  "summaryPt": "Chance de NÃO gastar a carga ao usar a skill, mas recebendo o benefício como se tivesse gasto.",
+  "namePtBr": "Carga Perpétua",
+  "namePtBrSource": "poe2db"
+}

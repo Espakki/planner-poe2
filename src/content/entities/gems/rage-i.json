@@ -1,0 +1,18 @@
+{
+  "nameEn": "Rage I",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "attack",
+    "melee"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemRage",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Rage_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Rage_I",
+  "descriptionEn": "Supports Melee Attacks, causing them to grant Rage on Hit.",
+  "summaryPt": "Ataques melee dão Rage ao acertar.",
+  "namePtBr": "Fúria I",
+  "namePtBrSource": "poe2db"
+}

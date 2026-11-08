@@ -1,0 +1,17 @@
+{
+  "nameEn": "Bramblejack",
+  "kind": "unique",
+  "slot": "body",
+  "baseType": "Rusted Cuirass",
+  "summaryPt": "Peitoral com vida, Stun Threshold e reflexo de dano físico melee. Na versão atual NÃO deixa evadir ataques — incompatível com a build depois do Ato 1.",
+  "keyModsEn": [
+    "+(60-100) to maximum Life",
+    "+(60-100) to Stun Threshold",
+    "Cannot Evade Enemy Attacks",
+    "Regenerate 5% of maximum Life per second while Surrounded"
+  ],
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Bramblejack",
+  "poe2dbUrl": "https://poe2db.tw/us/Bramblejack",
+  "namePtBr": "Espinhoral",
+  "namePtBrSource": "poe2db"
+}

@@ -1,0 +1,16 @@
+{
+  "nameEn": "Charge Profusion I",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemProfusion",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Charge_Profusion_I",
+  "poe2dbUrl": "https://poe2db.tw/us/Charge_Profusion_I",
+  "descriptionEn": "Supports skills that can generate Charges, giving them a chance to generate an additional Charge when they do so.",
+  "summaryPt": "Chance de gerar uma carga a mais sempre que a skill gera carga.",
+  "namePtBr": "Profusão de Cargas I",
+  "namePtBrSource": "poe2db"
+}

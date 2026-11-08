@@ -1,0 +1,16 @@
+{
+  "nameEn": "Northpaw",
+  "kind": "unique",
+  "slot": "gloves",
+  "baseType": "Suede Bracers",
+  "summaryPt": "Luvas com dano físico adicionado em ataques e crítico base de 7% em armas. Boa no Ato 1 (antes do Hollow Palm).",
+  "keyModsEn": [
+    "Adds (3-5) to (8-10) Physical Damage to Attacks",
+    "(10-15)% increased Critical Damage Bonus",
+    "Base Critical Hit Chance for Attacks with Weapons is 7%"
+  ],
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Northpaw",
+  "poe2dbUrl": "https://poe2db.tw/us/Northpaw",
+  "namePtBr": "Pata do Norte",
+  "namePtBrSource": "poe2db"
+}

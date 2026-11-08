@@ -1,0 +1,21 @@
+{
+  "nameEn": "Siphoning Strike",
+  "kind": "active",
+  "attribute": "dex",
+  "tags": [
+    "attack",
+    "area",
+    "melee",
+    "strike",
+    "lightning"
+  ],
+  "tier": 7,
+  "gameId": "Metadata/Items/Gem/SkillGemSiphoningStrike",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Siphoning_Strike",
+  "poe2dbUrl": "https://poe2db.tw/us/Siphoning_Strike",
+  "descriptionEn": "Dash to a target and Strike them with your Quarterstaff. If the target is Shocked, Consume their Shock to release a Lightning shockwave around the target and grant you a Power Charge. This skill cannot be Ancestrally Boosted.",
+  "summaryPt": "Dash e golpe com o cajado. Se o alvo estiver chocado, consome o Shock, solta uma onda de raio e te dá 1 Power Charge.",
+  "wherePt": "Uncut Skill Gem (nível 7+).",
+  "namePtBr": "Golpe Ionizante",
+  "namePtBrSource": "poe2db"
+}

@@ -1,0 +1,13 @@
+{
+  "nameEn": "Topaz Charm",
+  "kind": "charm",
+  "slot": "charm",
+  "summaryPt": "Talismã de cinto que ativa ao levar muito dano de raio e dá resistência a raio. Obrigatório pro Jamanra (Ato 2).",
+  "wherePt": "Drop na campanha.",
+  "verify": "Conferir gatilho/efeito exatos.",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Topaz_Charm",
+  "poe2dbUrl": "https://poe2db.tw/us/Topaz_Charm",
+  "keyModsEn": [],
+  "namePtBr": "Patuá de Topázio",
+  "namePtBrSource": "poe2db"
+}

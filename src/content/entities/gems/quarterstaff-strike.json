@@ -1,0 +1,20 @@
+{
+  "nameEn": "Quarterstaff Strike",
+  "kind": "active",
+  "attribute": "none",
+  "tags": [
+    "attack",
+    "area",
+    "melee",
+    "strike"
+  ],
+  "tier": 0,
+  "gameId": "Metadata/Items/Gem/SkillGemPlayerDefaultQuarterstaff",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Quarterstaff_Strike",
+  "poe2dbUrl": "https://poe2db.tw/us/Quarterstaff_Strike",
+  "descriptionEn": "Strike with your Quarterstaff.",
+  "summaryPt": "Golpe básico com o cajado.",
+  "wherePt": "Ataque padrão — já vem com o personagem ao usar cajado.",
+  "namePtBr": "Golpe com Bastão",
+  "namePtBrSource": "poe2db"
+}

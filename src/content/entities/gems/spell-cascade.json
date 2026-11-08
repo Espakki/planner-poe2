@@ -1,0 +1,17 @@
+{
+  "nameEn": "Spell Cascade",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "area"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gem/SupportGemSpellCascade",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Spell_Cascade",
+  "poe2dbUrl": "https://poe2db.tw/us/Spell_Cascade",
+  "descriptionEn": "Supports Cascadable Spells, causing them to Cascade to either side of the target area, along a randomly chosen axis.",
+  "summaryPt": "Feitiços em cascata repetem dos dois lados da área-alvo (mais paredes do Frost Wall).",
+  "namePtBr": "Sequência Mágica",
+  "namePtBrSource": "poe2db"
+}

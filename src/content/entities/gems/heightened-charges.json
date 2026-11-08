@@ -1,0 +1,16 @@
+{
+  "nameEn": "Heightened Charges",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 2,
+  "gameId": "Metadata/Items/Gem/SupportGemTwofold",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Heightened_Charges",
+  "poe2dbUrl": "https://poe2db.tw/us/Heightened_Charges",
+  "descriptionEn": "Supports any Skill that Consumes Charges, granting a chance for benefits of that Consumption to be doubled.",
+  "summaryPt": "Skills que consomem cargas têm chance de dobrar o benefício do consumo (no Hollow Form: mais clones).",
+  "namePtBr": "Cargas Intensificadas",
+  "namePtBrSource": "poe2db"
+}

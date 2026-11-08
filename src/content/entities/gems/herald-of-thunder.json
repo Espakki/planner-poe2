@@ -1,0 +1,22 @@
+{
+  "nameEn": "Herald of Thunder",
+  "kind": "spirit",
+  "attribute": "dex",
+  "tags": [
+    "buff",
+    "attack",
+    "persistent",
+    "area",
+    "lightning",
+    "herald"
+  ],
+  "tier": 4,
+  "gameId": "Metadata/Items/Gems/SkillGemHeraldOfThunder",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Herald_of_Thunder",
+  "poe2dbUrl": "https://poe2db.tw/us/Herald_of_Thunder",
+  "descriptionEn": "While active, killing Shocked enemies with a non-Herald Attack Hit will cause subsequent Attack Hits to release lightning bolts which dealAttack damage to all surrounding enemies.",
+  "summaryPt": "Ao matar inimigo chocado, seus ataques seguintes soltam raios em volta. Ótimo clear na campanha.",
+  "wherePt": "Uncut Spirit Gem (nível 4+).",
+  "namePtBr": "Arauto Trovejante",
+  "namePtBrSource": "poe2db"
+}

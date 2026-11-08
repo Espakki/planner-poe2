@@ -1,0 +1,18 @@
+{
+  "nameEn": "Rage III",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "attack",
+    "melee"
+  ],
+  "tier": 5,
+  "gameId": "Metadata/Items/Gems/SupportGemRageThree",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Rage_III",
+  "poe2dbUrl": "https://poe2db.tw/us/Rage_III",
+  "descriptionEn": "Supports Melee Attacks, causing them to grant Rage on Hit. Supported Skills have signficantly higher Attack speed while you or supported minion are not at maximum Rage.",
+  "summaryPt": "Dá Rage ao acertar e muito mais velocidade de ataque enquanto você NÃO estiver com Rage máximo.",
+  "namePtBr": "Fúria III",
+  "namePtBrSource": "poe2db"
+}

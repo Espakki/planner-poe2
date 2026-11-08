@@ -1,0 +1,21 @@
+{
+  "nameEn": "Frost Bomb",
+  "kind": "active",
+  "attribute": "int",
+  "tags": [
+    "spell",
+    "area",
+    "cold",
+    "duration",
+    "orb",
+    "remnant"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SkillGemFrostBomb",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Frost_Bomb",
+  "poe2dbUrl": "https://poe2db.tw/us/Frost_Bomb",
+  "descriptionEn": "Create a pulsing Orb of frost. Each pulse inflicts Elemental Exposure on nearby enemies. When the Orb's duration ends, it Detonates, dealing Cold damage to surrounding enemies and leaving behind a Cold Infusion.",
+  "summaryPt": "Orbe de gelo que pulsa aplicando Exposure (reduz resistências). No fim explode em dano de frio e deixa uma Cold Infusion.",
+  "namePtBr": "Bomba Congelante",
+  "namePtBrSource": "poe2db"
+}

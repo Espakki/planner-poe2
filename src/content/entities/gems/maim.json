@@ -1,0 +1,17 @@
+{
+  "nameEn": "Maim",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support",
+    "attack"
+  ],
+  "tier": 2,
+  "gameId": "Metadata/Items/Gems/SupportGemMaim",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Maim",
+  "poe2dbUrl": "https://poe2db.tw/us/Maim",
+  "descriptionEn": "Supports Attacks, causing them to Maim enemies.",
+  "summaryPt": "Ataques aplicam Maim — inimigo fica mais lento e recebe mais dano.",
+  "namePtBr": "Mutilação",
+  "namePtBrSource": "poe2db"
+}

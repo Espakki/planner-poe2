@@ -1,0 +1,17 @@
+{
+  "nameEn": "Focused Curse",
+  "kind": "support",
+  "attribute": "int",
+  "tags": [
+    "support",
+    "curse"
+  ],
+  "tier": 2,
+  "gameId": "Metadata/Items/Gem/SupportGemFocusedCurse",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Focused_Curse",
+  "poe2dbUrl": "https://poe2db.tw/us/Focused_Curse",
+  "descriptionEn": "Supports Curse skills, causing them to Curse enemies more quickly after being cast.",
+  "summaryPt": "A maldição pega nos inimigos mais rápido depois de lançada.",
+  "namePtBr": "Maldição Concentrada",
+  "namePtBrSource": "poe2db"
+}

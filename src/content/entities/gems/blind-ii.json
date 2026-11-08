@@ -1,0 +1,16 @@
+{
+  "nameEn": "Blind II",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support"
+  ],
+  "tier": 5,
+  "gameId": "Metadata/Items/Gems/SupportGemBlindTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Blind_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Blind_II",
+  "descriptionEn": "Supports any skill that Hits enemies, causing them to Blind on Hit with increased effect.",
+  "summaryPt": "Como Blind I, mas o efeito da cegueira é mais forte. No Hollow Focus, alimenta o Blindside do Hollow Form.",
+  "namePtBr": "Cegueira II",
+  "namePtBrSource": "poe2db"
+}

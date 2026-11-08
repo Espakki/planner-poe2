@@ -1,0 +1,17 @@
+{
+  "nameEn": "Elemental Armament II",
+  "kind": "support",
+  "attribute": "str",
+  "tags": [
+    "support",
+    "attack"
+  ],
+  "tier": 2,
+  "gameId": "Metadata/Items/Gems/SupportGemPrimalArmamentTwo",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Elemental_Armament_II",
+  "poe2dbUrl": "https://poe2db.tw/us/Elemental_Armament_II",
+  "descriptionEn": "Supports Attacks, causing them to deal more Elemental damage.",
+  "summaryPt": "Versão mais forte do Elemental Armament I.",
+  "namePtBr": "Armamento Elemental II",
+  "namePtBrSource": "poe2db"
+}

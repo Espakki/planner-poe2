@@ -1,0 +1,17 @@
+{
+  "nameEn": "Lightning Attunement",
+  "kind": "support",
+  "attribute": "dex",
+  "tags": [
+    "support",
+    "lightning"
+  ],
+  "tier": 1,
+  "gameId": "Metadata/Items/Gems/SupportGemLightningInfusion",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Lightning_Attunement",
+  "poe2dbUrl": "https://poe2db.tw/us/Lightning_Attunement",
+  "descriptionEn": "Supports any skill that deals damage, causing them to Gain Lightning Damage but deal less Cold and Fire Damage.",
+  "summaryPt": "A skill ganha dano de raio, mas causa menos dano de frio e fogo.",
+  "namePtBr": "Sintonia com a Eletricidade",
+  "namePtBrSource": "poe2db"
+}

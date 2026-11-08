@@ -1,0 +1,20 @@
+{
+  "nameEn": "Whirling Assault",
+  "kind": "active",
+  "attribute": "dex",
+  "tags": [
+    "attack",
+    "area",
+    "melee",
+    "strike"
+  ],
+  "tier": 11,
+  "gameId": "Metadata/Items/Gems/SkillGemWhirlingAssault",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Whirling_Assault",
+  "poe2dbUrl": "https://poe2db.tw/us/Whirling_Assault",
+  "descriptionEn": "Advance while hitting enemies around you with a series of spinning Strikes.",
+  "summaryPt": "Avança girando e acertando todos ao redor com uma série de golpes. No endgame vai dentro do Hollow Form.",
+  "wherePt": "Uncut Skill Gem (nível 11+). Usável a partir do nível 41.",
+  "namePtBr": "Ataque Giratório",
+  "namePtBrSource": "poe2db"
+}

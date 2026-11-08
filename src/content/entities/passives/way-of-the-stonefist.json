@@ -1,0 +1,17 @@
+{
+  "nameEn": "Way of the Stonefist",
+  "kind": "ascendancy",
+  "nodeId": 39595,
+  "ascendancy": "Martial Artist",
+  "iconFile": "MartialArtistHandWraps_(MartialArtist)_passive_skill_icon.png",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Way_of_the_Stonefist",
+  "poe2dbUrl": "https://poe2db.tw/us/Way_of_the_Stonefist",
+  "summaryPt": "Transforma a base da luva em Fists of Stone e melhora os mods explícitos dela; ignora requisito de atributo de luva. Com Lochtonial Caress, dá chance de cargas pros aliados (clones).",
+  "statsEn": [
+    "Gloves you equip have their Base Type transformed to Fists of Stone while equipped, and",
+    "their Explicit Modifiers are transformed into more powerful related Modifiers",
+    "Ignore Attribute Requirements to equip Gloves"
+  ],
+  "namePtBr": "Preceito do Punho Pétreo",
+  "namePtBrSource": "poe2db"
+}

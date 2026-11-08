@@ -1,0 +1,18 @@
+{
+  "nameEn": "Charge Regulation",
+  "kind": "spirit",
+  "attribute": "dex",
+  "tags": [
+    "buff",
+    "persistent"
+  ],
+  "tier": 14,
+  "gameId": "Metadata/Items/Gem/SkillGemChargeInfusion",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Charge_Regulation",
+  "poe2dbUrl": "https://poe2db.tw/us/Charge_Regulation",
+  "descriptionEn": "While active, you gain powerful Buffs based on your active Charges. However, maintaining the Buff Consumes Charges every few seconds.",
+  "summaryPt": "Enquanto ativa, cada tipo de carga que você tem vira um buff forte (dano, velocidade, mana). Em troca, consome cargas a cada poucos segundos.",
+  "wherePt": "Uncut Spirit Gem (nível 14+).",
+  "namePtBr": "Gerenciamento de Cargas",
+  "namePtBrSource": "poe2db"
+}

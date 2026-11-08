@@ -1,0 +1,904 @@
+# Monk · Martial Artist · Hollow Form Whirling Assault — patch 0.5.5 (Forbidden Rites)
+#
+# Como ler este arquivo:
+#  - Nomes de jogo em inglês; texto explicativo em PT-BR (campos terminados em Pt).
+#  - Gemas, itens e passivas são referenciados por id (arquivos em src/content/entities/*).
+#  - `verify:` / "# TODO verificar" = ponto que ainda não consegui confirmar nas fontes. Lista no fim do CLAUDE.md.
+#  - Leveling (fases 1–5): guia escrito do Barricade/psynister (0.5.5), árvore do Build Planner por variante.
+#  - Mapas/endgame (fases 6–7): guia do Scorpius (fonte da verdade), árvore do código PoB.
+
+meta:
+  slug: monk-hollow-form
+  title: Hollow Form Whirling Assault
+  taglinePt: Monk Martial Artist que vira "1 botão" — clones do Hollow Form girando com Whirling Assault e gerando as próprias cargas.
+  class: Monk
+  ascendancy: Martial Artist
+  patch: "0.5.5"
+  league: Forbidden Rites
+  treeVersion: "0_5"
+  lastVerified: 2026-11-07
+  status: active
+  summaryPt: >-
+    A partir do nível 41 você coloca o Whirling Assault dentro do Hollow Form (skill da ascendência).
+    Cada uso gasta Power Charges e invoca clones que giram por você. Com Lochtonial Caress + Way of the Stonefist,
+    os clones devolvem cargas pra você — o ciclo se mantém sozinho. Até o 41, o leveling usa Falling Thunder
+    com cargas de poder (Ato 1) e depois Storm Wave + Siphoning Strike com Hollow Palm Technique (sem arma).
+  strengthsPt:
+    - Praticamente 1 botão no endgame (Hollow Form + Whirling Assault).
+    - Clear de tela inteira e bom dano em chefe com Rend + Mark for Death.
+    - Barato pra começar — Lochtonial Caress e Amor Mandragora são drops comuns.
+  weaknessesPt:
+    - Frágil na campanha (principalmente no Ato 1).
+    - Depende de Lochtonial Caress pra fechar o ciclo de cargas.
+    - Precisa de bastante Spirit no endgame pras auras defensivas.
+  sources:
+    - id: scorpius
+      label: "[0.5.5] Scorps Hollow Form Endgame Monk"
+      url: https://mobalytics.gg/poe-2/builds/scorps-hollow-form-endgame-monk
+      author: Scorpius
+      patch: "0.5.5"
+      coversPt: Endgame (fonte da verdade) — tem o código PoB.
+      primary: true
+    - id: barricade
+      label: Whirling Assault Martial Artist — PBP Community Build (guia escrito do Barricade)
+      url: https://mobalytics.gg/poe-2/profile/fierce-golem-xc5lul/builds/e4321b1e-aa41-4c49-855d-97ffba18f5f5
+      author: psynister (guia escrito do Barricade)
+      patch: "0.5.5"
+      coversPt: Leveling Ato 1 → Interlúdios, troca pro Whirling Assault no 41. Árvore por variante via Build Planner.
+    - id: barricade-video
+      label: Whirling Assault Martial Artist Monk Leveling Guide (vídeo)
+      url: https://www.youtube.com/watch?v=lCdE8gVV2Qo
+      author: Barricade
+      patch: "0.5.5"
+      coversPt: Vídeo do leveling (Ato 1 0:30 · Ato 2 9:28 · Ato 3 17:58 · Ato 4 22:25 · Interlúdios 25:40).
+    - id: cliptis
+      label: "[0.5] Martial Arts Monk Endgame Guide"
+      url: https://mobalytics.gg/poe-2/profile/cliptis/builds/monk-martial-arts-endgame
+      author: Cliptis
+      patch: "0.5.5"
+      coversPt: Endgame alternativo; confirma a ordem da ascendência e o Transcendent Mana Flask.
+    - id: pobarchives
+      label: PoB Archives 7LKUbi76
+      url: https://pobarchives.com/build/7LKUbi76
+      coversPt: Referência citada no prompt original (não consegui abrir — Cloudflare). # TODO verificar
+  pob:
+    scorpius:
+      label: Scorpius — Early Endgame (nível 79)
+      file: sources/scorpius-early-endgame.pob
+      url: https://pobb.in/URd9-Ihyl2YB
+      source: scorpius
+
+phases:
+  # ------------------------------------------------------------------ ATO 1
+  - id: ato-1
+    levels: [1, 14]
+    title: Falling Thunder com cargas de poder
+    stagePt: Ato 1
+    source: barricade
+    filter: campanha
+    summaryPt: >-
+      Começo mais frágil do Monk. Limpa com Quarterstaff Strike (depois Wind Blast), usa Entangle nos primeiros níveis
+      e guarda Power Charges (Killing Palm / Wing Blast) pra soltar Falling Thunder nos packs fortes e chefes.
+    goalsPt:
+      - Pegar um Talismã até o nível 6 (Rend e Pounce no Weapon Set 2).
+      - Pegar Flow Like Water e Essence of the Storm, depois ir rumo a Concussive Attack.
+      - Pegar o +5 de Força nos primeiros 4 níveis (Nettle Talisman / Fur Plate e requisitos de suporte).
+      - Resistência a Frio — 3 dos chefes do Ato 1 batem gelo.
+    skills:
+      - gem: quarterstaff-strike
+        supports: [rage-i, brink-i]
+        role: main
+        notePt: Ataque principal até ter o Wind Blast. Aí você move os dois suportes pro Wind Blast (não corta outro Rage I/Brink I).
+      - gem: falling-thunder
+        supports: [elemental-armament-i, perpetual-charge]
+        level: 5
+        role: boss
+        notePt: Consome Power Charges pra dar muito mais dano. Gaste as cargas aqui em pack forte e chefe.
+      - gem: entangle
+        level: 1
+        role: utility
+        notePt: Só nos primeiros níveis. Lance na frente e faça os monstros passarem por ela enquanto você recua. Tira quando tiver Wing Blast / Wind Blast.
+      - gem: killing-palm
+        level: 5
+        role: utility
+        notePt: Finaliza monstro com pouca vida e dá Power Charge (normal/mágico 1, raro 2, único 3).
+      - gem: frost-bomb
+        level: 2
+        role: boss
+        notePt: Aplica Exposure (reduz resistência). Recoloque sempre que sair do cooldown no chefe.
+      - gem: wing-blast
+        supports: [impact-shockwave, magnified-area-i]
+        level: 5
+        slotPt: Weapon Set 2 (Talismã)
+        role: boss
+        notePt: Quando a barra de stun do chefe passar de ~75%, Wing Blast dá Heavy Stun e 3 Power Charges.
+      - gem: rend
+        supports: [perpetual-charge]
+        slotPt: Weapon Set 2 (Talismã)
+        role: buff
+        notePt: Gasta 1 Power Charge por um buff grande de dano (10 s). Liberado a partir do nível 6 com talismã equipado.
+      - gem: wind-blast
+        level: 5
+        role: main
+        replacesPt: Substitui o Quarterstaff Strike (leva Rage I + Brink I).
+        notePt: Clear e acúmulo de Rage/Stun.
+      - gem: pounce
+        level: 3
+        slotPt: Weapon Set 2 (Talismã)
+        role: movement
+        notePt: Movimento (pula obstáculos). Forma de lobo dá +30% de velocidade.
+    spirit:
+      - gem: herald-of-thunder
+        level: 4
+        role: aura
+        notePt: Ajuda no clear (a partir do nível 10, com Spirit da quest).
+    items:
+      - item: amor-mandragora
+        whyPt: Talismã final da build. Até cair, qualquer talismã serve — só precisa de um pra usar as formas (Rend, Pounce).
+        wherePt: Drop comum de nível baixo. Talismã qualquer — Red Vale, vendedor Renly ou aposta no Finn.
+      - item: lochtonial-caress
+        whyPt: Luva final. Se cair cedo, já equipa e esquece a luva.
+        wherePt: Drop comum de nível baixo (ou trade barato).
+      - item: northpaw
+        whyPt: "Opcional: dano físico adicional em ataques ajuda muito no Ato 1 (luva com dano é prioridade)."
+      - item: goldrim
+        whyPt: "Opcional: resistência em todos os elementos — ótimo se cair cedo."
+      - item: wanderlust
+        whyPt: "Opcional: 20% de velocidade de movimento e imune a lentidão."
+      - item: bramblejack
+        whyPt: "Opcional só no Ato 1: vida e Stun Threshold. Na versão atual tem 'Cannot Evade' — largue quando migrar pra evasão no Ato 2."
+      - item: hyssegs-claw
+        whyPt: "Não é garra: é um Talismã de minions. Serve como 'talismã qualquer' no Weapon Set 2 se cair, mas não é prioridade."
+      - item: sapphire-charm
+        whyPt: Pro chefe final do Ato 1 (dano de gelo).
+    gear:
+      - slot: weapon
+        basesEn: [Wrapped Quarterstaff (lvl 1), Long Quarterstaff (lvl 4, Red Vale), Gothic Quarterstaff (lvl 11)]
+        priorityPt: [Dano adicionado, Velocidade de ataque, Dano aumentado, Vida ao acertar]
+        notePt: Use Transmutation/Augmentation nos cajados. Guarde Regal Orb pro primeiro upgrade do Ato 2.
+      - slot: body
+        basesEn: [Armour]
+        priorityPt: [Armour, Vida máxima, Res. Frio/Fogo, Stun Threshold]
+        notePt: No Ato 1 evasão é fraca — fique em Armour. Some Armour + Vida e pegue o maior.
+      - slot: gloves
+        priorityPt: [Dano adicionado a ataques, Vida, Velocidade de ataque, Resistências, +nível de skills melee]
+      - slot: boots
+        priorityPt: [Velocidade de movimento, Res. Frio, Vida, Atributos]
+      - slot: ring
+        basesEn: [Iron Ring, Sapphire Ring, Ruby Ring]
+        priorityPt: [Dano adicionado a ataques, Resistências (implícito de até +30%)]
+        notePt: Guarde Topaz Ring pro Ato 2.
+    tree:
+      planner: sources/barricade-act-1.json
+    treeNotesPt:
+      - Flow Like Water (atributos + velocidade) → Essence of the Storm (dano raio) → rumo a Concussive Attack.
+      - Atributos (Str/Dex/Int) dependem do equipamento; os suportes pedem pelo menos 20 Str e 15 Int.
+    howToPlayPt:
+      - Entangle no caminho dos monstros e siga andando — não fique parado spamando.
+      - Killing Palm em monstro fraco pra encher Power Charges antes do pack seguinte.
+      - Troque pro talismã quando quiser correr — lobo tem +30% de velocidade e o rolamento vai mais longe.
+    bossingPt:
+      - Os primeiros ~5 s do chefe ele tem redução de dano enorme — use pra montar Rage/Stun e Frost Bomb.
+      - Wind Blast até ~75% de stun → Wing Blast (Heavy Stun + 3 cargas) → Rend → Falling Thunder.
+      - Com Perpetual Charge às vezes a carga não é gasta — se ainda tiver cargas, solte outro Falling Thunder.
+    checklist:
+      - Pegar talismã qualquer até o nível 6
+      - Cortar Wind Blast e mover Rage I + Brink I do Quarterstaff Strike
+      - Cortar Wing Blast + Impact Shockwave + Magnified Area I
+      - Perpetual Charge no Falling Thunder e no Rend
+      - +5 Força nos primeiros níveis
+      - Sapphire Charm pro chefe final do ato
+      - "Weapon set: 2 pontos em Hunting Grounds (The Crowbell) e 2 em Ogham Farmlands (Una's Hut)"
+      - "+30 Spirit em Freythorn (The King in the Mists)"
+
+  # ------------------------------------------------------------------ ATO 2
+  - id: ato-2
+    levels: [14, 28]
+    title: Hollow Palm + Storm Wave e Siphoning Strike
+    stagePt: Ato 2
+    source: barricade
+    filter: campanha
+    summaryPt: >-
+      Pega o keystone Hollow Palm Technique — a partir daqui você luta de mãos vazias (o dano escala com o nível da gema)
+      e toda defesa vira Evasão + Energy Shield. Com duas Uncut Skill Gems nível 7, troca o clear pra Storm Wave
+      (aplica Shock) + Siphoning Strike (converte o Shock em Power Charge).
+    goalsPt:
+      - Ir direto pro Hollow Palm Technique, depois Conservative Casting (mana).
+      - Só trocar pra Storm Wave + Siphoning Strike quando tiver as DUAS gemas (separadas são ruins).
+      - 1ª ascensão → Hollow Focus Technique.
+      - Topaz Charm pro Jamanra (chefe final).
+    skills:
+      - gem: storm-wave
+        supports: [elemental-armament-ii, shock]
+        level: 7
+        role: main
+        notePt: Clear principal; Shock aumenta o dano recebido e alimenta o Siphoning Strike.
+      - gem: siphoning-strike
+        supports: [charge-profusion-i, rapid-attacks-i]
+        level: 7
+        role: utility
+        notePt: Consome o Shock do inimigo e te dá Power Charge.
+      - gem: hollow-focus
+        supports: [concentrated-area]
+        role: utility
+        notePt: Vem da 1ª ascensão. Invoca sinos fantasmas — Killing Palm neles = Power Charges garantidas.
+      - gem: falling-thunder
+        supports: [elemental-armament-ii, perpetual-charge, lightning-attunement]
+        level: 7
+        role: boss
+        notePt: Terceiro suporte quando tiver o primeiro Lesser Jeweller's Orb.
+      - gem: killing-palm
+        supports: [charge-profusion-i, thrill-of-the-kill]
+        level: 7
+        role: utility
+      - gem: rend
+        supports: [perpetual-charge, prolonged-duration-i]
+        level: 7
+        slotPt: Weapon Set 2 (Talismã)
+        role: buff
+      - gem: pounce
+        supports: [mark-of-siphoning, rage-i]
+        level: 3
+        slotPt: Weapon Set 2 (Talismã)
+        role: movement
+        notePt: O Rage I vem do Wind Blast quando ele sair.
+    spirit:
+      - gem: herald-of-thunder
+        supports: [magnified-area-i, elemental-armament-ii]
+        level: 6
+        role: aura
+        notePt: Magnified Area I sai do Wing Blast quando ele for embora.
+    items:
+      - item: amor-mandragora
+        whyPt: Continua o objetivo de talismã (atributos do talismã não importam).
+      - item: lochtonial-caress
+        whyPt: Ainda não é obrigatória — mas se achar barato no trade, já compra.
+      - item: topaz-charm
+        required: true
+        whyPt: Obrigatório pro Jamanra (dano de raio).
+      - item: lesser-jewellers-orb
+        whyPt: "3º suporte, nesta ordem: Falling Thunder → Storm Wave → Siphoning Strike."
+      - item: uncut-skill-gem
+        required: true
+        whyPt: Duas de nível 7 — uma pro Storm Wave e outra pro Siphoning Strike.
+    gear:
+      - slot: weapon
+        basesEn: [Crackling Quarterstaff, Crescent Quarterstaff]
+        priorityPt: [Só até pegar Hollow Palm Technique]
+        notePt: Depois do Hollow Palm você fica SEM arma até os mapas (as mãos vazias escalam com o nível da gema).
+      - slot: body
+        basesEn: [Evasion/Energy Shield]
+        priorityPt: [Evasão + Energy Shield, Vida, Res. Raio > Fogo > Frio > Caos]
+        notePt: Evasão vira velocidade de ataque e ES vira crítico via Hollow Palm.
+      - slot: gloves
+        priorityPt: [+nível de skills melee, Dano adicionado, Vida, Velocidade de ataque, Resistências]
+      - slot: boots
+        priorityPt: [Velocidade de movimento (até 15%), Evasão/ES, Vida, Resistências]
+      - slot: amulet
+        priorityPt: [+nível de skills melee, Atributos, Vida, Resistências]
+      - slot: ring
+        basesEn: [Topaz Ring, Ruby Ring, Iron Ring]
+        priorityPt: [Dano adicionado a ataques, Vida, Resistências, Atributos]
+    ascendancy:
+      whenPt: 1ª ascensão (Trial of the Sekhemas, Ato 2)
+      take: [hollow-focus-technique]
+      notePt: Fonte fácil de Power Charges — fique uns segundos parado entre packs, nascem 3 sinos, um Killing Palm = 3 cargas.
+      verify: Confirmar em qual trial/ato o guia faz a 1ª ascensão (o texto só diz "first Ascendancy Points").
+    tree:
+      planner: sources/barricade-act-2.json
+    treeNotesPt:
+      - Hollow Palm Technique primeiro, depois Conservative Casting (mana).
+      - Killer Instinct (dano com vida cheia/baixa) → Storm Surge e Storm Swell (penetração de raio pro Jamanra) → Dizzying Sweep.
+    howToPlayPt:
+      - Spam de Storm Wave; quando precisar de cargas, Killing Palm nos fracos ou Siphoning Strike nos chocados.
+      - Gaste as cargas em Rend (buff) e Falling Thunder.
+    bossingPt:
+      - Storm Wave choca o chefe → Siphoning Strike vira carga → Rend com uma carga, Falling Thunder com a outra.
+      - Falling Thunder re-aplica Shock com frequência → ciclo Falling Thunder ↔ Siphoning Strike.
+      - Killing Palm nos sinos durante os 5 s iniciais de imunidade.
+    checklist:
+      - Hollow Palm Technique alocado e arma removida
+      - Trocar defesa pra Evasão/ES
+      - 2× Uncut Skill Gem nível 7 → Storm Wave + Siphoning Strike
+      - Mover Rapid Attacks I pro Siphoning Strike e Rage I pro Pounce
+      - Elemental Armament II no Falling Thunder (o I vai pro Storm Wave, depois pro Herald)
+      - Lightning Attunement no Falling Thunder (1º Lesser Jeweller's Orb)
+      - 1ª ascensão → Hollow Focus Technique
+      - Topaz Charm equipado pro Jamanra
+      - "Weapon set: Keth (Kabala) e Deshar (Final Letter)"
+
+  # ------------------------------------------------------------------ ATO 3
+  - id: ato-3
+    levels: [28, 38]
+    title: Mesmo setup, mais suportes e Wind Dancer
+    stagePt: Ato 3
+    source: barricade
+    filter: campanha
+    summaryPt: >-
+      Nenhuma skill nova: o Ato 3 é pra completar suportes (3º socket) e ligar o Wind Dancer quando o Spirit
+      da Ignagduk liberar. Começa a se preparar pra troca do nível 41 — procure Lochtonial Caress.
+    goalsPt:
+      - Tenfold Attacks → Stupefy → voltar pra Mindful Awareness e Step Like Mist.
+      - Wind Dancer depois de matar Ignagduk, the Bog Witch (+30 Spirit).
+      - Resistências cobertas — chefes de fogo, caos (Viper Napuatzi) e o final com raio/frio/fogo.
+      - Começar a caçar Lochtonial Caress (trade barato).
+    skills:
+      - gem: storm-wave
+        supports: [elemental-armament-ii, shock, branching-fissures-i]
+        level: 9
+        role: main
+      - gem: siphoning-strike
+        supports: [charge-profusion-i, rapid-attacks-i, rage-i]
+        level: 9
+        role: utility
+      - gem: falling-thunder
+        supports: [elemental-armament-ii, perpetual-charge, lightning-attunement]
+        level: 9
+        role: boss
+      - gem: killing-palm
+        supports: [charge-profusion-i, thrill-of-the-kill]
+        level: 9
+        role: utility
+      - gem: rend
+        supports: [perpetual-charge, prolonged-duration-i]
+        slotPt: Weapon Set 2 (Talismã)
+        role: buff
+        notePt: Talismã de nível maior = um socket a mais no Rend.
+      - gem: pounce
+        supports: [cooldown-recovery-i, mark-of-siphoning]
+        level: 3
+        slotPt: Weapon Set 2 (Talismã)
+        role: movement
+      - gem: hollow-focus
+        supports: [cooldown-recovery-i, concentrated-area]
+        level: 9
+        role: utility
+        notePt: Cooldown Recovery I = sinos nascem mais rápido.
+    spirit:
+      - gem: herald-of-thunder
+        supports: [magnified-area-i, elemental-armament-ii]
+        level: 9
+        role: aura
+      - gem: wind-dancer
+        supports: [magnified-area-ii, maim]
+        level: 10
+        role: defense
+        notePt: Depois da Ignagduk (+30 Spirit).
+    items:
+      - item: lochtonial-caress
+        whyPt: Tente ter até o 41 — é o que liga o ciclo infinito de cargas.
+      - item: uncut-spirit-gem
+        whyPt: Pro Wind Dancer.
+    gear:
+      - slot: ring
+        priorityPt: [Dano adicionado (Raio > Frio/Físico/Fogo), Vida, Res. Caos, Raio, Fogo, Frio, Atributos]
+        notePt: Uma ou duas peças com Res. Caos já fazem diferença contra a Viper Napuatzi.
+      - slot: boots
+        priorityPt: [Velocidade de movimento (até 20%), Evasão/ES, Vida, Resistências]
+      - slot: charm
+        priorityPt: [Amethyst, Ruby, Topaz, Sapphire, Stone, Staunching, Thawing, Dousing]
+    tree:
+      planner: sources/barricade-act-3.json
+    treeNotesPt:
+      - Tenfold Attacks (velocidade de ataque crescente) → Stupefy (Daze + dano).
+      - Volta pro começo pra Mindful Awareness (Evasão/ES) e Step Like Mist (atributos, movimento, mana).
+    howToPlayPt:
+      - Igual ao Ato 2. Mais suportes = tudo mais forte.
+    checklist:
+      - Lesser Jeweller's Orb → 3º suporte (Falling Thunder, Storm Wave, Siphoning Strike)
+      - Branching Fissures I no Storm Wave
+      - Rage I no Siphoning Strike
+      - Cooldown Recovery I no Hollow Focus e no Pounce
+      - Wind Dancer + Magnified Area II + Maim (depois da Ignagduk)
+      - Res. Caos em 1–2 peças
+      - "Weapon set: Jungle Ruins (Mighty Silverfist) e Aggorat (Blood Sacrifice)"
+      - "+30 Spirit em The Azak Bog (Ignagduk, the Bog Witch)"
+
+  # ------------------------------------------------------------- TRANSIÇÃO 41
+  - id: transicao-41
+    levels: [38, 45]
+    title: Troca pro Hollow Form + Whirling Assault
+    stagePt: Ato 4 · nível 41
+    source: barricade
+    filter: campanha
+    summaryPt: >-
+      No 41 libera o Whirling Assault. Ele entra DENTRO do Hollow Form (2ª ascensão) e os clones giram por você.
+      Com Lochtonial Caress, faz respec Hollow Focus → Way of the Stonefist: seus clones usam a mesma luva e te dão
+      cargas, e você gasta essas cargas invocando mais clones. Sem a luva ainda, dá pra adiar (ver alternativas).
+    goalsPt:
+      - 2ª ascensão (Trial of Chaos) → Hollow Form Technique.
+      - Com Lochtonial Caress → respec Hollow Focus Technique → Way of the Stonefist (no Hooded One, sem refazer trial).
+      - Killing Palm sai, entra Devour (come cadáveres pra gerar cargas).
+      - Configurar o Hollow Form pra usar SÓ o Weapon Set 2 (ver checklist).
+    skills:
+      - gem: hollow-form
+        supports: [whirling-assault, heightened-charges, heavy-swing]
+        role: main
+        notePt: Whirling Assault vai como "suporte" dentro do Hollow Form. Canalize e os clones giram.
+      - gem: rend
+        supports: [perpetual-charge, rapid-attacks-i, prolonged-duration-ii]
+        slotPt: Weapon Set 2 (Talismã)
+        role: buff
+      - gem: devour
+        supports: [charge-profusion-i, thrill-of-the-kill-ii, rage-i]
+        slotPt: Weapon Set 2 (Talismã)
+        role: utility
+        replacesPt: Substitui o Killing Palm.
+        notePt: Come os cadáveres entre lutas pra entrar no próximo pack com Power Charges.
+      - gem: pounce
+        supports: [cooldown-recovery-i, mark-for-death-ii]
+        slotPt: Weapon Set 2 (Talismã)
+        role: movement
+        notePt: No chefe, Pounce primeiro pra aplicar o Mark for Death II.
+    spirit:
+      - gem: wind-dancer
+        supports: [magnified-area-ii, maim, blind-i]
+        level: 13
+        role: defense
+      - gem: ghost-dance
+        level: 10
+        role: defense
+        notePt: Nova camada defensiva.
+      - gem: charge-regulation
+        supports: [clarity-i]
+        role: buff
+        replacesPt: Substitui o Herald of Thunder depois da troca pro Whirling Assault + Lochtonial.
+        notePt: Transforma as cargas sobrando em buffs (dano, velocidade, mana).
+        verify: O Build Planner marca Charge Regulation só a partir do nível 58; o texto do guia manda trocar já na transição. Depende de ter Uncut Spirit Gem nível 14.
+      - gem: herald-of-thunder
+        supports: [magnified-area-ii, elemental-armament-ii, lightning-attunement]
+        level: 13
+        role: aura
+        optional: true
+        notePt: Só enquanto ainda não trocou pro Whirling Assault.
+    items:
+      - item: lochtonial-caress
+        required: true
+        whyPt: Com Way of the Stonefist, os clones (que copiam seu equipamento) te dão Power, Frenzy e Endurance Charges ao acertar.
+        craftPt: Quanto mais perto de 10% de chance de carga, melhor (o número só aparece com ela equipada).
+      - item: amor-mandragora
+        whyPt: O guia "oficializa" o talismã final aqui. Sem ele, qualquer talismã de nível mais alto.
+      - item: nazirs-judgement
+        whyPt: "Alternativa (rota do Scorpius): cajado inicial a partir do 40 com 2× Greater Iron Rune. Se usar cajado, o Hollow Palm deixa de valer."
+        craftPt: 2× Greater Iron Rune (dano físico).
+        wherePt: Drop/trade — barato.
+      - item: greater-iron-rune
+        whyPt: Duas no Nazir's Judgement (se for de cajado).
+      - item: uncut-skill-gem
+        required: true
+        whyPt: Nível 11+ pro Whirling Assault e outra pro Devour.
+    gear:
+      - slot: gloves
+        priorityPt: [Lochtonial Caress, "(sem ela) +nível melee, dano adicionado, vida, velocidade de ataque"]
+      - slot: boots
+        priorityPt: [Velocidade de movimento (até 25%), Evasão/ES, Vida, Resistências]
+      - slot: ring
+        priorityPt: [Dano adicionado, Vida, Resistências (elementais em 75%, caos 25%+), Atributos]
+      - slot: belt
+        priorityPt: [Vida, Resistências, Atributos, 2+ Charm Slots]
+    ascendancy:
+      whenPt: 2ª ascensão (Trial of Chaos) — chegando no nível 41
+      take: [hollow-form-technique, way-of-the-stonefist]
+      refund: [hollow-focus-technique]
+      notePt: >-
+        Alternativa 1 (sem Lochtonial): mantém Hollow Focus + pega Hollow Form; use Killing Palm nos sinos pra cargas.
+        Alternativa 2 (adiar a troca): mantém Hollow Focus + Runic Meridians e segue com Storm Wave até ter a luva.
+    tree:
+      planner: sources/barricade-act-4.json
+    treeNotesPt:
+      - Foco em defesa — o dano sobe sozinho com a troca de skill.
+      - First Principle of the Hollow (Evasão/ES/res) → First Teachings of the Keeper (Deflection) → Immaterial → The Hollowkeeper (−50% maldições em você).
+    howToPlayPt:
+      - Segure o Hollow Form — gasta Power Charges e invoca clones com Whirling Assault.
+      - Os clones acertam → Lochtonial + Stonefist te devolvem cargas → mais clones. Ciclo infinito.
+      - Sem cargas? Devour nos cadáveres.
+    bossingPt:
+      - Devour pra encher cargas → Rend → Pounce no chefe (Mark for Death II) → canalize Hollow Form até morrer.
+      - Renove o Rend quando acabar; Pounce também serve pra reposicionar.
+    checklist:
+      - "CRÍTICO: Gems → Hollow Form → detalhes (seta) → 'Used with weapon set': marcar SÓ o Weapon Set 2 (senão ele tenta usar com o talismã e não faz nada)"
+      - 2ª ascensão → Hollow Form Technique
+      - Respec Hollow Focus → Way of the Stonefist (se tiver Lochtonial)
+      - Whirling Assault + Heightened Charges + Heavy Swing no Hollow Form
+      - Devour no lugar do Killing Palm
+      - Mover Rapid Attacks I (Siphoning → Rend), Rage I (Siphoning → Devour), Lightning Attunement (Falling Thunder → Herald)
+      - Mark for Death II no Pounce
+      - Ghost Dance e Charge Regulation (+ Clarity I)
+      - "Weapon set: Journey's End (Captain Hartlin) e Halls of the Dead (Yama the White)"
+
+  # -------------------------------------------------------------- INTERLÚDIOS
+  - id: interludios
+    levels: [45, 60]
+    title: Polimento antes dos mapas
+    stagePt: Interlúdios
+    source: barricade
+    filter: campanha
+    summaryPt: >-
+      Mesmo setup da transição. Suportes viram versões II, entra Transcendent Flask a partir do 50 e
+      a árvore pega mais Evasão/ES e Daze. Termine com todos os pontos de weapon set e o Spirit da Kriar Village.
+    goalsPt:
+      - Pegar todos os pontos de weapon set dos interlúdios.
+      - +40 Spirit em Kriar Village (Lythara).
+      - Trocar flasks por Transcendent no nível 50.
+    skills:
+      - gem: hollow-form
+        supports: [whirling-assault, heightened-charges, heavy-swing]
+        role: main
+      - gem: rend
+        supports: [perpetual-charge, rapid-attacks-i, prolonged-duration-ii]
+        slotPt: Weapon Set 2 (Talismã)
+        role: buff
+      - gem: devour
+        supports: [charge-profusion-ii, thrill-of-the-kill-ii, rage-i]
+        slotPt: Weapon Set 2 (Talismã)
+        role: utility
+      - gem: pounce
+        supports: [cooldown-recovery-ii, mark-for-death-ii]
+        slotPt: Weapon Set 2 (Talismã)
+        role: movement
+    spirit:
+      - gem: wind-dancer
+        supports: [magnified-area-ii, maim, blind-i]
+        role: defense
+      - gem: ghost-dance
+        role: defense
+      - gem: charge-regulation
+        supports: [clarity-i]
+        role: buff
+    items:
+      - item: transcendent-mana-flask
+        whyPt: A partir do 50. Prefira o que regenera cargas por segundo — resolve mana.
+      - item: lochtonial-caress
+        required: true
+        whyPt: Continua sendo o coração da build.
+      - item: amor-mandragora
+        whyPt: Talismã final.
+    gear:
+      - slot: belt
+        priorityPt: [Vida, Resistências, 2+ Charm Slots]
+      - slot: helmet
+        basesEn: [Tribal Mask]
+        priorityPt: [Evasão/ES, Vida, Resistências, Atributos]
+      - slot: body
+        basesEn: [Scalper's Jacket]
+        priorityPt: [Evasão/ES, Vida, Resistências]
+    tree:
+      planner: sources/barricade-interludes.json
+    treeNotesPt:
+      - Pontos de weapon set — Set 1 (cajado/mãos) e Set 2 (talismã) são árvores separadas; aloque os dois.
+      - Dizzying Hits, Enhanced Reflexes, Spectral Ward, Lingering Horror entram aqui.
+    checklist:
+      - Charge Profusion II no Devour
+      - Cooldown Recovery II no Pounce
+      - Transcendent Life/Mana Flask no 50
+      - "Weapon set: Wolvenhold (Oswin), The Khari Crossing (Akthi and Anundr), Howling Caves (The Abominable Yeti)"
+      - "+40 Spirit em Kriar Village (Lythara, the Wayward Spear)"
+
+  # ------------------------------------------------------------ MAPAS INICIAIS
+  - id: mapas-iniciais
+    levels: [60, 80]
+    title: Setup do Scorpius — Early Endgame
+    stagePt: Mapas T1–T11
+    source: scorpius
+    filter: t1-5
+    summaryPt: >-
+      Entra no setup de endgame do Scorpius: volta a usar cajado (Nazir's Judgement → rare/Duality), Hollow Focus
+      volta como 3ª ascensão com suportes utilitários (Blind II, Culling Strike II) e o Spirit vira 3 auras
+      defensivas + Charge Regulation + Blasphemy (Temporal Chains). A árvore faz respec: sai o Hollow Palm.
+    goalsPt:
+      - Respec da árvore pro PoB do Scorpius (sai Hollow Palm, entra cajado).
+      - 3ª ascensão → Hollow Focus Technique.
+      - Spirit no Amuleto + Peitoral pra rodar as auras.
+      - Weapon Set 1 (vermelho) = cajado; Weapon Set 2 (verde) = talismã com nodes de duração pro Devour/Rend.
+    skills:
+      - gem: hollow-form
+        supports: [whirling-assault, mobility, blindside, magnified-area-ii]
+        level: 18
+        role: main
+        notePt: "Mobility = clear mais rápido; Magnified Area II = área dos clones (futuro: Vorana's Siege); Blindside = dano contra cego (o Blind vem do Hollow Focus)."
+      - gem: hollow-focus
+        supports: [magnified-area-ii, culling-strike-ii, blind-ii, cooldown-recovery-ii]
+        level: 18
+        role: utility
+        notePt: Sinos ao redor que os clones destroem, aplicando os suportes (cegueira, culling).
+      - gem: rend
+        supports: [perpetual-charge, rapid-attacks-ii, prolonged-duration-ii, rage-iii]
+        level: 18
+        slotPt: Weapon Set 2 (Talismã)
+        role: buff
+        notePt: Gasta Power Charge por buff de dano. Precisa de talismã no Weapon Set 2.
+      - gem: devour
+        supports: [charge-profusion-ii, thrill-of-the-kill, prolonged-duration-i]
+        level: 12
+        slotPt: Weapon Set 2 (Talismã)
+        role: utility
+        notePt: Funciona em cadáveres E nos sinos do Hollow Focus — cargas manuais quando faltar.
+      - gem: pounce
+        supports: [rapid-attacks-i, mark-for-death]
+        level: 12
+        slotPt: Weapon Set 2 (Talismã)
+        role: movement
+        notePt: Sempre pule no chefe antes da luta pra aplicar a marca.
+      - gem: frost-wall
+        supports: [rapid-casting-ii, spell-cascade, glacier]
+        level: 14
+        role: boss
+        optional: true
+        notePt: Opcional pra chefe — paredes em volta do chefe que os clones quebram causando dano.
+    spirit:
+      - gem: wind-dancer
+        supports: [maim, blind-i]
+        level: 15
+        role: defense
+      - gem: ghost-dance
+        supports: [cooldown-recovery-ii]
+        level: 12
+        role: defense
+      - gem: convalescence
+        supports: [prolonged-duration-ii, second-wind-iii, cooldown-recovery-i]
+        level: 13
+        role: defense
+      - gem: charge-regulation
+        supports: [clarity-i]
+        level: 14
+        role: buff
+      - gem: blasphemy
+        supports: [temporal-chains, slow-potency, magnified-area-i, focused-curse, ritualistic-curse]
+        level: 14
+        role: curse
+        notePt: Temporal Chains deixa tudo lento. Alternativa pra clear — Temporal Chains + Repulsion.
+    items:
+      - item: nazirs-judgement
+        required: true
+        whyPt: Cajado de entrada — dano físico alto e barato. Com Farrul's Rune of the Hunt o requisito sobe pro 50.
+        craftPt: 2× Greater Iron Rune
+      - item: lochtonial-caress
+        required: true
+        whyPt: Obrigatória — ativa o ciclo de cargas com Way of the Stonefist. Mire em ~9–10% de chance por carga.
+      - item: amor-mandragora
+        whyPt: Talismã do Weapon Set 2 (Rend, Devour, Pounce precisam de talismã).
+      - item: transcendent-mana-flask
+        whyPt: Recuperação de cargas por segundo — mana resolvida.
+    gear:
+      - slot: weapon
+        priorityPt: [Dano plano (Físico/Raio/Frio/Fogo), "% dano (Físico/Elemental)", "+nível de skills (Melee/Attack)", Chance de crítico, Dano crítico, Velocidade de ataque]
+      - slot: body
+        basesEn: [Evasion/Energy Shield]
+        priorityPt: [Evasão/ES, Spirit, Vida, Resistências]
+        notePt: Mais ES → priorize Ghost Dance + Convalescence; mais Evasão → Wind Dancer.
+      - slot: amulet
+        priorityPt: ["+nível de skills / skills melee", "ES/EV plano e %", Resistências, Spirit]
+      - slot: ring
+        priorityPt: [Dano plano (o máximo possível), Resistências, Raridade, Atributos]
+    ascendancy:
+      whenPt: 3ª ascensão (endgame)
+      take: [hollow-focus-technique]
+      notePt: O PoB do Scorpius (nível 79) tem Way of the Stonefist, Hollow Form Technique e Hollow Focus Technique.
+    tree:
+      pob: scorpius
+      spec: Early Endgame
+    treeNotesPt:
+      - Weapon Set 1 (vermelho no guia) = cajado; Weapon Set 2 (verde) = talismã, com nodes de duração pro buff do Devour/Rend durar mais.
+      - "Mana: se faltar, Efficiency II no Hollow Form, Sapphire com mana on kill ou Efficient Casting na árvore."
+    howToPlayPt:
+      - Segure Hollow Form em tudo. Hollow Focus é automático.
+      - Devour nos cadáveres/sinos quando faltar carga; Rend sempre ativo.
+    bossingPt:
+      - Pounce no chefe (Mark for Death) → Rend → Frost Wall em volta (opcional) → Hollow Form.
+    checklist:
+      - Respec da árvore (PoB Scorpius · Early Endgame)
+      - Cajado no Weapon Set 1, talismã no Weapon Set 2
+      - 3ª ascensão → Hollow Focus Technique
+      - Hollow Form + Whirling Assault + Mobility + Blindside + Magnified Area II
+      - Hollow Focus + Magnified Area II + Culling Strike II + Blind II + Cooldown Recovery II
+      - Auras — defensivas primeiro (Wind Dancer, Ghost Dance, Convalescence), depois Charge Regulation e Blasphemy
+      - Filtro NeverSink 2-semi-strict (T1–5) → 3-strict a partir do T6
+
+  # ---------------------------------------------------------------- ENDGAME
+  - id: endgame
+    levels: [80, 100]
+    title: T12+ — upgrades de cajado e 4ª ascensão
+    stagePt: Mapas T12+
+    source: scorpius
+    filter: t13
+    summaryPt: >-
+      Mesmo setup, agora escalando equipamento: perto do T12 troque o Nazir's por Duality ou um cajado raro bom.
+      Hollow Form ganha um 5º suporte (Efficiency II ou Rakiata's Flow) e a 4ª ascensão entra.
+    goalsPt:
+      - Cajado — Duality ou rare (+nível de skills, dano plano, crítico).
+      - 5º suporte no Hollow Form.
+      - "4ª ascensão (ver verificação: guias divergem)."
+    skills:
+      - gem: hollow-form
+        supports: [whirling-assault, mobility, blindside, magnified-area-ii, efficiency-ii]
+        level: 20
+        role: main
+        notePt: "5º suporte: Efficiency II (barato, ajuda mana) ou Rakiata's Flow (mais caro). Futuro: Vorana's Siege no lugar do Magnified Area II."
+        verify: Confirmar em que nível o Hollow Form ganha o 5º socket (Cliptis cita mais sockets no 65 e no 90).
+      - gem: hollow-focus
+        supports: [magnified-area-ii, culling-strike-ii, blind-ii, cooldown-recovery-ii]
+        role: utility
+      - gem: rend
+        supports: [perpetual-charge, rapid-attacks-ii, prolonged-duration-ii, rage-iii]
+        slotPt: Weapon Set 2 (Talismã)
+        role: buff
+      - gem: devour
+        supports: [charge-profusion-ii, thrill-of-the-kill, prolonged-duration-i]
+        slotPt: Weapon Set 2 (Talismã)
+        role: utility
+      - gem: pounce
+        supports: [rapid-attacks-i, mark-for-death]
+        slotPt: Weapon Set 2 (Talismã)
+        role: movement
+      - gem: frost-wall
+        supports: [rapid-casting-ii, spell-cascade, glacier]
+        role: boss
+        optional: true
+    spirit:
+      - gem: wind-dancer
+        supports: [maim, blind-i]
+        role: defense
+      - gem: ghost-dance
+        supports: [cooldown-recovery-ii]
+        role: defense
+      - gem: convalescence
+        supports: [prolonged-duration-ii, second-wind-iii, cooldown-recovery-i]
+        role: defense
+      - gem: charge-regulation
+        supports: [clarity-i]
+        role: buff
+      - gem: blasphemy
+        supports: [temporal-chains, slow-potency, magnified-area-i, focused-curse, ritualistic-curse]
+        role: curse
+    items:
+      - item: duality
+        whyPt: Upgrade de cajado perto do T12 (ou um rare forte). Aumento de dano grande.
+      - item: farruls-rune-of-the-hunt
+        whyPt: "Opcional: mais dano contra chefes e raros. Sobe o requisito do cajado pro nível 50."
+      - item: lochtonial-caress
+        required: true
+        whyPt: Continua obrigatória.
+    ascendancy:
+      whenPt: 4ª ascensão (endgame)
+      take: [runic-meridians]
+      notePt: >-
+        Barricade e Cliptis vão de Runic Meridians (5 sockets extras só de runa — fecha resistências).
+        Alternativas citadas — Way of the Mountain ou Hollow Resonance Technique.
+      verify: O guia do Scorpius não mostra a 4ª ascensão (o PoB é nível 79). Confirmar qual ele usa.
+    tree:
+      pob: scorpius
+      spec: Early Endgame
+    treeNotesPt:
+      - Mesma árvore do Early Endgame; os pontos extras vão pra mais Evasão/ES e dano crítico conforme o equipamento.
+    checklist:
+      - Duality ou cajado raro
+      - 5º suporte no Hollow Form
+      - 4ª ascensão
+      - Filtro NeverSink 4-very-strict a partir do T13
+
+ascendancyOrder:
+  - passive: hollow-focus-technique
+    orderPt: 1ª (Ato 2)
+    whyPt: Sinos = Power Charges fáceis durante a campanha.
+  - passive: hollow-form-technique
+    orderPt: 2ª (nível 41)
+    whyPt: Libera o Hollow Form, onde vai o Whirling Assault.
+  - passive: way-of-the-stonefist
+    orderPt: 2ª (respec do Hollow Focus)
+    whyPt: Transforma a luva (Lochtonial Caress) e fecha o ciclo de cargas com os clones.
+  - passive: hollow-focus-technique
+    orderPt: 3ª (endgame)
+    whyPt: Volta como utilitário — sinos com Blind II e Culling Strike II pros clones quebrarem.
+  - passive: runic-meridians
+    orderPt: 4ª (endgame)
+    whyPt: 5 sockets extras de runa (1 elmo, 2 peitoral, 1 luva, 1 bota) pra fechar resistências/atributos.
+    verify: Guias divergem na 4ª — Runic Meridians (Barricade, Cliptis) vs Way of the Mountain / Hollow Resonance (prompt).
+  - passive: way-of-the-mountain
+    orderPt: Alternativa (4ª)
+    whyPt: Acumula Mountain's Teachings ao imobilizar inimigos; perde ao ser atingido.
+    optional: true
+  - passive: hollow-resonance-technique
+    orderPt: Alternativa (4ª)
+    whyPt: Concede a skill Hollow Resonance.
+    optional: true
+
+spirit:
+  - gem: wind-dancer
+    supports: [maim, blind-i]
+    priority: 1
+    whyPt: Defensiva — prioridade se o equipamento for mais Evasão.
+  - gem: ghost-dance
+    supports: [cooldown-recovery-ii]
+    priority: 1
+    whyPt: Defensiva — prioridade se o equipamento for mais Energy Shield.
+  - gem: convalescence
+    supports: [prolonged-duration-ii, second-wind-iii, cooldown-recovery-i]
+    priority: 1
+    whyPt: Defensiva — recarga de Energy Shield.
+  - gem: charge-regulation
+    supports: [clarity-i]
+    priority: 2
+    whyPt: Buffs de dano/velocidade baseados nas cargas. Se faltar defesa, fica atrás das três defensivas.
+  - gem: blasphemy
+    supports: [temporal-chains, slow-potency, magnified-area-i, focused-curse, ritualistic-curse]
+    priority: 3
+    whyPt: Temporal Chains deixa os inimigos lentos (sobreviver em momento tenso).
+
+gearPriorities:
+  - slot: weapon
+    priorityPt: [Dano plano (Físico/Raio/Frio/Fogo), "% dano Físico/Elemental", "+nível de skills Melee/Attack", Chance de crítico, Dano crítico, Velocidade de ataque]
+    notePt: Nazir's Judgement → Duality (perto do T12) → cajado raro. Talismã no Weapon Set 2.
+  - slot: gloves
+    priorityPt: [Lochtonial Caress com ~10% de chance por carga]
+  - slot: body
+    basesEn: [Evasion/Energy Shield]
+    priorityPt: [Evasão/ES, Spirit, Vida, Resistências]
+  - slot: helmet
+    basesEn: [Evasion/Energy Shield]
+    priorityPt: [Evasão/ES, Vida, Resistências]
+  - slot: boots
+    basesEn: [Evasion/Energy Shield]
+    priorityPt: [Velocidade de movimento, Evasão/ES, Vida, Resistências]
+  - slot: amulet
+    priorityPt: ["+nível de skills (melee)", "ES/EV plano e %", Resistências, Spirit]
+  - slot: ring
+    priorityPt: [Dano plano, Resistências, Raridade, Atributos]
+  - slot: belt
+    priorityPt: [Vida, Resistências, Charm Slots]
+  - slot: flask
+    priorityPt: [Transcendent Mana Flask com recuperação de cargas por segundo]
+
+weaponSetPoints:
+  - { act: Ato 1, zone: Hunting Grounds, questEn: The Crowbell }
+  - { act: Ato 1, zone: Ogham Farmlands, questEn: "Una's Hut" }
+  - { act: Ato 2, zone: Keth, questEn: "Kabala, Constrictor Queen" }
+  - { act: Ato 2, zone: Deshar, questEn: Final Letter }
+  - { act: Ato 3, zone: Jungle Ruins, questEn: Mighty Silverfist }
+  - { act: Ato 3, zone: Aggorat, questEn: Blood Sacrifice }
+  - { act: Ato 4, zone: "Journey's End", questEn: Captain Hartlin }
+  - { act: Ato 4, zone: Halls of the Dead, questEn: Yama the White }
+  - { act: Interlúdio, zone: Wolvenhold, questEn: "Oswin, the Dread Warden" }
+  - { act: Interlúdio, zone: The Khari Crossing, questEn: Akthi and Anundr }
+  - { act: Interlúdio, zone: Howling Caves, questEn: The Abominable Yeti }
+  # TODO verificar: 11 quests × 2 = 22 pontos, mas a Mobalytics mostra 24 por weapon set.
+
+filter:
+  - id: campanha
+    stagePt: Campanha
+    strictness: 1-REGULAR
+    notePt: NeverSink pela ladder oficial (pathofexile.com → Item Filters → seguir o filtro do NeverSink).
+  - id: t1-5
+    stagePt: Mapas T1–T5
+    strictness: 2-SEMI-STRICT
+  - id: t6-12
+    stagePt: Mapas T6–T12
+    strictness: 3-STRICT
+  - id: t13
+    stagePt: Mapas T13+
+    strictness: 4-VERY-STRICT
+
+checklist:
+  - group: Recompensas permanentes da campanha
+    items:
+      - "+30 Spirit — Freythorn (The King in the Mists)"
+      - "+30 Spirit — The Azak Bog (Ignagduk, the Bog Witch)"
+      - "+40 Spirit — Kriar Village (Lythara, the Wayward Spear)"
+      - "+1 Charm Slot — Valley of the Titans (Medallion)"
+      - "+20 Vida — Ogham Manor (Candlemass)"
+  - group: Antes dos mapas
+    items:
+      - Lochtonial Caress equipada com Way of the Stonefist
+      - Hollow Form configurado só pro Weapon Set 2
+      - Resistências elementais em 75%
+      - Todos os pontos de weapon set alocados (Set 1 e Set 2)
+      - Transcendent Mana Flask com cargas por segundo
+      - Filtro NeverSink trocado pro 2-semi-strict
+
+faq: []
+
+changelog:
+  - date: 2026-11-07
+    patch: "0.5.5"
+    notesPt:
+      - Primeira versão. Leveling do guia Barricade/psynister (0.5.5) e endgame do Scorpius (PoB Early Endgame).
+      - O leveling da 0.4 (Quarterstaff Strike, Falling Thunder, Killing Palm; Rage I e Rapid Attacks I) foi substituído pelo da 0.5.5 — o Ato 1 continua parecido, a partir do Ato 2 muda (Hollow Palm + Storm Wave).

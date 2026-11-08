@@ -1,0 +1,21 @@
+{
+  "nameEn": "Blasphemy",
+  "kind": "spirit",
+  "attribute": "int",
+  "tags": [
+    "buff",
+    "persistent",
+    "area",
+    "aura",
+    "meta"
+  ],
+  "tier": 8,
+  "gameId": "Metadata/Items/Gems/SkillGemBlasphemy",
+  "wikiUrl": "https://www.poe2wiki.net/wiki/Blasphemy",
+  "poe2dbUrl": "https://poe2db.tw/us/Blasphemy",
+  "descriptionEn": "Turn socketed Curse skills into vile Auras, applying their effects to all nearby enemies.",
+  "summaryPt": "Transforma a maldição encaixada nela em aura: todo inimigo perto de você fica amaldiçoado o tempo todo.",
+  "wherePt": "Uncut Spirit Gem (nível 8+).",
+  "namePtBr": "Blasfêmia",
+  "namePtBrSource": "poe2db"
+}
