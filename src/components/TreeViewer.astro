@@ -2,6 +2,11 @@
 /**
  * Árvore de passivas interativa com seletor de fase (island cliente em canvas 2D).
  * Se a árvore não carregar, mostra o fallback: link do PoB + lista textual dos notáveis da fase.
+ *
+ * Usos:
+ *  - página da build: painel próprio com título e botões de fase; baixa a árvore logo após o load (load="idle").
+ *  - modo jogando: `embedded` dentro de uma caixa `.box`, `phaseButtons={false}` (a fase vem do seletor do jogando
+ *    via evento `plan-poe:state`) e `load="visible"` (só baixa com a caixa aberta e na tela).
  */
 import { url } from '../lib/site.ts';
 import type { ResolvedPhaseTree } from '../lib/build-tree.ts';
@@ -16,8 +21,26 @@ interface Props {
   stateKey?: string;
   initialPhase?: string;
   title?: string;
+  /** Botões de fase próprios do viewer (desligar quando a página já tem seletor de fase). */
+  phaseButtons?: boolean;
+  /** Dentro de uma caixa `.box`: sem moldura de painel nem título (o título é o da caixa). */
+  embedded?: boolean;
+  /** Quando baixar a árvore: 'idle' = logo após o load da página (TREE-02); 'visible' = perto da tela. */
+  load?: 'idle' | 'visible';
 }
-const { id = 'arvore', treeVersion, ascendancy, className, phases, stateKey, initialPhase, title = 'Árvore de passivas' } = Astro.props;
+const {
+  id = 'arvore',
+  treeVersion,
+  ascendancy,
+  className,
+  phases,
+  stateKey,
+  initialPhase,
+  title = 'Árvore de passivas',
+  phaseButtons = true,
+  embedded = false,
+  load = 'idle',
+} = Astro.props;
 const viewerPhases = phases.map((p) => ({
   phaseId: p.phaseId,
   label: p.label,
@@ -38,32 +61,44 @@ const config = {
   phases: viewerPhases,
   stateKey,
   initialPhase: initialPhase ?? phases[phases.length - 1]?.phaseId,
+  loadOn: load,
 };
 const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as string[];
+const waitMsg = load === 'idle' ? 'Carregando árvore…' : 'A árvore carrega quando aparecer na tela…';
 ---
 
-<section class="tree-viewer panel" id={id} data-tree-viewer data-config={JSON.stringify(config)}>
+<section
+  class:list={['tree-viewer', { panel: !embedded, 'tv--embedded': embedded, 'tv--solo': !phaseButtons }]}
+  id={id}
+  data-tree-viewer
+  data-config={JSON.stringify(config)}
+>
   <div class="tv-head">
-    <h2>{title}</h2>
+    {!embedded && <h2>{title}</h2>}
     <p class="muted small">
       Arraste pra mover, roda/pinça pra zoom, toque num node pra ver os stats. <span class="legend">
-        <i class="lg on"></i>alocado <i class="lg new"></i>novo na fase <i class="lg rem"></i>sai no respec
-        <i class="lg w1"></i>Weapon Set 1 <i class="lg w2"></i>Weapon Set 2
+        <span><i class="lg on"></i>alocado</span>
+        <span><i class="lg new"></i>novo na fase</span>
+        <span><i class="lg rem"></i>sai no respec</span>
+        <span><i class="lg w1"></i>Weapon Set 1</span>
+        <span><i class="lg w2"></i>Weapon Set 2</span>
       </span>
     </p>
   </div>
-  <div class="phases" role="group" aria-label="Fase da árvore">
-    {
-      phases.map((p) => (
-        <button type="button" class="ph-btn" data-phase={p.phaseId} aria-pressed="false">
-          <span class="lv">
-            {p.levels[0]}–{p.levels[1]}
-          </span>
-          <span class="lb">{p.label.split(' · ')[0]}</span>
-        </button>
-      ))
-    }
-  </div>
+  {
+    phaseButtons && (
+      <div class="phases" role="group" aria-label="Fase da árvore">
+        {phases.map((p) => (
+          <button type="button" class="ph-btn" data-phase={p.phaseId} aria-pressed="false">
+            <span class="lv">
+              {p.levels[0]}–{p.levels[1]}
+            </span>
+            <span class="lb">{p.label.split(' · ')[0]}</span>
+          </button>
+        ))}
+      </div>
+    )
+  }
   <div class="toolbar">
     <label class="search">
       <span class="visually-hidden">Buscar node</span>
@@ -81,7 +116,7 @@ const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as st
   <div class="stage" data-stage>
     <canvas aria-label="Árvore de passivas"></canvas>
     <div class="tip" data-tip hidden></div>
-    <div class="status" data-status>Árvore carrega quando você rolar até aqui…</div>
+    <div class="status" data-status>{waitMsg}</div>
     <div class="fallback" data-fallback hidden>
       <p><strong>A árvore não carregou.</strong> Abra o código no pobb.in ou siga a lista de notáveis abaixo.</p>
       <p>
@@ -127,9 +162,11 @@ const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as st
       e.preventDefault();
       viewer.selectPhase(btn.dataset.showTree!, { scroll: true });
     });
-    // fase atual mudou em outro lugar da página
+    // fase atual mudou em outro lugar da página (botão "Estou aqui", seletor do modo jogando)
     window.addEventListener('plan-poe:state', (e) => {
-      const phase = (e as CustomEvent).detail?.state?.phase;
+      const detail = (e as CustomEvent<{ build?: string; state?: { phase?: string } }>).detail;
+      if (cfg.stateKey && detail?.build && detail.build !== cfg.stateKey) return;
+      const phase = detail?.state?.phase;
       if (phase) viewer.selectPhase(phase);
     });
   }
@@ -154,14 +191,21 @@ const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as st
     display: inline-flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px 6px;
+    gap: 2px 12px;
+  }
+  /* bolinha + rótulo nunca se separam na quebra de linha */
+  .legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
   }
   .lg {
     display: inline-block;
+    flex: none;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    margin-left: 6px;
   }
   .lg.on {
     background: #d2ad6b;
@@ -265,6 +309,29 @@ const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as st
   .counters :global(b.r) {
     color: var(--removed);
   }
+  /* nome da fase no contador: só na tela cheia sem botões de fase (modo jogando) */
+  .counters :global(.cur) {
+    display: none;
+  }
+  .tv--solo:global(.is-full) .counters :global(.cur) {
+    display: inline;
+    margin-right: 8px;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    color: var(--bronze-hi);
+  }
+
+  /* dentro de uma caixa .box (modo jogando): sem moldura própria */
+  .tv--embedded {
+    padding: 0;
+    margin-top: 0;
+  }
+  .tv--embedded .tv-head {
+    margin-bottom: 4px;
+  }
+  .tv--embedded .toolbar {
+    margin-top: 6px;
+  }
   .stage {
     position: relative;
     height: min(70vh, 720px);
@@ -361,6 +428,7 @@ const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as st
     display: flex;
     flex-direction: column;
     padding: 10px 10px max(10px, env(safe-area-inset-bottom));
+    background: var(--bg);
   }
   .tree-viewer:global(.is-full) .tv-head {
     display: none;
@@ -385,6 +453,25 @@ const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as st
     }
     .tools .btn:not(.icon):not([data-fullscreen]) {
       display: none;
+    }
+    .tv--embedded {
+      padding: 0;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* no celular o palco ocupa a largura inteira da caixa */
+    .tv--embedded .stage {
+      margin-inline: -14px;
+      border-inline: 0;
+      border-radius: 0;
+    }
+    .tv--embedded:global(.is-full) {
+      padding: 10px 10px max(10px, env(safe-area-inset-bottom));
+    }
+    .tv--embedded:global(.is-full) .stage {
+      margin-inline: 0;
+      border-inline: 1px solid var(--border);
+      border-radius: var(--radius);
     }
   }
 </style>

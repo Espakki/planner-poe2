@@ -4,6 +4,11 @@
  *  - nodes NOVOS da fase em verde (comparado com a fase anterior), desalocados (respec) com anel vermelho
  *  - Weapon Set 1 / 2 com anel próprio
  *  - zoom (roda / pinça) e pan (arrastar), tooltip (hover / toque), busca por nome ou stat
+ *
+ * Carregamento do JSON (uma vez por viewer):
+ *  - 'visible' (padrão): quando o viewer chega perto da tela. Dentro de <details> fechado não carrega;
+ *    ao abrir a caixa, checa de novo e centraliza nos nodes da fase.
+ *  - 'idle': começa o download assim que a página termina de carregar (sem esperar rolar até a árvore).
  */
 import type { CompactTree, TreeNode } from '../lib/tree-types.ts';
 
@@ -28,6 +33,8 @@ export interface ViewerOptions {
   phases: ViewerPhase[];
   initialPhase?: string;
   onPhaseChange?: (id: string) => void;
+  /** Quando baixar a árvore: 'visible' (perto da tela, padrão) ou 'idle' (logo após o load da página). */
+  loadOn?: 'visible' | 'idle';
 }
 
 type Status = 'off' | 'on' | 'new' | 'removed';
@@ -72,6 +79,10 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
   const searchCount = root.querySelector<HTMLElement>('[data-search-count]');
   const fallback = root.querySelector<HTMLElement>('[data-fallback]');
   const ctx = canvas.getContext('2d')!;
+  /** Caixa <details> em volta do viewer (modo jogando), se houver. */
+  const box = root.parentElement?.closest('details') ?? null;
+  /** Viewer está sendo renderizado (caixa aberta, sem display:none em volta)? */
+  const shown = () => (!box || box.open) && root.getClientRects().length > 0;
 
   let tree: CompactTree | null = null;
   let nodes: TreeNode[] = [];
@@ -99,6 +110,11 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
   const maxScale = 0.9;
   let dpr = 1;
   let raf = 0;
+  /** Centralizar assim que o palco tiver tamanho (ex.: fase trocada com a caixa fechada). */
+  let needsFit = true;
+  /** O palco estava sem tamanho (caixa fechada/escondida) na última medição. */
+  let wasHidden = true;
+  let loading: Promise<void> | null = null;
 
   const statusOf = (id: number): Status =>
     added.has(id) ? 'new' : alloc.has(id) ? 'on' : removed.has(id) ? 'removed' : 'off';
@@ -108,7 +124,12 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
     status.hidden = !msg;
   }
 
-  async function load() {
+  /** Baixa e prepara a árvore uma única vez (chamadas repetidas reaproveitam a mesma promessa). */
+  function load() {
+    return (loading ??= doLoad());
+  }
+
+  async function doLoad() {
     setStatus('Carregando árvore…');
     try {
       const res = await fetch(opts.treeUrl);
@@ -145,7 +166,9 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
       b.setAttribute('aria-pressed', String(b.dataset.phase === p.phaseId));
     }
     if (counters) {
-      const parts = [`<b>${p.mainPoints}</b> pontos`];
+      const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+      // nome da fase: só aparece quando não há botões de fase à vista (CSS, ex.: tela cheia no modo jogando)
+      const parts = [`<span class="cur">${esc(p.label.split(' · ')[0])}</span><b>${p.mainPoints}</b> pontos`];
       if (p.wsPoints) parts.push(`<b>${p.wsPoints}</b> weapon set`);
       if (p.ascPoints) parts.push(`<b>${p.ascPoints}</b> ascendência`);
       if (i > 0) parts.push(`<b class="n">+${p.added.length}</b> novos`);
@@ -163,6 +186,15 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     const r = stage.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1 || !shown()) {
+      // caixa fechada / escondida: mantém o canvas como está e centraliza quando voltar a aparecer
+      wasHidden = true;
+      return;
+    }
+    if (wasHidden) {
+      wasHidden = false;
+      needsFit = true;
+    }
     canvas.width = Math.max(1, Math.round(r.width * dpr));
     canvas.height = Math.max(1, Math.round(r.height * dpr));
     canvas.style.width = `${r.width}px`;
@@ -171,11 +203,18 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
       const [x0, y0, x1, y1] = tree.bounds;
       minScale = Math.min(r.width / (x1 - x0), r.height / (y1 - y0)) * 0.7;
     }
-    draw();
+    if (tree && needsFit) fitTo([...alloc]);
+    else draw();
   }
 
   function fitTo(ids: number[]) {
     const r = stage.getBoundingClientRect();
+    if (!tree || r.width < 1 || r.height < 1 || !shown()) {
+      // sem árvore ou sem palco visível: centraliza depois (load / abertura da caixa)
+      needsFit = true;
+      return;
+    }
+    needsFit = false;
     const pts = ids.map((id) => byId.get(id)).filter((n): n is TreeNode => !!n && !n.asc);
     let x0: number, y0: number, x1: number, y1: number;
     if (pts.length < 3 && tree) [x0, y0, x1, y1] = tree.bounds;
@@ -567,6 +606,7 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
     document.documentElement.classList.toggle('tree-full', on);
     const btn = root.querySelector<HTMLButtonElement>('[data-fullscreen]');
     if (btn) btn.setAttribute('aria-pressed', String(on));
+    if (on) void load();
     requestAnimationFrame(() => {
       resize();
       fitTo([...alloc]);
@@ -605,10 +645,13 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
 
   new ResizeObserver(() => resize()).observe(stage);
 
-  // carrega só quando a árvore chega perto da tela
+  // contador da fase inicial já aparece antes da árvore carregar
+  applyPhase(phaseIdx);
+
+  // carrega quando a árvore chega perto da tela (e a caixa em volta está aberta)
   const io = new IntersectionObserver(
     (entries) => {
-      if (entries.some((e) => e.isIntersecting)) {
+      if (entries.some((e) => e.isIntersecting) && shown()) {
         io.disconnect();
         void load();
       }
@@ -617,14 +660,37 @@ export function mountTreeViewer(root: HTMLElement, opts: ViewerOptions) {
   );
   io.observe(root);
 
+  // caixa <details> abriu: checa de novo se dá pra carregar e centraliza nos nodes da fase
+  box?.addEventListener('toggle', () => {
+    if (!box.open) return;
+    needsFit = true;
+    if (!loading) {
+      io.unobserve(root);
+      io.observe(root); // observe() sempre entrega o estado atual → carrega se já estiver na tela
+    }
+    requestAnimationFrame(() => resize());
+  });
+
+  // TREE-02: começa o download logo depois do load da página, sem esperar rolar até a árvore
+  if (opts.loadOn === 'idle') {
+    const start = () => {
+      const kick = () => void load();
+      if ('requestIdleCallback' in window) window.requestIdleCallback(kick, { timeout: 2000 });
+      else setTimeout(kick, 300);
+    };
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+  }
+
   return {
     selectPhase(id: string, opts2: { scroll?: boolean } = {}) {
       const i = opts.phases.findIndex((p) => p.phaseId === id);
       if (i < 0) return;
-      if (tree) applyPhase(i, true);
-      else phaseIdx = i;
+      // sem árvore (ainda) ou caixa fechada: guarda a fase, atualiza o contador e centraliza quando aparecer
+      applyPhase(i, true);
       if (opts2.scroll) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
     fullscreen: toggleFull,
+    load,
   };
 }
