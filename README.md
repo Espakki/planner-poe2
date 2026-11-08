@@ -31,7 +31,11 @@ cd planner-poe2
 docker compose up -d --build
 ```
 
-Fica em `http://<ip-do-homelab>:8080`. Pra atualizar depois de mudar a build: `git pull && docker compose up -d --build`.
+Fica em `http://<ip-do-homelab>:8080` (outra porta: `PLANNER_PORT=9090` no `.env` da stack).
+Pra atualizar depois de mudar a build: `git pull && docker compose up -d --build`.
+
+**Com Dockge:** clone dentro da pasta de stacks (padrão `/opt/stacks`) — o `compose.yaml` está na raiz do repo, então a stack
+`planner-poe2` aparece sozinha no Dockge. Primeiro "Deploy" gera a imagem; depois de `git pull`, "Deploy" de novo reconstrói.
 O build da imagem roda o `npm run check` antes — se algum dado estiver quebrado, a imagem não é gerada e o site antigo continua no ar.
 
 **Sem Docker (Node 22+):**

@@ -1,3 +1,6 @@
+# Funciona como stack do Dockge: clone o repo dentro da pasta de stacks
+# (padrão /opt/stacks/planner-poe2) que o Dockge já mostra a stack "planner-poe2".
+# Porta: PLANNER_PORT no .env da stack (padrão 8080).
 services:
   planner-poe2:
     build:
@@ -5,7 +8,9 @@ services:
       # args:
       #   BASE_PATH: /poe   # só se for servir atrás de um subcaminho no proxy
     image: planner-poe2:local
+    # sempre gera a imagem a partir do código (o "Update" do Dockge não tenta baixar de registry)
+    pull_policy: build
     container_name: planner-poe2
     ports:
-      - "8080:80"
+      - "${PLANNER_PORT:-8080}:80"
     restart: unless-stopped
