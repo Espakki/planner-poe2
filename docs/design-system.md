@@ -43,6 +43,25 @@ Cabeçalho → `intro` (resumo + Objetivos) → `.boxes`:
 `Skills` (largura total) · `Equipamento` (largura total) · `Árvore & Ascendência` | [`Como jogar` + `Checklist`].
 Conteúdo de cada caixa em `src/components/phase/*` — **cada um tem dono no backlog**, não editar o de outro item.
 
+## Componentes das caixas
+Detalhes completos (decisões, medidas, comportamento) em `docs/design/*.md` — um arquivo por item do backlog.
+
+- **Skills** (`phase/SkillsPanel` + `GemGroup` + `skills/*`, script `src/scripts/skills.ts`) — [ui-02-skills.md](design/ui-02-skills.md)
+  - Grupo `.gg`: cabeça = botão com o ícone da habilidade (52px) + nome EN na cor do atributo + PT; suportes como gemas
+    encaixadas (`.socks`, pílulas ligadas por traço bronze); gema de skill encaixada (Whirling Assault no Hollow Form) em encaixe quadrado.
+  - Weapon set: selo "II"/"I" no ícone + borda esquerda em `--ws2`/`--ws1`. Opcional: borda tracejada.
+  - Detalhe: um painel por grupo logo abaixo, texto de cada gema 1× por página em `<template data-gem-tpl>`.
+  - Layout por container query (`gg`), não media query. Skills e Spirit/auras separados.
+- **Equipamento** (`phase/GearPanel` + `gear/*` + `ItemCard`, script `src/scripts/gear.ts`) — [ui-03-inventario.md](design/ui-03-inventario.md)
+  - Boneco com Weapon Set I/II (radios + `:has()`), arte em células reais (`--cell-max` 52px; 44px no jogando).
+  - Painel largo (≥ 760px, container query `gear`): boneco + resumo | detalhe fixo ao lado. Estreito: detalhe em bottom sheet (`<dialog>`).
+  - Regras de slot em `gear/inventory.ts`; exceções com `equip:` no item da fase (`weapon-2`, `ring-2`, `flask-mana`…).
+  - Currency/runas/uncut gems fora do boneco, na faixa "Pra conseguir / craftar".
+- **Árvore** (`TreeViewer` + `src/scripts/tree-viewer.ts`) — [ui-04-arvore-jogando.md](design/ui-04-arvore-jogando.md)
+  - Props: `embedded` (sem cabeçalho próprio, dentro de caixa), `phaseButtons={false}` (fase vem de fora, via `plan-poe:state`),
+    `load` (quando baixar o JSON). Página da build mantém os botões de fase.
+  - No `/jogando/`: caixa `box--tree` `data-box="tree-play"` no fim da página, acompanha o seletor de fase.
+
 ## Arte do jogo
 - Itens: `public/icons/items/*.webp` no tamanho nativo do inventário; `public/icons/sizes.json` → `{ w, h, cw, ch }` (cw×ch = células).
   Uma célula ≈ 106px na arte; no site, escolha um tamanho de célula (ex.: 44px) e multiplique.
