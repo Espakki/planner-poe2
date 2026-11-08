@@ -14,7 +14,7 @@ Feito na sessão principal (main). Fontes temáticas com 4 temas em `/lab/tipogr
 paleta com mais contraste e cor por seção, fase reorganizada em caixas que abrem/fecham (estado salvo), arte dos itens no tamanho
 nativo do inventário (`public/icons/sizes.json`) e ícones de habilidade das gemas (`public/icons/skills/`).
 
-### [~] UI-02 · Skills estilo jogo — sessão "Skills estilo jogo", branch `ui-02-skills`
+### [~] UI-02 · Skills estilo jogo — sessão `ui02-skills`, branch `*ui-02-skills*`
 A caixa **Skills** mostra cada grupo como no painel de gemas do PoE2: ícone da habilidade (o da barra de skills) + a gema
 com os encaixes de suporte ao lado, cor por atributo. Clicar/tocar abre o detalhe (o que faz, onde conseguir, nível sugerido, nota da fase).
 - Aceite: dá pra entender de relance "qual skill, quais suportes, em que weapon set"; detalhes não poluem a visão geral; 375px ok;
@@ -22,7 +22,7 @@ com os encaixes de suporte ao lado, cor por atributo. Clicar/tocar abre o detalh
 - Arquivos (dono): `src/components/phase/SkillsPanel.astro`, `src/components/GemGroup.astro`, novos em `src/components/skills/`.
 - Dados: `gem.icon` (arte da gema), `gem.skillIcon` (habilidade, não existe pra suporte), `gem.attribute`, `gem.kind`, `setup.slotPt`, `setup.role`.
 
-### [~] UI-03 · Inventário do personagem + detalhe do item — sessão "Inventário estilo PoE", branch `ui-03-inventario`
+### [~] UI-03 · Inventário do personagem + detalhe do item — sessão `ui03-inventario`, branch `*ui-03-inventario*`
 A caixa **Equipamento** mostra um "boneco" com os slots do PoE2 (arma/talismã nos 2 weapon sets, elmo, peitoral, luvas, botas,
 amuleto, anéis, cinto, frascos, charms) com a arte do item no tamanho real (células em `sizes.json`); slot sem item mostra o que
 procurar (bases/prioridades). Clicar no item abre o detalhe: arte grande, nome EN/PT, por quê, onde pegar, mods principais pra focar, craft.
@@ -31,7 +31,7 @@ procurar (bases/prioridades). Clicar no item abre o detalhe: arte grande, nome E
   e se precisar de dado novo: `src/lib/schemas.ts` (só campos de item/fase de equipamento) + YAML/entities.
 - Itens de currency (uncut gems, Lesser Jeweller's Orb, runas) não são slot de personagem — mostrar à parte ("Pra conseguir/craftar").
 
-### [~] UI-04 · Árvore no modo jogando — sessão "Árvore no modo jogando", branch `ui-04-arvore-jogando`
+### [~] UI-04 · Árvore no modo jogando — sessão `ui04-arvore-jogando`, branch `*ui-04-arvore-jogando*`
 No `/jogando/`, a árvore da fase atual aparece numa caixa "Árvore" e acompanha a troca de fase (selecionar outra fase muda a árvore).
 Carrega só quando a caixa abre/aparece; tela cheia continua funcionando no celular.
 - Aceite: trocar a fase no seletor do jogando troca a árvore; sem baixar a árvore duas vezes; validate limpo.
