@@ -1,0 +1,19 @@
+---
+import Base from '../../../layouts/Base.astro';
+import BuildPage from '../../../components/BuildPage.astro';
+import { getBuildVersions } from '../../../lib/site.ts';
+
+export async function getStaticPaths() {
+  const bySlug = await getBuildVersions();
+  return [...bySlug.entries()].map(([slug, versions]) => ({
+    params: { slug },
+    props: { versions, version: versions.find((v) => v.isLatest)! },
+  }));
+}
+const { version, versions } = Astro.props;
+const m = version.data.meta;
+---
+
+<Base title={`${m.title} · ${m.ascendancy} ${m.patch}`} description={m.taglinePt}>
+  <BuildPage version={version} versions={versions} />
+</Base>

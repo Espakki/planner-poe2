@@ -1,0 +1,171 @@
+---
+/** Resumo textual da árvore de uma fase: pontos, notáveis novos (com ícone) e o que sair no respec. */
+import GameIcon from './GameIcon.astro';
+import { nodeIcon, getEntities } from '../lib/site.ts';
+import type { ResolvedPhaseTree } from '../lib/build-tree.ts';
+
+interface Props {
+  tree: ResolvedPhaseTree;
+  notesPt: string[];
+  compact?: boolean;
+}
+const { tree, notesPt, compact = false } = Astro.props;
+const { passives } = await getEntities();
+const passiveByNode = new Map([...passives.values()].map((p) => [p.nodeId, p]));
+const KIND: Record<string, string> = { N: 'Notável', K: 'Keystone', J: 'Joia' };
+const pobbUrl = tree.pobUrl;
+---
+
+<div class="tree-sum">
+  <div class="stats">
+    <div><strong>{tree.mainPoints}</strong><span>pontos</span></div>
+    {tree.wsPoints > 0 && <div><strong>{tree.wsPoints}</strong><span>weapon set</span></div>}
+    {tree.ascPoints > 0 && <div><strong>{tree.ascPoints}</strong><span>ascendência</span></div>}
+    <div class="new"><strong>+{tree.added.length}</strong><span>novos</span></div>
+    {tree.removed.length > 0 && <div class="rem"><strong>−{tree.removed.length}</strong><span>respec</span></div>}
+  </div>
+
+  {notesPt.length > 0 && (
+    <ul class="notes">
+      {notesPt.map((n) => <li>{n}</li>)}
+    </ul>
+  )}
+
+  {
+    tree.newNotables.length > 0 && (
+      <>
+        <p class="sub">Pegar nesta fase</p>
+        <ul class="nodes">
+          {tree.newNotables.map((n) => {
+            const pe = passiveByNode.get(n.id);
+            return (
+              <li class:list={['node', { asc: n.asc }]} title={n.stats.join('\n')}>
+                <GameIcon src={pe?.icon ?? nodeIcon(n.id)} name={n.name} tone="passive" size={compact ? 26 : 32} frame="round" />
+                <div>
+                  <div class="nname">
+                    {n.name}
+                    {pe?.namePtBr && <span class="pt"> {pe.namePtBr}</span>}
+                  </div>
+                  <div class="nkind">
+                    {n.asc ? `Ascendência · ${n.asc}` : KIND[n.kind]}
+                    {!compact && n.stats.length > 0 && <span class="nstats"> — {n.stats.join(' · ')}</span>}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )
+  }
+  {
+    tree.removedNotables.length > 0 && (
+      <>
+        <p class="sub rem">Sai no respec</p>
+        <p class="removed">{tree.removedNotables.map((n) => n.name + (n.asc ? ' (asc.)' : '')).join(' · ')}</p>
+      </>
+    )
+  }
+  {tree.error && <p class="err">Árvore indisponível: {tree.error}</p>}
+  <p class="origin muted small">
+    Fonte: {tree.originPt}
+    {pobbUrl && (
+      <>
+        {' · '}
+        <a href={pobbUrl} target="_blank" rel="noopener">abrir no pobb.in</a>
+      </>
+    )}
+  </p>
+</div>
+
+<style>
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .stats div {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgb(0 0 0 / 0.2);
+  }
+  .stats strong {
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+  .stats span {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .stats .new strong {
+    color: var(--new);
+  }
+  .stats .rem strong {
+    color: var(--removed);
+  }
+  .notes {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-2);
+    display: grid;
+    gap: 3px;
+  }
+  .sub {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--new);
+  }
+  .sub.rem {
+    color: var(--removed);
+  }
+  .nodes {
+    list-style: none;
+    padding: 0;
+    margin-top: 6px;
+    display: grid;
+    gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  }
+  .node {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 6px 8px;
+    border: 1px solid color-mix(in srgb, var(--new) 25%, var(--border));
+    border-radius: var(--radius);
+    background: rgb(95 211 138 / 0.04);
+  }
+  .node.asc {
+    border-color: color-mix(in srgb, var(--bronze-hi) 45%, var(--border));
+    background: rgb(217 183 124 / 0.05);
+  }
+  .nname {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .nkind {
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+  .nstats {
+    color: var(--text-2);
+  }
+  .removed {
+    font-size: 0.86rem;
+    color: color-mix(in srgb, var(--removed) 80%, var(--text));
+    margin-top: 4px;
+  }
+  .err {
+    color: var(--removed);
+    margin-top: 8px;
+  }
+  .origin {
+    margin-top: 10px;
+  }
+</style>

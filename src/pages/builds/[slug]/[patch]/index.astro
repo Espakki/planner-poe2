@@ -1,0 +1,19 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import BuildPage from '../../../../components/BuildPage.astro';
+import { getBuildVersions } from '../../../../lib/site.ts';
+
+/** Uma página por patch (inclusive o atual), pra manter links antigos funcionando. */
+export async function getStaticPaths() {
+  const bySlug = await getBuildVersions();
+  return [...bySlug.entries()].flatMap(([slug, versions]) =>
+    versions.map((version) => ({ params: { slug, patch: version.patch }, props: { version, versions } })),
+  );
+}
+const { version, versions } = Astro.props;
+const m = version.data.meta;
+---
+
+<Base title={`${m.title} · ${m.patch}`} description={m.taglinePt}>
+  <BuildPage version={version} versions={versions} />
+</Base>

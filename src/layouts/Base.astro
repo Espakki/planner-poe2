@@ -1,0 +1,96 @@
+---
+import '@fontsource/cinzel/600.css';
+import '@fontsource/cinzel/700.css';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import { url } from '../lib/site.ts';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Página "modo jogando": sem header grande. */
+  compact?: boolean;
+}
+const { title, description = 'Builds de Path of Exile 2 em PT-BR, fase a fase.', compact = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0a08" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <title>{title}</title>
+  </head>
+  <body class={compact ? 'is-compact' : ''}>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href={url()}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"
+            ><path
+              d="M12 2 4 6v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-4Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"></path><path d="M12 7v10M8 11h8" stroke="currentColor" stroke-width="1.6"></path></svg
+          >
+          <span>Plano PoE2</span>
+        </a>
+        <slot name="header" />
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>Site de fã não oficial. Ícones e nomes © Grinding Gear Games.</p>
+        <p class="muted small">
+          Árvore: dados do <a href="https://github.com/PathOfBuildingCommunity/PathOfBuilding-PoE2">Path of Building (PoE2)</a>
+          · Ícones: <a href="https://www.poe2wiki.net/">poe2wiki.net</a> · Nomes PT-BR: <a href="https://poe2db.tw/pt/">poe2db.tw</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgb(11 10 8 / 0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--bronze-hi);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  main {
+    padding-bottom: 48px;
+  }
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 0 32px;
+    color: var(--text-2);
+    font-size: 0.86rem;
+  }
+  .site-footer p + p {
+    margin-top: 4px;
+  }
+</style>

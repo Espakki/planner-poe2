@@ -1,0 +1,93 @@
+---
+import { hashKey } from '../lib/site.ts';
+
+interface Props {
+  /** Grupo (ex.: id da fase) — usado no contador e na chave de storage. */
+  group: string;
+  items: string[];
+  title?: string;
+}
+const { group, items, title = 'Checklist' } = Astro.props;
+---
+
+<div class="checklist">
+  <div class="panel-title">
+    {title} <span class="count" data-check-count={group}>0/{items.length}</span>
+  </div>
+  <ul>
+    {
+      items.map((text) => {
+        const k = `${group}:${hashKey(text)}`;
+        return (
+          <li>
+            <label>
+              <input type="checkbox" data-check={k} data-group={group} />
+              <span>{text}</span>
+            </label>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
+
+<style>
+  ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+  }
+  label {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 6px 8px;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  label:hover {
+    background: rgb(255 255 255 / 0.03);
+  }
+  input {
+    flex: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    border: 1px solid var(--border-2);
+    border-radius: 4px;
+    background: #0a0907;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  input:checked {
+    background: var(--bronze);
+    border-color: var(--bronze-hi);
+  }
+  input:checked::after {
+    content: '';
+    width: 9px;
+    height: 5px;
+    border: 2px solid #120f0b;
+    border-top: 0;
+    border-right: 0;
+    transform: translateY(-1px) rotate(-45deg);
+  }
+  input:checked + span {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: rgb(150 138 119 / 0.5);
+  }
+  .count {
+    font-family: var(--font-body);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .count:global(.done) {
+    color: var(--new);
+  }
+</style>

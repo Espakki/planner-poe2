@@ -1,0 +1,629 @@
+---
+import PhaseSection from './PhaseSection.astro';
+import TreeViewer from './TreeViewer.astro';
+import GameIcon from './GameIcon.astro';
+import Checklist from './Checklist.astro';
+import { fmtDate, getEntities, getPhaseTrees, SLOT_PT, STATUS_PT, url, type BuildVersion } from '../lib/site.ts';
+
+interface Props {
+  version: BuildVersion;
+  versions: BuildVersion[];
+}
+const { version, versions } = Astro.props;
+const b = version.data;
+const m = b.meta;
+const trees = await getPhaseTrees(b);
+const treeOf = new Map(trees.map((t) => [t.phaseId, t]));
+const { gems, passives } = await getEntities();
+const stateKey = `${m.slug}@${m.patch}`;
+const latest = versions.find((v) => v.isLatest)!;
+const pobEntries = Object.entries(m.pob);
+---
+
+<div class="build" data-build={stateKey}>
+  <section class="hero wrap">
+    <div class="crumbs small muted">
+      <a href={url()}>Builds</a> › {m.class} › {m.ascendancy}
+    </div>
+    {
+      m.status !== 'active' && (
+        <div class="outdated" role="note">
+          <strong>Versão {STATUS_PT[m.status].toLowerCase()}</strong> — este é o guia do patch {m.patch}.
+          {latest.patch !== m.patch && (
+            <>
+              {' '}
+              A versão atual é a <a href={url(`builds/${m.slug}/`)}>{latest.patch}</a>.
+            </>
+          )}
+        </div>
+      )
+    }
+    <div class="hero-grid">
+      <div>
+        <p class="kicker">{m.class} · {m.ascendancy}</p>
+        <h1>{m.title}</h1>
+        <p class="tagline">{m.taglinePt}</p>
+        <div class="meta">
+          <span class="chip">Patch {m.patch}</span>
+          <span class="chip">{m.league}</span>
+          <span class:list={['chip', { req: m.status !== 'active' }]}>{STATUS_PT[m.status]}</span>
+          <span class="chip">Verificado em {fmtDate(m.lastVerified)}</span>
+        </div>
+        {
+          versions.length > 1 && (
+            <label class="patch-sel">
+              <span class="small muted">Versão:</span>
+              <select data-patch-select>
+                {versions.map((v) => (
+                  <option
+                    value={v.isLatest ? url(`builds/${v.slug}/`) : url(`builds/${v.slug}/${v.patch}/`)}
+                    selected={v.patch === m.patch}
+                  >
+                    {v.patch} {v.isLatest ? '(atual)' : `(${STATUS_PT[v.data.meta.status].toLowerCase()})`}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )
+        }
+        <div class="cta">
+          <a class="btn" href={url(`builds/${m.slug}/${version.isLatest ? '' : `${m.patch}/`}jogando/`)}>▶ Modo jogando</a>
+          <a class="btn ghost" href="#arvore">Árvore</a>
+          {
+            pobEntries.map(([, p]) =>
+              p.url ? (
+                <a class="btn ghost" href={p.url} target="_blank" rel="noopener">
+                  PoB · {p.label.split(' — ')[0]}
+                </a>
+              ) : null,
+            )
+          }
+        </div>
+      </div>
+      <div class="panel overview">
+        <p>{m.summaryPt}</p>
+        <div class="sw">
+          <div>
+            <div class="panel-title">Pontos fortes</div>
+            <ul class="plus">{m.strengthsPt.map((s) => <li>{s}</li>)}</ul>
+          </div>
+          <div>
+            <div class="panel-title">Pontos fracos</div>
+            <ul class="minus">{m.weaknessesPt.map((s) => <li>{s}</li>)}</ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="phase-nav" aria-label="Fases">
+    <div class="wrap pn-inner">
+      {
+        b.phases.map((p, i) => (
+          <a href={`#fase-${p.id}`} data-nav-phase={p.id}>
+            <span class="n">{i + 1}</span>
+            <span class="t">{p.stagePt ?? p.title}</span>
+            <span class="l">
+              {p.levels[0]}–{p.levels[1]}
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+
+  <div class="wrap">
+    {b.phases.map((p, i) => <PhaseSection phase={p} index={i} build={b} tree={treeOf.get(p.id)} />)}
+
+    <TreeViewer
+      treeVersion={m.treeVersion}
+      ascendancy={m.ascendancy}
+      className={m.class}
+      phases={trees}
+      stateKey={stateKey}
+    />
+
+    <div class="general">
+      <section class="panel sec" id="ascendencia">
+        <h2>Ascendência — ordem</h2>
+        <ol class="asc-order">
+          {
+            b.ascendancyOrder.map((a) => {
+              const p = passives.get(a.passive)!;
+              return (
+                <li class:list={{ opt: a.optional }}>
+                  <GameIcon src={p.icon} name={p.nameEn} tone="passive" size={40} frame="round" />
+                  <div>
+                    <div class="ao-head">
+                      <span class="chip">{a.orderPt}</span>
+                      <strong>{p.nameEn}</strong>
+                      {p.namePtBr && <span class="pt">{p.namePtBr}</span>}
+                      {a.verify && (
+                        <span class="chip verify" title={a.verify}>
+                          a verificar
+                        </span>
+                      )}
+                    </div>
+                    <p class="small">{a.whyPt}</p>
+                  </div>
+                </li>
+              );
+            })
+          }
+        </ol>
+      </section>
+
+      <section class="panel sec" id="spirit">
+        <h2>Spirit e auras — prioridade</h2>
+        <ol class="spirit">
+          {
+            b.spirit.map((s) => {
+              const g = gems.get(s.gem)!;
+              return (
+                <li>
+                  <GameIcon src={g.icon} name={g.nameEn} tone={g.attribute} size={36} />
+                  <div>
+                    <div>
+                      <span class="chip">#{s.priority}</span> <strong class={`c-${g.attribute}`}>{g.nameEn}</strong>
+                      {g.namePtBr && <span class="pt"> {g.namePtBr}</span>}
+                    </div>
+                    <p class="small">{s.whyPt}</p>
+                    {s.supports.length > 0 && <p class="small muted">+ {s.supports.map((x) => gems.get(x)?.nameEn).join(', ')}</p>}
+                  </div>
+                </li>
+              );
+            })
+          }
+        </ol>
+      </section>
+
+      <section class="panel sec" id="equipamento">
+        <h2>Prioridade de stats por slot</h2>
+        <dl class="prio">
+          {
+            b.gearPriorities.map((g) => (
+              <div>
+                <dt>{SLOT_PT[g.slot]}</dt>
+                <dd>
+                  {g.basesEn.length > 0 && <p class="small muted">{g.basesEn.join(' · ')}</p>}
+                  <ol>
+                    {g.priorityPt.map((x) => (
+                      <li>{x}</li>
+                    ))}
+                  </ol>
+                  {g.notePt && <p class="small muted">{g.notePt}</p>}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section class="panel sec" id="weapon-set">
+        <h2>Pontos de Weapon Set (quests)</h2>
+        <p class="small muted">Cada quest dá 2 pontos. Set 1 = arma principal, Set 2 = talismã.</p>
+        <table>
+          <thead><tr><th>Ato</th><th>Área</th><th>Quest / chefe</th></tr></thead>
+          <tbody>
+            {
+              b.weaponSetPoints.map((w) => (
+                <tr>
+                  <td>{w.act}</td>
+                  <td>{w.zone}</td>
+                  <td>{w.questEn}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel sec" id="filtro">
+        <h2>Filtro (NeverSink)</h2>
+        <ol class="filter">
+          {
+            b.filter.map((f) => (
+              <li>
+                <strong>{f.stagePt}</strong> → <code>{f.strictness}</code>
+                {f.notePt && <p class="small muted">{f.notePt}</p>}
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="panel sec" id="checklist">
+        <h2>Checklist geral</h2>
+        {b.checklist.map((c) => <Checklist group={`geral-${c.group}`} items={c.items} title={c.group} />)}
+      </section>
+
+      <section class="panel sec wide" id="duvidas">
+        <h2>Dúvidas resolvidas</h2>
+        {
+          b.faq.length ? (
+            <dl class="faq">
+              {b.faq.map((f) => (
+                <div>
+                  <dt>{f.q}</dt>
+                  <dd>{f.a}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            <p class="muted small">
+              Ainda vazio. Quando uma dúvida for respondida, ela entra no campo <code>faq</code> do YAML e aparece aqui.
+            </p>
+          )
+        }
+      </section>
+
+      <section class="panel sec" id="changelog">
+        <h2>Changelog</h2>
+        <ul class="log">
+          {
+            b.changelog.map((c) => (
+              <li>
+                <span class="chip">{fmtDate(c.date)}</span> <span class="chip">{c.patch}</span>
+                <ul>
+                  {c.notesPt.map((n) => (
+                    <li>{n}</li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="panel sec" id="fontes">
+        <h2>Fontes</h2>
+        <ul class="sources">
+          {
+            m.sources.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener">
+                  {s.label}
+                </a>
+                {s.primary && <span class="chip req">principal</span>}
+                <p class="small muted">
+                  {[s.author, s.patch && `patch ${s.patch}`, s.coversPt].filter(Boolean).join(' · ')}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { bindChecklists, loadState, update } from '../scripts/state.ts';
+
+  const root = document.querySelector<HTMLElement>('[data-build]');
+  if (root) {
+    const build = root.dataset.build!;
+    bindChecklists(build, root);
+
+    const paint = () => {
+      const { phase } = loadState(build);
+      for (const b of root.querySelectorAll<HTMLButtonElement>('[data-set-phase]')) {
+        b.setAttribute('aria-pressed', String(b.dataset.setPhase === phase));
+      }
+      for (const a of root.querySelectorAll<HTMLElement>('[data-nav-phase]')) {
+        a.classList.toggle('current', a.dataset.navPhase === phase);
+      }
+    };
+    root.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-set-phase]');
+      if (!btn) return;
+      const id = btn.dataset.setPhase!;
+      update(build, (s) => {
+        s.phase = s.phase === id ? undefined : id;
+      });
+      paint();
+    });
+    window.addEventListener('storage', paint);
+    paint();
+
+    // destaca a fase visível na navegação
+    const links = new Map([...root.querySelectorAll<HTMLElement>('[data-nav-phase]')].map((a) => [a.dataset.navPhase!, a]));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const id = (e.target as HTMLElement).dataset.phaseSection!;
+          for (const [k, a] of links) a.classList.toggle('in-view', k === id);
+          links.get(id)?.scrollIntoView({ block: 'nearest', inline: 'center' });
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    for (const s of root.querySelectorAll('[data-phase-section]')) io.observe(s);
+
+    root.querySelector<HTMLSelectElement>('[data-patch-select]')?.addEventListener('change', (e) => {
+      location.href = (e.target as HTMLSelectElement).value;
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .crumbs a {
+    color: var(--muted);
+  }
+  .outdated {
+    margin: 12px 0;
+    padding: 10px 14px;
+    border: 1px solid rgb(231 183 90 / 0.5);
+    border-radius: var(--radius);
+    background: rgb(231 183 90 / 0.08);
+    color: var(--warn);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 10px;
+    align-items: start;
+  }
+  .kicker {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--bronze);
+  }
+  h1 {
+    font-size: clamp(1.7rem, 5vw, 2.6rem);
+    margin-top: 4px;
+    color: var(--unique);
+    text-shadow: 0 0 24px rgb(200 118 58 / 0.25);
+  }
+  .tagline {
+    margin-top: 8px;
+    color: var(--text-2);
+    font-size: 1.02rem;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .patch-sel {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  .patch-sel select {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius);
+    padding: 4px 8px;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .overview {
+    padding: 16px;
+  }
+  .overview > p {
+    color: var(--text);
+  }
+  .sw {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .sw ul {
+    display: grid;
+    gap: 4px;
+    font-size: 0.9rem;
+    color: var(--text-2);
+  }
+  .plus li::marker {
+    content: '+ ';
+    color: var(--new);
+  }
+  .minus li::marker {
+    content: '− ';
+    color: var(--removed);
+  }
+
+  .phase-nav {
+    position: sticky;
+    top: 52px;
+    z-index: 30;
+    background: rgb(11 10 8 / 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .pn-inner {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  .pn-inner a {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 4px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 0.84rem;
+    background: var(--panel);
+  }
+  .pn-inner .n {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #2a2219;
+    color: var(--bronze-hi);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+  }
+  .pn-inner .l {
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+  .pn-inner a:global(.in-view) {
+    border-color: var(--bronze);
+    color: var(--text);
+  }
+  .pn-inner a:global(.current) .n {
+    background: var(--new);
+    color: #0b0a08;
+  }
+
+  .general {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .sec {
+    padding: 16px;
+    min-width: 0;
+  }
+  .sec.wide {
+    grid-column: 1 / -1;
+  }
+  .sec h2 {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+  .asc-order,
+  .spirit {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .asc-order li,
+  .spirit li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .asc-order li.opt {
+    opacity: 0.75;
+  }
+  .ao-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 8px;
+  }
+  .ao-head strong {
+    color: var(--bronze-hi);
+  }
+  .prio {
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .prio > div {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .prio dt {
+    font-weight: 600;
+    color: var(--bronze-hi);
+  }
+  .prio dd {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-2);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    color: var(--bronze);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .filter {
+    display: grid;
+    gap: 8px;
+  }
+  code {
+    font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+    color: var(--rare);
+    font-size: 0.88em;
+  }
+  .faq {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+  }
+  .faq dt {
+    font-weight: 600;
+    color: var(--bronze-hi);
+  }
+  .faq dd {
+    margin: 2px 0 0;
+    color: var(--text-2);
+  }
+  .log,
+  .sources {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .log ul {
+    margin-top: 4px;
+    font-size: 0.88rem;
+    color: var(--text-2);
+  }
+  #checklist :global(.checklist + .checklist) {
+    margin-top: 14px;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid,
+    .general {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .sw {
+      grid-template-columns: 1fr;
+    }
+    .prio > div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+</style>

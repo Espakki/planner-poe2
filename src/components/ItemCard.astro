@@ -1,0 +1,128 @@
+---
+import GameIcon from './GameIcon.astro';
+import { getEntities, KIND_PT, SLOT_PT } from '../lib/site.ts';
+
+interface Props {
+  item: string;
+  whyPt?: string;
+  required?: boolean;
+  wherePt?: string;
+  craftPt?: string;
+  verify?: string;
+  compact?: boolean;
+}
+const { item, whyPt, required = false, wherePt, craftPt, verify, compact = false } = Astro.props;
+const { items } = await getEntities();
+const it = items.get(item)!;
+const tone = it.kind === 'unique' ? 'unique' : it.kind === 'currency' || it.kind === 'rune' ? 'currency' : 'none';
+const nameClass = it.kind === 'unique' ? 'c-unique' : it.kind === 'currency' || it.kind === 'rune' ? 'c-currency' : '';
+const where = wherePt ?? it.wherePt;
+const verifyText = [verify, it.verify].filter(Boolean).join(' · ');
+---
+
+<article class:list={['item', { req: required }]}>
+  <GameIcon src={it.icon} name={it.nameEn} tone={tone} size={compact ? 40 : 52} />
+  <div class="info">
+    <div class="title">
+      <a class:list={['name', nameClass]} href={it.wikiUrl} target="_blank" rel="noopener">{it.nameEn}</a>
+      {it.namePtBr && <span class="pt">{it.namePtBr}</span>}
+    </div>
+    <div class="chips">
+      <span class="chip">{SLOT_PT[it.slot]}</span>
+      {it.kind !== 'base' && <span class="chip">{KIND_PT[it.kind]}</span>}
+      {it.baseType && <span class="chip">{it.baseType}</span>}
+      {required ? <span class="chip req">obrigatório</span> : <span class="chip opt">opcional</span>}
+      {verifyText && <span class="chip verify" title={verifyText}>a verificar</span>}
+    </div>
+    {!compact && <p class="summary">{it.summaryPt}</p>}
+    {whyPt && <p class="why"><span>Por quê:</span> {whyPt}</p>}
+    {craftPt && <p class="craft"><span>Craft:</span> {craftPt}</p>}
+    {!compact && where && <p class="where"><span>Onde:</span> {where}</p>}
+    {
+      !compact && it.keyModsEn.length > 0 && (
+        <details class="mods">
+          <summary>Mods principais</summary>
+          <ul>
+            {it.keyModsEn.map((m) => (
+              <li>{m}</li>
+            ))}
+          </ul>
+        </details>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  }
+  .item.req {
+    border-color: color-mix(in srgb, var(--warn) 35%, var(--border));
+  }
+  .info {
+    min-width: 0;
+    flex: 1;
+  }
+  .title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+  }
+  .name {
+    font-weight: 650;
+    font-size: 1.02rem;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .name.c-unique {
+    color: var(--unique);
+  }
+  .name.c-currency {
+    color: var(--currency);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 4px 0 6px;
+  }
+  .summary {
+    color: var(--text-2);
+    font-size: 0.9rem;
+  }
+  .why,
+  .craft,
+  .where {
+    margin-top: 6px;
+    font-size: 0.88rem;
+  }
+  .why span,
+  .craft span,
+  .where span {
+    color: var(--bronze);
+  }
+  .where {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .mods {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: var(--magic);
+  }
+  .mods summary {
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .mods ul {
+    padding-left: 1em;
+    margin-top: 4px;
+  }
+</style>

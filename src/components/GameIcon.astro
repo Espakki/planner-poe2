@@ -1,0 +1,67 @@
+---
+/** Ícone do jogo; sem ícone baixado vira placeholder com a inicial e a cor do tipo. */
+interface Props {
+  src?: string;
+  name: string;
+  size?: number;
+  /** cor do placeholder/borda: unique | currency | str | dex | int | none | passive */
+  tone?: string;
+  frame?: 'square' | 'round';
+}
+const { src, name, size = 44, tone = 'none', frame = 'square' } = Astro.props;
+const initial = name.replace(/^The /, '').charAt(0).toUpperCase();
+---
+
+<span class:list={['gi', `t-${tone}`, frame]} style={`--s:${size}px`} title={name}>
+  {src ? <img src={src} alt="" width={size} height={size} loading="lazy" decoding="async" /> : <span class="ph">{initial}</span>}
+</span>
+
+<style>
+  .gi {
+    --c: var(--none);
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, var(--c) 45%, var(--border));
+    background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--c) 18%, #000) 0%, #0a0907 75%);
+    overflow: hidden;
+  }
+  .gi.round {
+    border-radius: 50%;
+  }
+  .gi img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .ph {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--s) * 0.46);
+    color: var(--c);
+  }
+  .t-unique {
+    --c: var(--unique);
+  }
+  .t-currency {
+    --c: var(--currency);
+  }
+  .t-str {
+    --c: var(--str);
+  }
+  .t-dex {
+    --c: var(--dex);
+  }
+  .t-int {
+    --c: var(--int);
+  }
+  .t-passive {
+    --c: var(--bronze);
+  }
+  .t-rare {
+    --c: var(--rare);
+  }
+</style>

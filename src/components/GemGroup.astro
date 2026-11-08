@@ -1,0 +1,193 @@
+---
+/** Uma gema principal com os suportes ligados visualmente (cor por atributo). */
+import GameIcon from './GameIcon.astro';
+import { gemWhere, getEntities, KIND_PT, ROLE_PT } from '../lib/site.ts';
+import type { SkillSetup } from '../lib/schemas.ts';
+
+interface Props {
+  setup: SkillSetup;
+  /** Modo compacto (jogando): esconde onde conseguir e resumo dos suportes. */
+  compact?: boolean;
+}
+const { setup, compact = false } = Astro.props;
+const { gems } = await getEntities();
+const gem = gems.get(setup.gem)!;
+const supports = setup.supports.map((id) => gems.get(id)!).filter(Boolean);
+const isWs2 = setup.slotPt?.includes('Weapon Set 2');
+---
+
+<article class:list={['gem-group', `a-${gem.attribute}`, { optional: setup.optional }]}>
+  <header class="main">
+    <GameIcon src={gem.icon} name={gem.nameEn} tone={gem.attribute} size={compact ? 40 : 48} />
+    <div class="info">
+      <div class="title">
+        <a class:list={['name', `c-${gem.attribute}`]} href={gem.wikiUrl} target="_blank" rel="noopener">{gem.nameEn}</a>
+        {gem.namePtBr && <span class="pt">{gem.namePtBr}</span>}
+      </div>
+      <div class="chips">
+        <span class="chip">{KIND_PT[gem.kind]}</span>
+        {setup.role && <span class="chip">{ROLE_PT[setup.role]}</span>}
+        {setup.level && <span class="chip">nível {setup.level}</span>}
+        {setup.slotPt && <span class:list={['chip', { ws2: isWs2 }]}>{setup.slotPt}</span>}
+        {setup.optional && <span class="chip opt">opcional</span>}
+        {setup.verify && <span class="chip verify" title={setup.verify}>a verificar</span>}
+      </div>
+      {!compact && <p class="summary">{gem.summaryPt}</p>}
+      {setup.replacesPt && <p class="swap">↻ {setup.replacesPt}</p>}
+      {setup.notePt && <p class="note">{setup.notePt}</p>}
+      {!compact && <p class="where"><span>Onde:</span> {gemWhere(gem)}</p>}
+    </div>
+  </header>
+  {
+    supports.length > 0 && (
+      <ol class="supports">
+        {supports.map((s) => (
+          <li class:list={['sup', `a-${s.attribute}`]}>
+            <GameIcon src={s.icon} name={s.nameEn} tone={s.attribute} size={compact ? 26 : 30} frame="round" />
+            <div class="sup-info">
+              <div class="title">
+                <a class:list={['name', `c-${s.attribute}`]} href={s.wikiUrl} target="_blank" rel="noopener">
+                  {s.nameEn}
+                </a>
+                {s.namePtBr && <span class="pt">{s.namePtBr}</span>}
+                {s.kind !== 'support' && <span class="chip">{KIND_PT[s.kind]}</span>}
+              </div>
+              {!compact && (
+                <p class="sup-sum">
+                  {s.summaryPt} <span class="where-inline">· {gemWhere(s)}</span>
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</article>
+
+<style>
+  .gem-group {
+    --ac: var(--none);
+    position: relative;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--ac);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  }
+  .gem-group.optional {
+    border-style: dashed;
+    border-left-style: solid;
+  }
+  .a-str {
+    --ac: var(--str);
+  }
+  .a-dex {
+    --ac: var(--dex);
+  }
+  .a-int {
+    --ac: var(--int);
+  }
+  .a-none {
+    --ac: var(--none);
+  }
+  .main {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .info {
+    min-width: 0;
+    flex: 1;
+  }
+  .title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+  }
+  .name {
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .main .name {
+    font-size: 1.05rem;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 4px 0 6px;
+  }
+  .summary {
+    color: var(--text-2);
+    font-size: 0.9rem;
+  }
+  .note {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: var(--text);
+    padding-left: 8px;
+    border-left: 2px solid var(--border-2);
+  }
+  .swap {
+    margin-top: 6px;
+    font-size: 0.86rem;
+    color: var(--warn);
+  }
+  .where {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .where span {
+    color: var(--bronze);
+  }
+  .supports {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0 0 0 23px;
+    position: relative;
+  }
+  .supports::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: -10px;
+    bottom: 18px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--ac), color-mix(in srgb, var(--ac) 30%, transparent));
+  }
+  .sup {
+    --ac: var(--none);
+    position: relative;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 6px 0 6px 18px;
+  }
+  .sup::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20px;
+    width: 14px;
+    height: 2px;
+    background: var(--ac);
+  }
+  .sup-info {
+    min-width: 0;
+  }
+  .sup .name {
+    font-size: 0.93rem;
+  }
+  .sup-sum {
+    font-size: 0.82rem;
+    color: var(--text-2);
+    margin-top: 1px;
+  }
+  .where-inline {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+</style>

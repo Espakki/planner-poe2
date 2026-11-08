@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro';
+import { fmtDate, getBuildVersions, STATUS_PT, url } from '../lib/site.ts';
+
+const bySlug = await getBuildVersions();
+const builds = [...bySlug.values()].map((vs) => ({ latest: vs.find((v) => v.isLatest)!, versions: vs }));
+---
+
+<Base title="Plano PoE2 — builds">
+  <section class="wrap intro">
+    <h1>Builds</h1>
+    <p class="muted">Roteiro fase a fase, em PT-BR, com nomes do jogo em inglês. Feito pra ficar aberto na segunda tela ou no celular.</p>
+  </section>
+  <section class="wrap list">
+    {
+      builds.map(({ latest, versions }) => {
+        const m = latest.data.meta;
+        return (
+          <article class="card panel">
+            <p class="kicker">
+              {m.class} · {m.ascendancy}
+            </p>
+            <h2>
+              <a href={url(`builds/${m.slug}/`)}>{m.title}</a>
+            </h2>
+            <p class="tag">{m.taglinePt}</p>
+            <div class="meta">
+              <span class="chip">Patch {m.patch}</span>
+              <span class="chip">{m.league}</span>
+              <span class="chip">{STATUS_PT[m.status]}</span>
+              <span class="chip">{latest.data.phases.length} fases</span>
+              <span class="chip">verificado {fmtDate(m.lastVerified)}</span>
+            </div>
+            <div class="cta">
+              <a class="btn" href={url(`builds/${m.slug}/`)}>
+                Abrir guia
+              </a>
+              <a class="btn ghost" href={url(`builds/${m.slug}/jogando/`)}>
+                ▶ Modo jogando
+              </a>
+            </div>
+            {versions.length > 1 && (
+              <p class="small muted old">
+                Versões antigas:{' '}
+                {versions
+                  .filter((v) => !v.isLatest)
+                  .map((v, i) => (
+                    <>
+                      {i > 0 && ', '}
+                      <a href={url(`builds/${v.slug}/${v.patch}/`)}>{v.patch}</a>
+                    </>
+                  ))}
+              </p>
+            )}
+          </article>
+        );
+      })
+    }
+    <article class="card panel next">
+      <p class="kicker">Em breve</p>
+      <h2>Duelist (1.0)</h2>
+      <p class="tag muted">A estrutura já aceita várias builds — é só criar outra pasta em <code>src/content/builds/</code>.</p>
+    </article>
+  </section>
+</Base>
+
+<style>
+  .intro {
+    padding-top: 28px;
+  }
+  .intro h1 {
+    font-size: 2rem;
+  }
+  .intro p {
+    margin-top: 6px;
+  }
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .card {
+    padding: 18px;
+  }
+  .kicker {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--bronze);
+  }
+  h2 {
+    margin-top: 4px;
+    font-size: 1.4rem;
+  }
+  h2 a {
+    color: var(--unique);
+    text-decoration: none;
+  }
+  .tag {
+    margin-top: 6px;
+    color: var(--text-2);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .old {
+    margin-top: 10px;
+  }
+  .next {
+    opacity: 0.6;
+    border-style: dashed;
+  }
+  .next h2 {
+    color: var(--muted);
+  }
+  code {
+    color: var(--rare);
+  }
+</style>

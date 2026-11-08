@@ -1,0 +1,101 @@
+---
+import GameIcon from './GameIcon.astro';
+import { getEntities } from '../lib/site.ts';
+import type { PhaseData } from '../lib/schemas.ts';
+
+interface Props {
+  step: NonNullable<PhaseData['ascendancy']>;
+  compact?: boolean;
+}
+const { step, compact = false } = Astro.props;
+const { passives } = await getEntities();
+const take = step.take.map((id) => passives.get(id)!).filter(Boolean);
+const refund = step.refund.map((id) => passives.get(id)!).filter(Boolean);
+---
+
+<div class="asc">
+  <div class="panel-title">Ascendência <span class="when">{step.whenPt}</span></div>
+  <ul class="take">
+    {
+      take.map((p) => (
+        <li>
+          <GameIcon src={p.icon} name={p.nameEn} tone="passive" size={compact ? 34 : 42} frame="round" />
+          <div>
+            <div class="name">
+              <span class="plus">+</span> {p.nameEn}
+              {p.namePtBr && <span class="pt">{p.namePtBr}</span>}
+            </div>
+            {!compact && <p class="sum">{p.summaryPt}</p>}
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+  {
+    refund.length > 0 && (
+      <p class="refund">
+        Respec (Hooded One): <strong>{refund.map((p) => p.nameEn).join(', ')}</strong> sai.
+      </p>
+    )
+  }
+  {step.notePt && <p class="note">{step.notePt}</p>}
+  {step.verify && <p class="verify" title={step.verify}>⚠ a verificar: {step.verify}</p>}
+</div>
+
+<style>
+  .asc {
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--bronze) 45%, var(--border));
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(400px 120px at 0 0, rgb(217 183 124 / 0.08), transparent),
+      linear-gradient(180deg, var(--panel-2), var(--panel));
+  }
+  .when {
+    font-family: var(--font-body);
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-2);
+    font-size: 0.82rem;
+  }
+  .take {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .take li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .name {
+    font-weight: 650;
+    color: var(--bronze-hi);
+  }
+  .plus {
+    color: var(--new);
+  }
+  .sum {
+    font-size: 0.86rem;
+    color: var(--text-2);
+    margin-top: 2px;
+  }
+  .refund {
+    margin-top: 10px;
+    font-size: 0.88rem;
+    color: color-mix(in srgb, var(--removed) 75%, var(--text));
+  }
+  .note {
+    margin-top: 8px;
+    font-size: 0.86rem;
+    color: var(--text-2);
+    padding-left: 8px;
+    border-left: 2px solid var(--border-2);
+  }
+  .verify {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--warn);
+  }
+</style>
