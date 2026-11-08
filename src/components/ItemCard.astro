@@ -1,6 +1,11 @@
 ---
-import GameIcon from './GameIcon.astro';
+/**
+ * Detalhe de um item (UI-03): arte grande no tamanho do inventário + "tooltip" com nome EN na cor da raridade,
+ * nome PT, chips, mods pra focar, resumo, por quê, onde pegar, craft e links.
+ *  size="lg" → arte em cima (item principal) · size="md" → arte ao lado, menor (alternativas, vários charms/frascos)
+ */
 import { getEntities, KIND_PT, SLOT_PT } from '../lib/site.ts';
+import { isOffDoll, rarityOf } from './gear/inventory.ts';
 
 interface Props {
   item: string;
@@ -9,120 +14,284 @@ interface Props {
   wherePt?: string;
   craftPt?: string;
   verify?: string;
-  compact?: boolean;
+  size?: 'lg' | 'md';
+  /** rótulo do slot no boneco (ex.: "Arma · Weapon Set II"); padrão: slot do item */
+  slotLabel?: string;
+  ws?: 1 | 2;
+  /** é alternativa (não o principal do slot) */
+  alt?: boolean;
+  /** vem junto do item da fase (spread); o slot já foi resolvido em gear/inventory.ts */
+  equip?: string;
 }
-const { item, whyPt, required = false, wherePt, craftPt, verify, compact = false } = Astro.props;
+const { item, whyPt, required = false, wherePt, craftPt, verify, size = 'lg', slotLabel, ws, alt = false } = Astro.props;
 const { items } = await getEntities();
 const it = items.get(item)!;
-const tone = it.kind === 'unique' ? 'unique' : it.kind === 'currency' || it.kind === 'rune' ? 'currency' : 'none';
-const nameClass = it.kind === 'unique' ? 'c-unique' : it.kind === 'currency' || it.kind === 'rune' ? 'c-currency' : '';
+const rarity = rarityOf(it);
 const where = wherePt ?? it.wherePt;
 const verifyText = [verify, it.verify].filter(Boolean).join(' · ');
+const art = it.art ?? { w: 106, h: 106, cw: 1, ch: 1 };
+const initial = it.nameEn.replace(/^The /, '').charAt(0).toUpperCase();
 ---
 
-<article class:list={['item', { req: required }]}>
-  <GameIcon src={it.icon} name={it.nameEn} tone={tone} size={compact ? 40 : 52} />
-  <div class="info">
-    <div class="title">
-      <a class:list={['name', nameClass]} href={it.wikiUrl} target="_blank" rel="noopener">{it.nameEn}</a>
-      {it.namePtBr && <span class="pt">{it.namePtBr}</span>}
-    </div>
-    <div class="chips">
-      <span class="chip">{SLOT_PT[it.slot]}</span>
-      {it.kind !== 'base' && <span class="chip">{KIND_PT[it.kind]}</span>}
-      {it.baseType && <span class="chip">{it.baseType}</span>}
-      {required ? <span class="chip req">obrigatório</span> : <span class="chip opt">opcional</span>}
-      {verifyText && <span class="chip verify" title={verifyText}>a verificar</span>}
-    </div>
-    {!compact && <p class="summary">{it.summaryPt}</p>}
-    {whyPt && <p class="why"><span>Por quê:</span> {whyPt}</p>}
-    {craftPt && <p class="craft"><span>Craft:</span> {craftPt}</p>}
-    {!compact && where && <p class="where"><span>Onde:</span> {where}</p>}
+<article class:list={['ic', `r-${rarity}`, `s-${size}`, { req: required }]} style={`--cw:${art.cw};--ch:${art.ch}`}>
+  <div class="ic-art">
     {
-      !compact && it.keyModsEn.length > 0 && (
-        <details class="mods">
-          <summary>Mods principais</summary>
+      it.icon ? (
+        <img src={it.icon} alt="" width={art.w} height={art.h} loading="lazy" decoding="async" />
+      ) : (
+        <span class="ic-ph" aria-hidden="true">
+          {initial}
+        </span>
+      )
+    }
+  </div>
+  <div class="ic-body">
+    <header class="ic-head">
+      <h4 class="game-name ic-name">{it.nameEn}</h4>
+      {it.baseType && <p class="ic-base">{it.baseType}</p>}
+      {it.namePtBr && <p class="pt">{it.namePtBr}</p>}
+    </header>
+    <div class="ic-chips">
+      {
+        (slotLabel || !isOffDoll(it)) && (
+          <span class:list={['chip', ws === 2 && 'ws2', ws === 1 && 'ws1']}>{slotLabel ?? SLOT_PT[it.slot]}</span>
+        )
+      }
+      {!['base', 'charm', 'flask'].includes(it.kind) && <span class="chip">{KIND_PT[it.kind]}</span>}
+      {it.levelReq && <span class="chip">nível {it.levelReq}</span>}
+      {required ? <span class="chip req">obrigatório</span> : <span class="chip opt">{alt ? 'alternativa' : 'opcional'}</span>}
+      {
+        verifyText && (
+          <span class="chip verify" title={verifyText}>
+            a verificar
+          </span>
+        )
+      }
+    </div>
+    {
+      it.keyModsEn.length > 0 && (
+        <div class="ic-mods">
+          <p class="ic-label">Mods pra focar</p>
           <ul>
             {it.keyModsEn.map((m) => (
               <li>{m}</li>
             ))}
           </ul>
-        </details>
+        </div>
       )
     }
+    <p class="ic-summary">{it.summaryPt}</p>
+    <dl class="ic-facts">
+      {
+        whyPt && (
+          <div>
+            <dt>Por quê</dt>
+            <dd>{whyPt}</dd>
+          </div>
+        )
+      }
+      {
+        where && (
+          <div>
+            <dt>Onde pegar</dt>
+            <dd>{where}</dd>
+          </div>
+        )
+      }
+      {
+        craftPt && (
+          <div>
+            <dt>Craft</dt>
+            <dd>{craftPt}</dd>
+          </div>
+        )
+      }
+      {
+        it.notesPt && (
+          <div>
+            <dt>Nota</dt>
+            <dd>{it.notesPt}</dd>
+          </div>
+        )
+      }
+      {
+        verifyText && (
+          <div class="v">
+            <dt>A verificar</dt>
+            <dd>{verifyText}</dd>
+          </div>
+        )
+      }
+    </dl>
+    <p class="ic-links small">
+      <a href={it.wikiUrl} target="_blank" rel="noopener">poe2wiki ↗</a>
+      {
+        it.poe2dbUrl && (
+          <>
+            {' · '}
+            <a href={it.poe2dbUrl} target="_blank" rel="noopener">
+              poe2db ↗
+            </a>
+          </>
+        )
+      }
+    </p>
   </div>
 </article>
 
 <style>
-  .item {
-    display: flex;
+  .ic {
+    --rc: var(--normal);
+    display: grid;
     gap: 12px;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, var(--panel-2), var(--panel));
-  }
-  .item.req {
-    border-color: color-mix(in srgb, var(--warn) 35%, var(--border));
-  }
-  .info {
     min-width: 0;
-    flex: 1;
   }
-  .title {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 2px 8px;
+  .r-unique {
+    --rc: var(--unique);
   }
-  .name {
-    font-weight: 650;
+  .r-currency {
+    --rc: var(--currency);
+  }
+
+  /* arte: célula do inventário escalada; a peça mais alta (cajado 1×4) fica limitada pela altura */
+  .ic-art {
+    display: grid;
+    place-items: center;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(closest-side, color-mix(in srgb, var(--rc) 14%, transparent), transparent),
+      var(--inset);
+  }
+  .s-lg {
+    --ac: min(62px, calc(236px / var(--ch)));
+  }
+  .s-md {
+    --ac: min(40px, calc(132px / var(--ch)));
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+  .s-md .ic-art {
+    padding: 8px;
+  }
+  .ic-art img,
+  .ic-ph {
+    display: block;
+    width: calc(var(--cw) * var(--ac));
+    height: calc(var(--ch) * var(--ac));
+    object-fit: contain;
+    filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.6));
+  }
+  .ic-ph {
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-size: calc(var(--ac) * 0.6);
+    color: var(--rc);
+  }
+
+  .ic-body {
+    min-width: 0;
+  }
+  /* cabeçalho estilo tooltip do jogo */
+  .ic-head {
+    text-align: center;
+    padding: 7px 10px 8px;
+    border: 1px solid color-mix(in srgb, var(--rc) 45%, var(--border));
+    border-radius: var(--radius);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--rc) 20%, var(--panel)) 0%,
+      color-mix(in srgb, var(--rc) 6%, var(--inset)) 100%
+    );
+  }
+  .s-md .ic-head {
+    text-align: left;
+    padding: 5px 9px 6px;
+  }
+  .ic-name {
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.2;
+    color: var(--rc);
+  }
+  .s-md .ic-name {
     font-size: 1.02rem;
-    text-decoration: none;
-    color: var(--text);
   }
-  .name.c-unique {
-    color: var(--unique);
+  .ic-base {
+    color: var(--text-2);
+    font-family: var(--font-item);
+    font-size: 0.9rem;
   }
-  .name.c-currency {
-    color: var(--currency);
-  }
-  .chips {
+  .ic-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    margin: 4px 0 6px;
+    margin: 8px 0;
   }
-  .summary {
-    color: var(--text-2);
-    font-size: 0.9rem;
+  .s-lg .ic-chips {
+    justify-content: center;
   }
-  .why,
-  .craft,
-  .where {
-    margin-top: 6px;
-    font-size: 0.88rem;
+  .chip.ws1 {
+    border-color: color-mix(in srgb, var(--ws1) 55%, transparent);
+    color: var(--ws1);
   }
-  .why span,
-  .craft span,
-  .where span {
-    color: var(--bronze);
-  }
-  .where {
-    color: var(--muted);
-    font-size: 0.8rem;
-  }
-  .mods {
-    margin-top: 6px;
-    font-size: 0.8rem;
+  .ic-mods {
+    margin: 0 0 8px;
+    padding: 6px 10px;
+    border-block: 1px solid var(--border);
     color: var(--magic);
+    font-size: 0.92rem;
   }
-  .mods summary {
-    cursor: pointer;
+  .s-lg .ic-mods {
+    text-align: center;
+  }
+  .ic-label {
+    color: var(--muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .ic-mods ul {
+    list-style: none;
+    padding: 0;
+  }
+  .ic-summary {
+    color: var(--text-2);
+  }
+  .ic-facts {
+    margin: 8px 0 0;
+    display: grid;
+    gap: 6px;
+  }
+  .ic-facts div {
+    display: grid;
+    grid-template-columns: 6.5em minmax(0, 1fr);
+    gap: 8px;
+  }
+  .ic-facts dt {
+    color: var(--bronze);
+    font-weight: 700;
+    font-size: 0.86rem;
+    padding-top: 0.12em;
+  }
+  .ic-facts dd {
+    margin: 0;
+    color: var(--text-2);
+  }
+  .ic-facts .v dt,
+  .ic-facts .v dd {
+    color: var(--warn);
+  }
+  .ic-links {
+    margin-top: 8px;
     color: var(--muted);
   }
-  .mods ul {
-    padding-left: 1em;
-    margin-top: 4px;
+  @container (max-width: 420px) {
+    .ic-facts div {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
   }
 </style>

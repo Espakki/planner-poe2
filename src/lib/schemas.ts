@@ -135,10 +135,19 @@ export const skillSetupSchema = z.object({
   verify: z.string().optional(),
 });
 
+/**
+ * Slot exato no inventário do personagem, quando a regra automática não resolve.
+ * Regra (src/components/gear/inventory.ts): arma com base "Talisman" → Weapon Set II, outra arma → Weapon Set I;
+ * mão secundária → Set I; anel → anel 1; frasco com "Mana" no nome → frasco de mana, senão de vida.
+ */
+export const equipSlots = ['weapon-1', 'offhand-1', 'weapon-2', 'offhand-2', 'ring-1', 'ring-2', 'flask-life', 'flask-mana'] as const;
+
 export const phaseItemSchema = z.object({
   item: id,
   whyPt: z.string(),
   required: z.boolean().default(false),
+  /** Onde fica no boneco (só quando a regra automática erra — ex.: segundo anel, arma no Weapon Set II). */
+  equip: z.enum(equipSlots).optional(),
   /** Sobrescreve o "onde conseguir" padrão do item. */
   wherePt: z.string().optional(),
   /** Runas/sockets ou observação de craft. */
@@ -166,6 +175,8 @@ export const ascendancyStepSchema = z.object({
 
 export const gearNoteSchema = z.object({
   slot: z.enum(itemSlots),
+  /** Slot exato no boneco quando a regra erra (ex.: nota de arma que é do Weapon Set II). */
+  equip: z.enum(equipSlots).optional(),
   /** Bases sugeridas (texto livre em inglês, como no jogo). */
   basesEn: z.array(z.string()).default([]),
   priorityPt: z.array(z.string()).min(1),
@@ -276,4 +287,7 @@ export type PassiveData = z.infer<typeof passiveSchema>;
 export type BuildData = z.infer<typeof buildSchema>;
 export type PhaseData = z.infer<typeof phaseSchema>;
 export type SkillSetup = z.infer<typeof skillSetupSchema>;
+export type PhaseItem = z.infer<typeof phaseItemSchema>;
+export type GearNote = z.infer<typeof gearNoteSchema>;
+export type EquipSlot = (typeof equipSlots)[number];
 export type TreeRef = z.infer<typeof treeRefSchema>;

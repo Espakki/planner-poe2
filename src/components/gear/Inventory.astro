@@ -1,0 +1,208 @@
+---
+/**
+ * Boneco do personagem estilo PoE2: arma | elmo/peitoral/cinto | mão secundária, anéis ao lado do peitoral,
+ * luvas e botas embaixo, frascos + charms na faixa do cinto. Troca de weapon set (I/II) é CSS puro (radio + :has).
+ * Tamanho da célula: --cell (encolhe com a largura do painel; container "gear" definido no GearPanel).
+ */
+import GearSlot from './GearSlot.astro';
+import { CELLS, type Inventory } from './inventory.ts';
+
+interface Props {
+  inv: Inventory;
+  uid: string;
+}
+const { inv, uid } = Astro.props;
+// começa no weapon set do detalhe aberto por padrão (ex.: Ato 1 abre no talismã → Set II)
+const startWs = inv.defaultKey === 'ws2' ? 2 : 1;
+const filled = (k: 'weapon-1' | 'offhand-1' | 'weapon-2' | 'offhand-2') => {
+  const c = inv.cells.get(k)!;
+  return c.items.length + c.notes.length > 0;
+};
+const has1 = filled('weapon-1') || filled('offhand-1');
+const has2 = filled('weapon-2') || filled('offhand-2');
+const dollCells = CELLS.filter((c) => c.zone === 'doll');
+const beltCells = CELLS.filter((c) => c.zone === 'belt');
+---
+
+<div class="inv">
+  <fieldset class="ws">
+    <legend class="ws-legend">Weapon set</legend>
+    <label class="ws-opt">
+      <input class="visually-hidden" type="radio" name={`${uid}-ws`} value="1" data-ws="1" checked={startWs === 1} />
+      <span>I{has1 && <i class="dot" aria-hidden="true" />}</span>
+    </label>
+    <label class="ws-opt o2">
+      <input class="visually-hidden" type="radio" name={`${uid}-ws`} value="2" data-ws="2" checked={startWs === 2} />
+      <span>II{has2 && <i class="dot" aria-hidden="true" />}</span>
+    </label>
+  </fieldset>
+
+  <div class="doll">
+    {dollCells.map((c) => <GearSlot cell={inv.cells.get(c.key)!} uid={uid} />)}
+  </div>
+  <div class="belt">
+    {beltCells.map((c) => <GearSlot cell={inv.cells.get(c.key)!} uid={uid} />)}
+  </div>
+
+  <p class="legend">
+    <span><b class="lg-req">◆</b> obrigatório</span>
+    <span><b class="lg-alt">+1</b> alternativas</span>
+    <span><b class="lg-hint"></b> o que procurar</span>
+  </p>
+</div>
+
+<style>
+  .inv {
+    --g: 4px;
+    --pad: 10px;
+    /* 8 colunas de célula cabem na largura do painel; teto vem do GearPanel (--cell-max) */
+    --cell: clamp(28px, calc((100cqi - 7 * var(--g) - 2 * var(--pad) - 2px) / 8), var(--cell-max, 52px));
+    width: max-content;
+    max-width: 100%;
+    margin-inline: auto;
+    padding: 8px var(--pad) 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(70% 55% at 50% 38%, rgb(176 141 85 / 0.07), transparent 70%),
+      var(--inset);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.5);
+  }
+
+  /* troca de weapon set */
+  .ws {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 8px;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .ws-legend {
+    float: left;
+    margin-right: 6px;
+    padding: 0;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .ws-opt {
+    --wc: var(--ws1);
+    cursor: pointer;
+  }
+  .ws-opt.o2 {
+    --wc: var(--ws2);
+  }
+  .ws-opt span {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    min-width: 40px;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius);
+    background: rgb(0 0 0 / 0.3);
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: 0.06em;
+  }
+  .ws-opt input:checked + span {
+    border-color: var(--wc);
+    color: var(--wc);
+    background: color-mix(in srgb, var(--wc) 12%, transparent);
+    box-shadow: 0 0 0 1px var(--wc) inset;
+  }
+  .ws-opt input:focus-visible + span {
+    outline: 2px solid var(--bronze-hi);
+    outline-offset: 2px;
+  }
+  .dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .doll {
+    display: grid;
+    grid-template-columns: repeat(8, var(--cell));
+    grid-template-rows: repeat(6, var(--cell));
+    gap: var(--g);
+    grid-template-areas:
+      'wp wp .  hm hm .  of of'
+      'wp wp .  hm hm am of of'
+      'wp wp .  bd bd .  of of'
+      'wp wp r1 bd bd r2 of of'
+      'gl gl .  bd bd .  bt bt'
+      'gl gl .  bl bl .  bt bt';
+  }
+  .belt {
+    display: grid;
+    grid-template-columns: repeat(5, var(--cell));
+    grid-template-rows: repeat(2, var(--cell));
+    gap: var(--g);
+    grid-template-areas:
+      'fl c1 c2 c3 fm'
+      'fl c1 c2 c3 fm';
+    justify-content: center;
+    /* charms (1×1) ficam no meio da faixa, entre os frascos (1×2) */
+    align-items: center;
+    margin-top: calc(var(--g) * 3);
+  }
+
+  /* weapon set: mostra só o escolhido */
+  .inv :global(.ws-2) {
+    display: none;
+  }
+  .inv:has(input[data-ws='2']:checked) :global(.ws-1) {
+    display: none;
+  }
+  .inv:has(input[data-ws='2']:checked) :global(.ws-2) {
+    display: grid;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 12px;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 0.76rem;
+  }
+  .legend b {
+    font-weight: 700;
+  }
+  .lg-req {
+    color: var(--warn);
+  }
+  .lg-alt {
+    padding: 0 4px;
+    border: 1px solid var(--border-2);
+    border-radius: 999px;
+    color: var(--text-2);
+    font-size: 0.68rem;
+  }
+  .lg-hint {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    vertical-align: -1px;
+    border: 1px dashed var(--acc-gear);
+    border-radius: 2px;
+  }
+
+  @container gear (max-width: 420px) {
+    .inv {
+      --pad: 6px;
+      --g: 3px;
+    }
+  }
+</style>

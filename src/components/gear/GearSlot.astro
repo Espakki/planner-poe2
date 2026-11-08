@@ -1,0 +1,238 @@
+---
+/**
+ * Um slot do boneco. Com item: arte no tamanho real (células × --cell) + marcas (◆ obrigatório, +N alternativas).
+ * Sem item mas com nota da fase: borda tracejada + dica do que procurar. Sem nada: slot apagado (decorativo).
+ */
+import { rarityOf, type Cell } from './inventory.ts';
+
+interface Props {
+  cell: Cell;
+  uid: string;
+}
+const { cell, uid } = Astro.props;
+const { def, items, notes } = cell;
+const primary = items[0];
+const alts = items.length - 1;
+const note = notes[0];
+const style = `grid-area:${def.area};--sw:${def.cw};--sh:${def.ch}`;
+const wsClass = def.ws ? `ws-${def.ws}` : null;
+const controls = `${uid}-d-${def.group}`;
+const art = primary?.item.art ?? { w: 106, h: 106, cw: 1, ch: 1 };
+const big = def.cw * def.ch >= 4;
+// slot 1×1 com rótulo comprido (Amuleto, Charm): no celular o rótulo não cabe e some
+const tight = def.cw * def.ch === 1 && def.label.length > 4 ? 'tight' : null;
+const label = primary
+  ? `${def.labelLong}: ${primary.item.nameEn}${primary.pi.required ? ', obrigatório' : ''}${alts > 0 ? `, mais ${alts} alternativa${alts > 1 ? 's' : ''}` : ''}`
+  : `${def.labelLong}: sem item — ver o que procurar`;
+---
+
+{
+  primary ? (
+    <button
+      type="button"
+      class:list={['slot', 'has-item', `r-${rarityOf(primary.item)}`, wsClass, { req: primary.pi.required }]}
+      style={style}
+      data-gear-open={def.group}
+      aria-controls={controls}
+      aria-label={label}
+      title={primary.item.nameEn}
+    >
+      {primary.item.icon ? (
+        <img src={primary.item.icon} alt="" style={`--iw:${art.cw};--ih:${art.ch}`} loading="lazy" decoding="async" />
+      ) : (
+        <span class="s-ph" aria-hidden="true">
+          {primary.item.nameEn.charAt(0)}
+        </span>
+      )}
+      {primary.pi.required && (
+        <span class="b-req" aria-hidden="true">
+          ◆
+        </span>
+      )}
+      {alts > 0 && (
+        <span class="b-alt" aria-hidden="true">
+          +{alts}
+        </span>
+      )}
+    </button>
+  ) : note ? (
+    <button type="button" class:list={['slot', 'hint', wsClass, tight, { big }]} style={style} data-gear-open={def.group} aria-controls={controls} aria-label={label}>
+      <span class="s-label">{def.label}</span>
+      {big && (
+        <span class="s-hint">
+          {note.basesEn.length > 0 && <span class="s-bases">{note.basesEn.join(' · ')}</span>}
+          {note.priorityPt.join(' › ')}
+        </span>
+      )}
+      <svg class="s-q" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+        <path d="M10.4 10.4 14 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+  ) : (
+    <div class:list={['slot', 'empty', wsClass, tight]} style={style} aria-hidden="true">
+      <span class="s-label">{def.label}</span>
+    </div>
+  )
+}
+
+<style>
+  .slot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: calc(var(--sw) * var(--cell) + (var(--sw) - 1) * var(--g));
+    height: calc(var(--sh) * var(--cell) + (var(--sh) - 1) * var(--g));
+    padding: 0;
+    border: 1px solid #3a3026;
+    border-radius: 3px;
+    background:
+      radial-gradient(120% 90% at 50% 100%, rgb(255 255 255 / 0.035), transparent 60%),
+      linear-gradient(180deg, #14110d, #0a0907);
+    box-shadow: inset 0 0 14px rgb(0 0 0 / 0.85);
+    color: var(--faint);
+    overflow: hidden;
+  }
+  button.slot {
+    cursor: pointer;
+    font: inherit;
+  }
+  button.slot:hover {
+    border-color: var(--border-2);
+  }
+  button.slot[aria-current='true'] {
+    border-color: var(--bronze-hi);
+    box-shadow:
+      inset 0 0 14px rgb(0 0 0 / 0.85),
+      0 0 0 1px var(--bronze-hi),
+      0 0 14px rgb(227 194 134 / 0.25);
+  }
+
+  /* com item */
+  .has-item {
+    --rc: var(--normal);
+    border-color: color-mix(in srgb, var(--rc) 32%, #3a3026);
+    background:
+      radial-gradient(90% 70% at 50% 60%, color-mix(in srgb, var(--rc) 16%, transparent), transparent 75%),
+      linear-gradient(180deg, #16120e, #0a0907);
+  }
+  .has-item.r-unique {
+    --rc: var(--unique);
+  }
+  .has-item.r-currency {
+    --rc: var(--currency);
+  }
+  .has-item img {
+    width: calc(var(--iw) * var(--cell) + (var(--iw) - 1) * var(--g));
+    height: calc(var(--ih) * var(--cell) + (var(--ih) - 1) * var(--g));
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.7));
+  }
+  button.has-item:hover img {
+    filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.7)) brightness(1.12);
+  }
+  .s-ph {
+    font-family: var(--font-display);
+    font-size: calc(var(--cell) * 0.7);
+    color: var(--rc);
+  }
+  .b-req {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.7rem;
+    line-height: 1;
+    color: var(--warn);
+    text-shadow: 0 0 4px #000;
+  }
+  .b-alt {
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    padding: 0 5px;
+    border: 1px solid var(--border-2);
+    border-radius: 999px;
+    background: rgb(10 9 7 / 0.88);
+    color: var(--text-2);
+    font-size: 0.72rem;
+    line-height: 1.45;
+    font-weight: 700;
+  }
+
+  /* sem item, com o que procurar */
+  .hint {
+    align-content: center;
+    gap: 3px;
+    padding: 4px;
+    border: 1px dashed color-mix(in srgb, var(--acc-gear) 55%, transparent);
+    color: var(--acc-gear);
+    text-align: center;
+  }
+  .hint.big {
+    align-content: start;
+    place-items: start center;
+    padding: 6px 6px 4px;
+  }
+  .s-label {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .hint .s-label {
+    color: var(--acc-gear);
+  }
+  .tight .s-label {
+    font-size: 0.56rem;
+    letter-spacing: 0;
+  }
+  .s-hint {
+    overflow: hidden;
+    color: var(--text-2);
+    font-size: 0.72rem;
+    line-height: 1.25;
+    /* some no fim em vez de cortar no meio da letra */
+    mask-image: linear-gradient(180deg, #000 calc(100% - 14px), transparent);
+    height: calc(100% - 1.2em);
+  }
+  .s-bases {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--normal);
+    font-family: var(--font-item);
+  }
+  .s-q {
+    width: 14px;
+    height: 14px;
+  }
+  .hint.big .s-q {
+    display: none;
+  }
+
+  .empty {
+    opacity: 0.55;
+  }
+
+  /* célula pequena (celular): sem texto de dica dentro do slot */
+  @container gear (max-width: 420px) {
+    .s-hint {
+      display: none;
+    }
+    .hint.big {
+      align-content: center;
+      place-items: center;
+    }
+    .hint.big .s-q {
+      display: block;
+    }
+    .s-label {
+      font-size: 0.64rem;
+    }
+    .tight .s-label {
+      display: none;
+    }
+  }
+</style>

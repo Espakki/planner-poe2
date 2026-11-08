@@ -1,0 +1,171 @@
+---
+/**
+ * Detalhe de um grupo de slots (ex.: "Luvas", "Weapon Set II", "Anéis") ou de um item da faixa "Pra conseguir".
+ * Item principal em destaque (ItemCard lg), alternativas menores, depois "O que procurar" (bases, prioridades, nota).
+ * No desktop fica no painel ao lado do boneco; no celular o src/scripts/gear.ts move a seção pro bottom sheet.
+ */
+import ItemCard from '../ItemCard.astro';
+import { SLOT_PT } from '../../lib/site.ts';
+import { cellDef, type Placed } from './inventory.ts';
+import type { GearNote, ItemData, PhaseItem } from '../../lib/schemas.ts';
+import type { Entity } from '../../lib/site.ts';
+
+interface Props {
+  id: string;
+  detailKey: string;
+  title: string;
+  primaries: (Placed | { pi: PhaseItem; item: Entity<ItemData> })[];
+  alts?: Placed[];
+  notes?: GearNote[];
+  hidden?: boolean;
+}
+const { id, detailKey, title, primaries, alts = [], notes = [], hidden = false } = Astro.props;
+const cellOf = (p: object) => ('cell' in p ? cellDef((p as Placed).cell) : undefined);
+const multiSlot = new Set(notes.map((n) => n.slot)).size > 1;
+const count = primaries.length + alts.length;
+const meta = [
+  count > 0 && `${count} ite${count === 1 ? 'm' : 'ns'}`,
+  alts.length > 0 && `${alts.length} alternativa${alts.length === 1 ? '' : 's'}`,
+]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<section class="gd" id={id} data-gear-detail={detailKey} data-gear-title={title} hidden={hidden} aria-labelledby={`${id}-t`}>
+  <header class="gd-head">
+    <h3 id={`${id}-t`}>{title}</h3>
+    {meta && <span class="gd-meta">{meta}</span>}
+  </header>
+
+  {
+    primaries.map((p) => {
+      const c = cellOf(p);
+      return (
+        <ItemCard
+          {...p.pi}
+          size={primaries.length === 1 ? 'lg' : 'md'}
+          slotLabel={c?.labelLong}
+          ws={c?.ws}
+        />
+      );
+    })
+  }
+
+  {
+    alts.length > 0 && (
+      <>
+        <p class="gd-sub">Alternativas</p>
+        {alts.map((p) => {
+          const c = cellDef(p.cell);
+          return <ItemCard {...p.pi} size="md" slotLabel={c.labelLong} ws={c.ws} alt />;
+        })}
+      </>
+    )
+  }
+
+  {
+    notes.length > 0 && (
+      <div class="gd-look">
+        <p class="gd-sub">{count > 0 ? 'Se for trocar, procure' : 'O que procurar'}</p>
+        {notes.map((n) => (
+          <div class="look">
+            {multiSlot && <p class="look-slot">{SLOT_PT[n.slot]}</p>}
+            {n.basesEn.length > 0 && (
+              <p class="look-bases">
+                <span class="look-k">Bases</span>
+                {n.basesEn.map((b) => (
+                  <span class="game-name">{b}</span>
+                ))}
+              </p>
+            )}
+            <ol class="look-prio">
+              {n.priorityPt.map((x) => (
+                <li>{x}</li>
+              ))}
+            </ol>
+            {n.notePt && <p class="look-note">{n.notePt}</p>}
+          </div>
+        ))}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .gd {
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+  }
+  .gd[hidden] {
+    display: none;
+  }
+  .gd-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .gd-head h3 {
+    font-size: 1.12rem;
+    color: var(--acc-gear);
+  }
+  .gd-meta {
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+  .gd-sub {
+    margin-bottom: -6px;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: 0.92rem;
+    letter-spacing: 0.05em;
+    color: var(--bronze);
+  }
+  .gd-look {
+    display: grid;
+    gap: 10px;
+  }
+  .look {
+    padding: 10px 12px;
+    border: 1px dashed color-mix(in srgb, var(--acc-gear) 45%, var(--border));
+    border-radius: var(--radius);
+    background: rgb(0 0 0 / 0.18);
+  }
+  .look-slot {
+    color: var(--acc-gear);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .look-bases {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 10px;
+    margin-bottom: 4px;
+    color: var(--normal);
+  }
+  .look-k {
+    color: var(--muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .look-prio {
+    display: grid;
+    gap: 2px;
+    color: var(--text-2);
+    padding-left: 1.5em;
+  }
+  .look-prio li::marker {
+    color: var(--acc-gear);
+    font-weight: 700;
+  }
+  .look-note {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>
