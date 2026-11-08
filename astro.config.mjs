@@ -1,10 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// No GitHub Pages o site fica em https://<user>.github.io/<repo>/.
-// O workflow de deploy define BASE_PATH=/<repo>; localmente fica "/".
+// O site roda na raiz ("/") por padrão — local ou no homelab.
+// Se um dia ficar atrás de um subcaminho (ex.: proxy em /poe/), use BASE_PATH=/poe no build.
 const base = process.env.BASE_PATH ?? '/';
-const site = process.env.SITE_URL ?? 'https://espakki.github.io';
+const site = process.env.SITE_URL || undefined;
 
 export default defineConfig({
   site,
@@ -12,6 +12,10 @@ export default defineConfig({
   trailingSlash: 'ignore',
   build: {
     format: 'directory',
+  },
+  server: {
+    // escuta na rede local (pra abrir do celular no mesmo Wi-Fi)
+    host: true,
   },
   devToolbar: { enabled: false },
 });

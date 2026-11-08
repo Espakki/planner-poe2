@@ -8,6 +8,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "serve": "npm run check && astro build && astro preview --port 8080",
     "check": "node scripts/check.ts",
     "fetch-icons": "node scripts/fetch-icons.ts",
     "fetch-names": "node scripts/fetch-names.ts",

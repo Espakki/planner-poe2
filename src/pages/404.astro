@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/site.ts';
+---
+
+<Base title="Página não encontrada · Plano PoE2">
+  <section class="wrap nf">
+    <h1>Caminho bloqueado</h1>
+    <p class="muted">Essa página não existe (ou a build mudou de lugar).</p>
+    <a class="btn" href={url()}>Voltar pras builds</a>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-top: 48px;
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+  }
+</style>

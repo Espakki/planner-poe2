@@ -1,7 +1,9 @@
 # Plano PoE2 — site pessoal de builds (Path of Exile 2)
 
 Site estático (Astro + TypeScript) em **PT-BR** pra seguir builds de PoE2 fase a fase, na segunda tela ou no celular.
-Dono: Espakki (joga com o cliente em inglês; lê melhor em português). Deploy: GitHub Pages via Actions.
+Dono: Espakki (joga com o cliente em inglês; lê melhor em português). Repositório público: github.com/Espakki/planner-poe2.
+**Sem deploy público** — roda local (`npm run dev`) e no homelab via Docker (`docker compose up -d --build`, porta 8080).
+Não criar workflow de deploy/GitHub Pages sem o dono pedir.
 
 ## Regras de conteúdo (importantes)
 
@@ -47,6 +49,8 @@ data/pob/gems.json           base de gemas do PoB (gerada) · data/logs/ logs do
 | `npm run fetch-names [-- --force]` | preenche namePtBr via poe2db.tw/pt (não toca nos `manual`) |
 | `npm run new-patch -- --build <slug> --from 0.5.5 --to 0.6 [--tree 0_6]` | cria a versão nova da build e marca a antiga como outdated |
 | `npm run validate` | check + astro check + build |
+| `npm run serve` | check + build + serve em :8080 (homelab sem Docker) |
+| `docker compose up -d --build` | homelab: build (com check) e nginx em :8080 — ver `Dockerfile`, `deploy/nginx.conf` |
 
 ## Quando sai patch (fluxo de atualização)
 
@@ -57,6 +61,7 @@ data/pob/gems.json           base de gemas do PoB (gerada) · data/logs/ logs do
 3. `npm run update-tree -- --version 0_6` (se a árvore mudou) → `npm run sync-gems` → `npm run fetch-icons` → `npm run fetch-names`
 4. `npm run check` (tem que passar) e olhar no `npm run dev`
 5. Registrar no `changelog` do YAML novo o que mudou. Ao terminar a revisão, atualizar `meta.lastVerified`.
+6. Commit + push; no homelab: `git pull && docker compose up -d --build`.
 
 A versão antiga continua acessível em `/builds/<slug>/<patch>/` com aviso de desatualizada; o seletor de patch aparece sozinho.
 

@@ -1,0 +1,11 @@
+services:
+  planner-poe2:
+    build:
+      context: .
+      # args:
+      #   BASE_PATH: /poe   # só se for servir atrás de um subcaminho no proxy
+    image: planner-poe2:local
+    container_name: planner-poe2
+    ports:
+      - "8080:80"
+    restart: unless-stopped
