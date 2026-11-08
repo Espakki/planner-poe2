@@ -1,0 +1,388 @@
+---
+/**
+ * Árvore de passivas interativa com seletor de fase (island cliente em canvas 2D).
+ * Se a árvore não carregar, mostra o fallback: link do PoB + lista textual dos notáveis da fase.
+ */
+import { url } from '../lib/site.ts';
+import type { ResolvedPhaseTree } from '../lib/build-tree.ts';
+
+interface Props {
+  id?: string;
+  treeVersion: string;
+  ascendancy: string;
+  className: string;
+  phases: ResolvedPhaseTree[];
+  /** chave do estado no localStorage (fase atual), ex.: "monk-hollow-form@0.5.5" */
+  stateKey?: string;
+  initialPhase?: string;
+  title?: string;
+}
+const { id = 'arvore', treeVersion, ascendancy, className, phases, stateKey, initialPhase, title = 'Árvore de passivas' } = Astro.props;
+const viewerPhases = phases.map((p) => ({
+  phaseId: p.phaseId,
+  label: p.label,
+  levels: p.levels,
+  nodes: p.nodes,
+  ws1: p.ws1,
+  ws2: p.ws2,
+  added: p.added,
+  removed: p.removed,
+  mainPoints: p.mainPoints,
+  wsPoints: p.wsPoints,
+  ascPoints: p.ascPoints,
+}));
+const config = {
+  treeUrl: url(`tree/${treeVersion}.json`),
+  ascendancy,
+  className,
+  phases: viewerPhases,
+  stateKey,
+  initialPhase: initialPhase ?? phases[phases.length - 1]?.phaseId,
+};
+const pobLinks = [...new Set(phases.map((p) => p.pobUrl).filter(Boolean))] as string[];
+---
+
+<section class="tree-viewer panel" id={id} data-tree-viewer data-config={JSON.stringify(config)}>
+  <div class="tv-head">
+    <h2>{title}</h2>
+    <p class="muted small">
+      Arraste pra mover, roda/pinça pra zoom, toque num node pra ver os stats. <span class="legend">
+        <i class="lg on"></i>alocado <i class="lg new"></i>novo na fase <i class="lg rem"></i>sai no respec
+        <i class="lg w1"></i>Weapon Set 1 <i class="lg w2"></i>Weapon Set 2
+      </span>
+    </p>
+  </div>
+  <div class="phases" role="group" aria-label="Fase da árvore">
+    {
+      phases.map((p) => (
+        <button type="button" class="ph-btn" data-phase={p.phaseId} aria-pressed="false">
+          <span class="lv">
+            {p.levels[0]}–{p.levels[1]}
+          </span>
+          <span class="lb">{p.label.split(' · ')[0]}</span>
+        </button>
+      ))
+    }
+  </div>
+  <div class="toolbar">
+    <label class="search">
+      <span class="visually-hidden">Buscar node</span>
+      <input type="search" placeholder="Buscar node ou stat (Enter = próximo)" data-search />
+      <span class="count" data-search-count></span>
+    </label>
+    <div class="tools">
+      <button type="button" class="btn ghost icon" data-zoom-out aria-label="Diminuir zoom">−</button>
+      <button type="button" class="btn ghost icon" data-zoom-in aria-label="Aumentar zoom">+</button>
+      <button type="button" class="btn ghost" data-fit>Centralizar</button>
+      <button type="button" class="btn" data-fullscreen aria-pressed="false">Tela cheia</button>
+    </div>
+  </div>
+  <div class="counters" data-counters></div>
+  <div class="stage" data-stage>
+    <canvas aria-label="Árvore de passivas"></canvas>
+    <div class="tip" data-tip hidden></div>
+    <div class="status" data-status>Árvore carrega quando você rolar até aqui…</div>
+    <div class="fallback" data-fallback hidden>
+      <p><strong>A árvore não carregou.</strong> Abra o código no pobb.in ou siga a lista de notáveis abaixo.</p>
+      <p>
+        {
+          pobLinks.map((l) => (
+            <a class="btn" href={l} target="_blank" rel="noopener">
+              Abrir PoB no pobb.in
+            </a>
+          ))
+        }
+      </p>
+      {
+        phases.map((p) => (
+          <details>
+            <summary>{p.label}</summary>
+            <p class="small">{p.newNotables.map((n) => n.name).join(' · ') || '—'}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { mountTreeViewer, type ViewerOptions } from '../scripts/tree-viewer.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-tree-viewer]')) {
+    const cfg = JSON.parse(root.dataset.config!) as ViewerOptions & { stateKey?: string };
+    let initial = cfg.initialPhase;
+    if (cfg.stateKey) {
+      try {
+        const s = JSON.parse(localStorage.getItem(`plan-poe:${cfg.stateKey}`) ?? '{}');
+        if (s.phase && cfg.phases.some((p) => p.phaseId === s.phase)) initial = s.phase;
+      } catch {
+        /* sem storage */
+      }
+    }
+    const viewer = mountTreeViewer(root, { ...cfg, initialPhase: initial });
+    // botões "Ver na árvore" das fases
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-show-tree]');
+      if (!btn) return;
+      e.preventDefault();
+      viewer.selectPhase(btn.dataset.showTree!, { scroll: true });
+    });
+    // fase atual mudou em outro lugar da página
+    window.addEventListener('plan-poe:state', (e) => {
+      const phase = (e as CustomEvent).detail?.state?.phase;
+      if (phase) viewer.selectPhase(phase);
+    });
+  }
+</script>
+
+<style>
+  .tree-viewer {
+    padding: 14px;
+    margin-top: 28px;
+  }
+  .tv-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 16px;
+    margin-bottom: 10px;
+  }
+  .tv-head h2 {
+    font-size: 1.3rem;
+  }
+  .legend {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+  }
+  .lg {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 6px;
+  }
+  .lg.on {
+    background: #d2ad6b;
+  }
+  .lg.new {
+    background: #5fd38a;
+  }
+  .lg.rem {
+    border: 2px solid #ef6b6b;
+  }
+  .lg.w1 {
+    border: 2px solid #e4685a;
+  }
+  .lg.w2 {
+    border: 2px solid #58b6e8;
+  }
+  .phases {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+  .ph-btn {
+    flex: none;
+    display: grid;
+    gap: 0;
+    text-align: left;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+    cursor: pointer;
+  }
+  .ph-btn .lv {
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  .ph-btn .lb {
+    font-size: 0.86rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .ph-btn[aria-pressed='true'] {
+    border-color: var(--bronze-hi);
+    background: linear-gradient(180deg, #2a2219, #1a150f);
+  }
+  .ph-btn[aria-pressed='true'] .lb {
+    color: var(--bronze-hi);
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .search {
+    position: relative;
+    flex: 1 1 240px;
+  }
+  .search input {
+    width: 100%;
+    min-height: 36px;
+    padding: 6px 40px 6px 10px;
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius);
+    background: #0d0b09;
+    color: var(--text);
+  }
+  .search .count {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.78rem;
+    color: #ffe066;
+  }
+  .tools {
+    display: flex;
+    gap: 6px;
+  }
+  .btn.icon {
+    width: 36px;
+    padding: 0;
+    font-size: 1.1rem;
+    font-family: var(--font-body);
+  }
+  .counters {
+    margin: 8px 0;
+    font-size: 0.86rem;
+    color: var(--muted);
+    min-height: 1.3em;
+  }
+  .counters :global(b) {
+    color: var(--text);
+  }
+  .counters :global(b.n) {
+    color: var(--new);
+  }
+  .counters :global(b.r) {
+    color: var(--removed);
+  }
+  .stage {
+    position: relative;
+    height: min(70vh, 720px);
+    min-height: 360px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #0a0907;
+  }
+  canvas {
+    display: block;
+    touch-action: none;
+    cursor: grab;
+  }
+  .tip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    max-width: min(340px, calc(100% - 16px));
+    padding: 8px 10px;
+    border: 1px solid var(--bronze);
+    border-radius: var(--radius);
+    background: rgb(12 10 8 / 0.96);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.5);
+    pointer-events: none;
+    font-size: 0.84rem;
+  }
+  .tip :global(.t-name) {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text);
+  }
+  .tip :global(.t-name.k-N),
+  .tip :global(.t-name.k-K) {
+    color: var(--bronze-hi);
+  }
+  .tip :global(.t-kind) {
+    color: var(--muted);
+    font-size: 0.76rem;
+    margin: 2px 0 4px;
+  }
+  .tip :global(ul) {
+    padding-left: 0;
+    list-style: none;
+    color: var(--magic);
+  }
+  .tip :global(.st-new) {
+    color: var(--new);
+  }
+  .tip :global(.st-on) {
+    color: var(--bronze-hi);
+  }
+  .tip :global(.st-removed) {
+    color: var(--removed);
+  }
+  .tip :global(.ws) {
+    color: #58b6e8;
+  }
+  .status {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .status[hidden] {
+    display: none;
+  }
+  .fallback {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    padding: 16px;
+    background: var(--panel);
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .fallback[hidden] {
+    display: none;
+  }
+
+  /* tela cheia (também no celular) */
+  .tree-viewer:global(.is-full) {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 10px max(10px, env(safe-area-inset-bottom));
+  }
+  .tree-viewer:global(.is-full) .tv-head {
+    display: none;
+  }
+  .tree-viewer:global(.is-full) .stage {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
+  :global(html.tree-full) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    .tree-viewer {
+      padding: 10px;
+      margin-left: -6px;
+      margin-right: -6px;
+    }
+    .stage {
+      height: 62vh;
+    }
+    .tools .btn:not(.icon):not([data-fullscreen]) {
+      display: none;
+    }
+  }
+</style>

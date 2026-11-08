@@ -1,0 +1,266 @@
+---
+/**
+ * Protótipo isolado da árvore com um código PoB real (Scorpius · Early Endgame),
+ * decodificado no build. Também aceita colar outro código PoB — decodifica no navegador
+ * (base64 url-safe → DecompressionStream('deflate') → XML).
+ */
+import path from 'node:path';
+import { readFileSync } from 'node:fs';
+import Base from '../../layouts/Base.astro';
+import { parsePobCode } from '../../lib/pob.ts';
+import { ROOT, url } from '../../lib/site.ts';
+import type { CompactTree } from '../../lib/tree-types.ts';
+
+const file = path.join(ROOT, 'src', 'content', 'builds', 'monk-hollow-form', 'sources', 'scorpius-early-endgame.pob');
+const pob = parsePobCode(readFileSync(file, 'utf8'));
+const treeVersion = '0_5';
+const tree = JSON.parse(readFileSync(path.join(ROOT, 'public', 'tree', `${treeVersion}.json`), 'utf8')) as CompactTree;
+const ascNames = tree.classes.flatMap((c) => c.ascendancies);
+const phases = pob.specs.map((s, i) => ({
+  phaseId: `spec-${i}`,
+  label: s.title,
+  levels: [pob.level, pob.level] as [number, number],
+  nodes: s.nodes,
+  ws1: s.ws1,
+  ws2: s.ws2,
+  added: [] as number[],
+  removed: [] as number[],
+  mainPoints: s.nodes.length,
+  wsPoints: s.ws1.length + s.ws2.length,
+  ascPoints: 0,
+}));
+const config = { treeUrl: url(`tree/${treeVersion}.json`), ascendancy: pob.ascendClassName, className: pob.className, phases };
+---
+
+<Base title="Laboratório · árvore">
+  <div class="wrap lab">
+    <h1>Laboratório — árvore de passivas</h1>
+    <p class="muted">
+      Protótipo isolado. Carregado com o PoB do Scorpius ({pob.className} · {pob.ascendClassName}, nível {pob.level},
+      {pob.specs.length} spec). Cole outro código PoB pra testar.
+    </p>
+
+    <form class="paste" data-paste>
+      <textarea rows="3" placeholder="Cole aqui um código Path of Building (PoE2)…" data-code></textarea>
+      <div class="row">
+        <select data-asc>
+          {ascNames.map((a) => <option selected={a === pob.ascendClassName}>{a}</option>)}
+        </select>
+        <button class="btn" type="submit">Decodificar</button>
+        <span class="small muted" data-msg></span>
+      </div>
+    </form>
+
+    <section class="tree-viewer panel" id="arvore" data-lab-viewer data-config={JSON.stringify(config)}>
+      <div class="phases" role="group" aria-label="Spec" data-phases>
+        {phases.map((p) => <button type="button" class="ph-btn" data-phase={p.phaseId} aria-pressed="false">{p.label}</button>)}
+      </div>
+      <div class="toolbar">
+        <input type="search" placeholder="Buscar node ou stat (Enter = próximo)" data-search />
+        <span class="count" data-search-count></span>
+        <button type="button" class="btn ghost" data-zoom-out>−</button>
+        <button type="button" class="btn ghost" data-zoom-in>+</button>
+        <button type="button" class="btn ghost" data-fit>Centralizar</button>
+        <button type="button" class="btn" data-fullscreen aria-pressed="false">Tela cheia</button>
+      </div>
+      <div class="counters" data-counters></div>
+      <div class="stage" data-stage>
+        <canvas></canvas>
+        <div class="tip" data-tip hidden></div>
+        <div class="status" data-status></div>
+        <div class="fallback" data-fallback hidden>Árvore não carregou.</div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import { mountTreeViewer, type ViewerOptions, type ViewerPhase } from '../../scripts/tree-viewer.ts';
+
+  const root = document.querySelector<HTMLElement>('[data-lab-viewer]')!;
+  const cfg = JSON.parse(root.dataset.config!) as ViewerOptions;
+  let viewer = mountTreeViewer(root, cfg);
+
+  async function decode(code: string): Promise<string> {
+    const b64 = code.trim().replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
+    const bin = atob(b64 + '='.repeat((4 - (b64.length % 4)) % 4));
+    const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+    return new Response(stream).text();
+  }
+
+  const form = document.querySelector<HTMLFormElement>('[data-paste]')!;
+  const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = form.querySelector<HTMLTextAreaElement>('[data-code]')!.value;
+    if (!code.trim()) return;
+    try {
+      const xml = new DOMParser().parseFromString(await decode(code), 'text/xml');
+      const specs = [...xml.querySelectorAll('Spec')];
+      if (!specs.length) throw new Error('nenhuma <Spec> no XML');
+      const nums = (s: string | null | undefined) => (s ?? '').split(',').map(Number).filter((n) => n > 0);
+      const phases: ViewerPhase[] = specs.map((s, i) => {
+        const nodes = nums(s.getAttribute('nodes'));
+        const ws1 = nums(s.querySelector('WeaponSet1')?.getAttribute('nodes'));
+        const ws2 = nums(s.querySelector('WeaponSet2')?.getAttribute('nodes'));
+        const prev = i > 0 ? new Set(nums(specs[i - 1].getAttribute('nodes'))) : null;
+        const cur = new Set(nodes);
+        return {
+          phaseId: `spec-${i}`,
+          label: s.getAttribute('title') || `Spec ${i + 1}`,
+          levels: [0, 0],
+          nodes,
+          ws1,
+          ws2,
+          added: prev ? nodes.filter((n) => !prev.has(n)) : [],
+          removed: prev ? [...prev].filter((n) => !cur.has(n)) : [],
+          mainPoints: nodes.length,
+          wsPoints: ws1.length + ws2.length,
+          ascPoints: 0,
+        };
+      });
+      const build = xml.querySelector('Build');
+      const asc = build?.getAttribute('ascendClassName') || form.querySelector<HTMLSelectElement>('[data-asc]')!.value;
+      const bar = root.querySelector<HTMLElement>('[data-phases]')!;
+      bar.innerHTML = phases.map((p) => `<button type="button" class="ph-btn" data-phase="${p.phaseId}" aria-pressed="false"></button>`).join('');
+      bar.querySelectorAll('button').forEach((b, i) => (b.textContent = phases[i].label));
+      const fresh = root.cloneNode(true) as HTMLElement;
+      root.replaceWith(fresh);
+      viewer = mountTreeViewer(fresh, { ...cfg, ascendancy: asc, phases, initialPhase: phases[phases.length - 1].phaseId });
+      msg.textContent = `${phases.length} spec(s) · ${build?.getAttribute('className') ?? ''} ${asc} · nível ${build?.getAttribute('level') ?? '?'}`;
+    } catch (err) {
+      msg.textContent = `Não consegui ler: ${String(err)}`;
+    }
+  });
+  void viewer;
+</script>
+
+<style>
+  .lab {
+    padding-top: 20px;
+    display: grid;
+    gap: 14px;
+  }
+  .paste textarea {
+    width: 100%;
+    background: #0d0b09;
+    color: var(--text);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius);
+    padding: 8px;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.8rem;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 6px;
+  }
+  select,
+  input[type='search'] {
+    background: #0d0b09;
+    color: var(--text);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius);
+    padding: 6px 8px;
+    min-height: 36px;
+  }
+  .tree-viewer {
+    padding: 12px;
+  }
+  .phases {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .ph-btn {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+    cursor: pointer;
+  }
+  .ph-btn[aria-pressed='true'] {
+    border-color: var(--bronze-hi);
+    color: var(--bronze-hi);
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .toolbar input {
+    flex: 1 1 220px;
+  }
+  .count {
+    color: #ffe066;
+    font-size: 0.8rem;
+  }
+  .counters {
+    margin: 8px 0;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .stage {
+    position: relative;
+    height: 72vh;
+    min-height: 380px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+    touch-action: none;
+  }
+  .tip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    max-width: 320px;
+    padding: 8px 10px;
+    border: 1px solid var(--bronze);
+    border-radius: var(--radius);
+    background: rgb(12 10 8 / 0.96);
+    pointer-events: none;
+    font-size: 0.84rem;
+  }
+  .tip :global(ul) {
+    list-style: none;
+    padding: 0;
+    color: var(--magic);
+  }
+  .tip :global(.t-kind) {
+    color: var(--muted);
+    font-size: 0.76rem;
+  }
+  .status {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .status[hidden],
+  .fallback[hidden] {
+    display: none;
+  }
+  .tree-viewer:global(.is-full) {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+  }
+  .tree-viewer:global(.is-full) .stage {
+    flex: 1;
+    height: auto;
+  }
+</style>
